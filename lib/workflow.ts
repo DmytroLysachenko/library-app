@@ -23,6 +23,7 @@ export const sendEmail = async ({
       email,
       subject,
       message,
-    }
+    },
+    { publicKey: config.env.emailjs.publicKey }
   );
 };
