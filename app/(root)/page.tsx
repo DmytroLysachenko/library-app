@@ -1,8 +1,10 @@
+import { auth } from "@/auth";
 import BookList from "@/components/BookList";
 import BookOverview from "@/components/BookOverview";
 import { sampleBooks } from "@/constants";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
+import { redirect } from "next/navigation";
 
 const Home = async () => {
   const result = await db.select().from(users);

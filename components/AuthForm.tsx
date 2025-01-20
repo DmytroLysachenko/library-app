@@ -15,7 +15,6 @@ import { ZodType } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -49,6 +48,8 @@ const AuthForm = <T extends FieldValues>({
     defaultValues: defaultValues as DefaultValues<T>,
   });
 
+  console.log(defaultValues);
+
   const isSignIn = type === "SIGN_IN";
 
   const handleSubmit: SubmitHandler<T> = async (data) => {
@@ -60,6 +61,12 @@ const AuthForm = <T extends FieldValues>({
       });
 
       router.push("/");
+    } else {
+      toast({
+        title: `Error ${isSignIn ? "signing in" : "signing out"}`,
+        description: result.error ?? "An error occurred. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -95,7 +102,7 @@ const AuthForm = <T extends FieldValues>({
                       <ImageUpload onFileChange={field.onChange} />
                     ) : (
                       <Input
-                        placeholder="shadcn"
+                        placeholder=""
                         required
                         type={
                           FIELD_TYPES[field.name as keyof typeof FIELD_TYPES]
