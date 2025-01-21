@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import React from "react";
 import { z } from "zod";
@@ -15,19 +15,20 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 
-import { toast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import { bookSchema } from "@/lib/validations";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import FileUpload from "../FileUpload";
+import ColorPicker from "./ColorPicker";
+import { createBook } from "@/lib/actions/books";
+import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 interface BookFormProps extends Partial<Book> {
   type: "create" | "update";
 }
 
 const BookForm = ({ type, ...book }: BookFormProps) => {
-  const router = useRouter();
-
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -44,8 +45,23 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof bookSchema>) =>
-    console.log(values);
+  const router = useRouter();
+
+  const onSubmit = async (values: z.infer<typeof bookSchema>) => {
+    const result = await createBook(values);
+
+    if (result.success) {
+      toast({ title: "Success", description: "Book created successfully" });
+
+      router.push(`/admin/books/${result.data.id}`);
+    } else {
+      toast({
+        title: "Error",
+        description: result.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <Form {...form}>
@@ -115,7 +131,7 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
         />
         <FormField
           control={form.control}
-          name={"genre"}
+          name={"rating"}
           render={({ field }) => (
             <FormItem className="flex flex-col gap-1">
               <FormLabel className="text-base font-normal text-dark-500">
@@ -166,7 +182,17 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
               <FormLabel className="text-base font-normal text-dark-500">
                 Book cover
               </FormLabel>
-              <FormControl>{/* <FileUpload /> */}</FormControl>
+              <FormControl>
+                <FileUpload
+                  type="image"
+                  accept="image/*"
+                  placeholder="Upload a book cover"
+                  folder="books/covers"
+                  variant="light"
+                  onFileChange={field.onChange}
+                  value={field.value}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -179,7 +205,12 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
               <FormLabel className="text-base font-normal text-dark-500">
                 Cover color
               </FormLabel>
-              <FormControl>{/* <ColorPicker /> */}</FormControl>
+              <FormControl>
+                <ColorPicker
+                  value={field.value}
+                  onPickerChange={field.onChange}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -211,7 +242,17 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
               <FormLabel className="text-base font-normal text-dark-500">
                 Book Trailer
               </FormLabel>
-              <FormControl>{/* <FileUpload /> */}</FormControl>
+              <FormControl>
+                <FileUpload
+                  type="video"
+                  accept="video/*"
+                  placeholder="Upload a book trailer"
+                  folder="books/videos"
+                  variant="light"
+                  onFileChange={field.onChange}
+                  value={field.value}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

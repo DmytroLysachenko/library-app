@@ -14,6 +14,7 @@ interface FileUploadProps {
   folder: string;
   variant: "dark" | "light";
   onFileChange: (filePath: string) => void;
+  value?: string;
 }
 
 const {
@@ -51,9 +52,13 @@ const FileUpload = ({
   placeholder,
   folder,
   variant,
+  value,
 }: FileUploadProps) => {
   const ikUploadRef = useRef(null);
   const [progress, setProgress] = useState(0);
+  const [file, setFile] = useState<{ filePath: string | null }>({
+    filePath: value ?? null,
+  });
 
   const styles = {
     button:
@@ -63,8 +68,6 @@ const FileUpload = ({
     placeholder: variant === "dark" ? "text-light-100" : "text-slate-500",
     text: variant === "dark" ? "text-light-100" : "text-dark-400",
   };
-
-  const [file, setFile] = useState<{ filePath: string } | null>(null);
 
   const onError = (error: any) => {
     console.log(error);
@@ -152,7 +155,7 @@ const FileUpload = ({
         )}
       </button>
 
-      {progress > 0 && progress < 100 && (
+      {progress > 0 && progress !== 100 && (
         <div className="w-full rounded-full bg-green-200">
           <div
             className="progress"
@@ -166,15 +169,15 @@ const FileUpload = ({
       {file &&
         (type === "image" ? (
           <IKImage
-            alt={file.filePath}
-            path={file.filePath}
+            alt={file.filePath || "image preview"}
+            path={file.filePath ?? undefined}
             width={500}
             height={300}
             className="object-contain"
           />
         ) : type === "video" ? (
           <IKVideo
-            path={file.filePath}
+            path={file.filePath ?? undefined}
             controls={true}
             className="h-96 w-full rounded-xl"
           />

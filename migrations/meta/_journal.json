@@ -8,6 +8,13 @@
       "when": 1737211821141,
       "tag": "0000_wide_maddog",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1737491640614,
+      "tag": "0001_rich_gunslinger",
+      "breakpoints": true
     }
   ]
 }
