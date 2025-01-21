@@ -38,7 +38,7 @@ const getUserState = async (email: string): Promise<UserState> => {
 
 export const { POST } = serve<InitialData>(async (context) => {
   const { email, fullName } = context.requestPayload;
-
+  console.log("start workflow");
   await context.run("new-signup", async () => {
     await sendEmail({
       subject: "Welcome to the platform",
@@ -46,7 +46,7 @@ export const { POST } = serve<InitialData>(async (context) => {
       email,
     });
   });
-
+  console.log("finished signup workflow");
   await context.sleep("wait-for-3-days", 60 * 60 * 24 * 3);
 
   while (true) {

@@ -1,6 +1,6 @@
 import { Client as WorkflowClient } from "@upstash/workflow";
 import config from "./config";
-import emailjs from "@emailjs/browser";
+import emailjs from "@emailjs/nodejs";
 
 export const workflowClient = new WorkflowClient({
   baseUrl: config.env.upstash.qstashUrl,
@@ -16,7 +16,9 @@ export const sendEmail = async ({
   subject: string;
   message: string;
 }) => {
-  await emailjs.send(
+  console.log("Sending mail");
+
+  const response = await emailjs.send(
     config.env.emailjs.serviceId,
     config.env.emailjs.templateId,
     {
@@ -26,4 +28,6 @@ export const sendEmail = async ({
     },
     { publicKey: config.env.emailjs.publicKey }
   );
+
+  console.log(response);
 };
