@@ -90,7 +90,7 @@
 
   /* Book Overview */
   .book-overview {
-    @apply flex flex-col-reverse items-center gap-12 sm:gap-32 xl:flex-row xl:gap-8;
+    @apply flex flex-col-reverse items-center gap-12 sm:gap-32 xl:flex-row xl:gap-8 mb-20;
   }
 
   .book-overview h1 {

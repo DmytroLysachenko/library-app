@@ -11,19 +11,21 @@ const Home = async () => {
   const latestBooks = (await db
     .select()
     .from(books)
-    .limit(10)
+    .limit(6)
     .orderBy(desc(books.createdAt))) as Book[];
+
   return (
     <>
       <BookOverview
         {...latestBooks[0]}
         userId={session?.user?.id as string}
       />
-      <BookList
-        title="Latest Books"
-        books={latestBooks.slice(1)}
-        containerClassName="mt-28"
-      />
+      {latestBooks.length >= 2 && (
+        <BookList
+          title="Latest Books"
+          books={latestBooks.slice(1)}
+        />
+      )}
     </>
   );
 };

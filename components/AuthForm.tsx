@@ -48,8 +48,6 @@ const AuthForm = <T extends FieldValues>({
     defaultValues: defaultValues as DefaultValues<T>,
   });
 
-  console.log(defaultValues);
-
   const isSignIn = type === "SIGN_IN";
 
   const handleSubmit: SubmitHandler<T> = async (data) => {

@@ -18,8 +18,6 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     .limit(1);
   if (!bookDetails) redirect("/404");
 
-  console.log(bookDetails);
-
   return (
     <>
       <BookOverview
