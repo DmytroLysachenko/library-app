@@ -1,6 +1,5 @@
-import { auth, signOut } from "@/auth";
+import { auth } from "@/auth";
 import BookList from "@/components/BookList";
-import UserInfo from "@/components/UserInfo";
 
 import { db } from "@/db/drizzle";
 import { books, borrowRecords } from "@/db/schema";
@@ -31,16 +30,10 @@ const page = async () => {
     .where(eq(borrowRecords.userId, session?.user?.id as string))) as Book[];
 
   return (
-    <>
-      <UserInfo
-        user={session?.user}
-        containerClassName={"mb-20"}
-      />
-      <BookList
-        title="Borrowed Books"
-        books={borrowedBooks}
-      />
-    </>
+    <BookList
+      title="Borrowed Books"
+      books={borrowedBooks}
+    />
   );
 };
 
