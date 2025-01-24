@@ -10,6 +10,7 @@ import {
   PaginationLink,
 } from "@/components/ui/pagination";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const BooksPagination = ({
   currentPage,
@@ -18,9 +19,10 @@ const BooksPagination = ({
   currentPage: number;
   lastPage: number;
 }) => {
-  const params = new URLSearchParams(window.location.search);
   const isLastPage = currentPage === lastPage;
+  const router = useRouter();
   const toPage = (page: number) => {
+    const params = new URLSearchParams(window.location.search);
     params.set("page", page.toString());
     return `/search?${params.toString()}`;
   };
@@ -30,15 +32,17 @@ const BooksPagination = ({
       <PaginationContent>
         <PaginationItem>
           {currentPage !== 1 && (
-            <PaginationLink
+            <button
               className="pagination-btn_dark"
-              href={`${toPage(currentPage - 1)}`}
+              onClick={() => {
+                router.push(toPage(currentPage - 1));
+              }}
             >
               <ArrowBigLeft />
-            </PaginationLink>
+            </button>
           )}
         </PaginationItem>
-        <PaginationItem className="pagination-btn_light size-9 flex items-center justify-center">
+        <PaginationItem className="pagination-btn_light  flex items-center justify-center">
           {currentPage}
         </PaginationItem>
         {lastPage - currentPage > 1 && (
@@ -48,22 +52,26 @@ const BooksPagination = ({
         )}
         {!isLastPage && (
           <PaginationItem>
-            <PaginationLink
-              className="pagination-btn_dark "
-              href={`${toPage(lastPage)}`}
+            <button
+              className="pagination-btn_dark"
+              onClick={() => {
+                router.push(toPage(lastPage));
+              }}
             >
               {lastPage}
-            </PaginationLink>
+            </button>
           </PaginationItem>
         )}
         {!isLastPage && (
           <PaginationItem>
-            <PaginationLink
-              className="pagination-btn_dark "
-              href={`${toPage(currentPage + 1)}`}
+            <button
+              className="pagination-btn_dark"
+              onClick={() => {
+                router.push(toPage(currentPage + 1));
+              }}
             >
               <ArrowBigRight />
-            </PaginationLink>
+            </button>
           </PaginationItem>
         )}
       </PaginationContent>

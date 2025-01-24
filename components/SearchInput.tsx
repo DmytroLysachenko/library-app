@@ -10,10 +10,10 @@ const SearchInput = () => {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
   const params = new URLSearchParams(window.location.search);
-
   const handleReset = () => {
+    const params = new URLSearchParams(window.location.search);
     if (input.current && input.current.value) {
-      params.delete("filter");
+      params.delete("query");
       input.current.value = "";
       router.push(`/search?${params.toString()}`, { scroll: false });
     }
@@ -27,16 +27,17 @@ const SearchInput = () => {
         placeholder="Search..."
         name="search"
         id="search"
-        defaultValue={params.get("filter") || ""}
+        defaultValue={params.get("query") || ""}
         className="search-input"
         ref={input}
         onChange={(event) => {
-          if (!event.target.value) {
-            router.push(`/search`);
-            return;
+          const params = new URLSearchParams(window.location.search);
+          if (event.target.value) {
+            params.set("query", event.target.value);
           } else {
-            router.push(`/search?filter=${event.target.value}`);
+            params.delete("query");
           }
+          router.push(`/search?${params.toString()}`, { scroll: false });
         }}
       />
 

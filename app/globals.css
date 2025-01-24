@@ -200,11 +200,11 @@
   }
 
   .pagination-btn_light {
-    @apply bg-light-300 text-dark-300 rounded-md  !important;
+    @apply bg-light-300 text-dark-300 rounded-md size-9 justify-center items-center flex !important;
   }
 
   .pagination-btn_dark {
-    @apply text-white rounded-md bg-dark-300 hover:bg-dark-100 !important;
+    @apply text-white rounded-md size-9 bg-dark-300 hover:bg-dark-100  justify-center items-center flex !important;
   }
 
   /* Sort */

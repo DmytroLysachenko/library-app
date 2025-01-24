@@ -11,7 +11,7 @@ const NotFoundSection = ({ query }: { query: string }) => {
 
   const handleClearSearch = () => {
     const params = new URLSearchParams(window.location.search);
-    params.delete("filter");
+    params.delete("query");
     return `/search?${params.toString()}`;
   };
 
