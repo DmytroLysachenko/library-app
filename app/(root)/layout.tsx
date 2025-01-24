@@ -38,7 +38,7 @@ const Layout = async ({
   return (
     <main className="root-container">
       <div className="mx-auto w-full max-w-7xl">
-        <Header session={session} />
+        <Header />
         <div className="mt-20 pb-20">{children}</div>
       </div>
     </main>

@@ -5,9 +5,9 @@ import React from "react";
 // import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Session } from "next-auth";
 import { signOut } from "@/auth";
-import { Button } from "./ui/button";
+import { LogOut } from "lucide-react";
 
-const Header = ({ session }: { session: Session }) => {
+const Header = () => {
   return (
     <header className="my-10 flex justify-between gap-5">
       <Link href="/">
@@ -20,14 +20,32 @@ const Header = ({ session }: { session: Session }) => {
       </Link>
       <ul className="flex flex-row items-center gap-8">
         <li>
+          <Link
+            className="text-white text-xl hover:text-amber-100"
+            href="/"
+          >
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link
+            className="text-white text-xl hover:text-amber-100"
+            href="/search"
+          >
+            Search
+          </Link>
+        </li>
+        <li>
           <form
             action={async () => {
               "use server";
               await signOut();
             }}
-            className="mb-10"
+            className="flex items-center justify-start"
           >
-            <Button>Logout</Button>
+            <button>
+              <LogOut className="text-red-600" />
+            </button>
           </form>
           {/* <Link href={"/my-profile"}>
             <Avatar>
