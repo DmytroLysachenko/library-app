@@ -1,9 +1,10 @@
 import { auth } from "@/auth";
+import BookList from "@/components/BookList";
 import BookOverview from "@/components/BookOverview";
 import BookVideo from "@/components/BookVideo";
 import { db } from "@/db/drizzle";
 import { books } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { desc, eq, not } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -17,6 +18,13 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     .where(eq(books.id, id))
     .limit(1);
   if (!bookDetails) redirect("/404");
+
+  const latestBooks = (await db
+    .select()
+    .from(books)
+    .limit(6)
+    .where(not(eq(books.id, id)))
+    .orderBy(desc(books.createdAt))) as Book[];
 
   return (
     <>
@@ -38,6 +46,11 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
               ))}
             </div>
           </section>
+          <BookList
+            title="Latest Books"
+            books={latestBooks}
+            containerClassName="mt-20"
+          />
         </div>
       </div>
     </>

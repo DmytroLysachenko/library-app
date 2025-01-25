@@ -7,7 +7,7 @@ interface BookListProps {
   title: string;
   books: Book[];
   containerClassName?: string;
-  isSearch: boolean;
+  isSearch?: boolean;
 }
 
 const BookList = ({
