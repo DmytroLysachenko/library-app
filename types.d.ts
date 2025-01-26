@@ -12,7 +12,12 @@ interface Book {
   videoUrl: string;
   summary: string;
   createdAt: Date | null;
+  borrowDate?: Date | null;
+  dueDate?: string;
+  returnDate?: string | null;
+  status?: "BORROWED" | "RETURNED";
 }
+
 interface AuthCredentials {
   fullName: string;
   email: string;

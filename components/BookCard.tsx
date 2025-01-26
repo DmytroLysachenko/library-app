@@ -3,6 +3,7 @@ import React from "react";
 import BookCover from "./BookCover";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import dayjs from "dayjs";
 import { Button } from "./ui/button";
 
 const BookCard = ({
@@ -11,8 +12,15 @@ const BookCard = ({
   genre,
   coverColor,
   coverUrl,
-  isLoanedBook = false,
+  status,
+  borrowDate,
+  dueDate,
+  returnDate,
 }: Book) => {
+  const isLoanedBook = status === "BORROWED" ? true : false;
+
+  const remainingDays = dayjs(dueDate).diff(dayjs(), "days");
+
   return (
     <li className={cn(isLoanedBook && "xs:w-52 w-full")}>
       <Link
@@ -29,6 +37,21 @@ const BookCard = ({
         </div>
         {isLoanedBook && (
           <div className="mt-3 w-full">
+            {borrowDate && (
+              <div className="book-loaned mb-2">
+                <Image
+                  src="/icons/book-2.svg"
+                  alt="book"
+                  width={18}
+                  height={18}
+                  className="object-contain"
+                />
+                <p className="text-light-100">
+                  Borrowed on {dayjs(borrowDate).format("MMM DD")}
+                </p>
+              </div>
+            )}
+
             <div className="book-loaned">
               <Image
                 src="/icons/calendar.svg"
@@ -38,10 +61,22 @@ const BookCard = ({
                 className="object-contain"
               />
 
-              <p className="text-light-100">11 days left</p>
-            </div>
+              {remainingDays <= 0 ? (
+                <p className="text-light-100">Overdue</p>
+              ) : (
+                <p className="text-light-100">{remainingDays} days left</p>
+              )}
 
-            <Button className="book-btn">Download Receipt</Button>
+              {/* <button className="flex w-fit">
+                <Image
+                  src="/icons/receipt.svg"
+                  alt="receipt"
+                  width={18}
+                  height={18}
+                  className="object-contain"
+                />
+              </button> */}
+            </div>
           </div>
         )}
       </Link>

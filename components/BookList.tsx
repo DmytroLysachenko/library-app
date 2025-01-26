@@ -24,9 +24,9 @@ const BookList = ({
       </div>
 
       <ul className="book-list">
-        {books.map((book) => (
+        {books.map((book, index) => (
           <BookCard
-            key={book.title}
+            key={book.title + index}
             {...book}
           />
         ))}
