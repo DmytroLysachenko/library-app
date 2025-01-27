@@ -30,3 +30,29 @@ export const getSortingOrder = (sortValue?: string) => {
       return desc(books.createdAt);
   }
 };
+
+export const getUserStatusIcon = (
+  status: "APPROVED" | "PENDING" | "REJECTED" | null
+) => {
+  switch (status) {
+    case "APPROVED":
+      return "/icons/verified.svg";
+    case "REJECTED":
+      return "/icons/warning.svg";
+    default:
+      return "/icons/clock.svg";
+  }
+};
+
+export const getUserStatusLabel = (
+  status: "APPROVED" | "PENDING" | "REJECTED" | null
+) => {
+  switch (status) {
+    case "APPROVED":
+      return "Verified Student";
+    case "REJECTED":
+      return "Account rejected, contact admin";
+    default:
+      return "Status Pending";
+  }
+};

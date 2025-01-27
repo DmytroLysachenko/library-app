@@ -4,7 +4,6 @@ import BookCover from "./BookCover";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import dayjs from "dayjs";
-import { Button } from "./ui/button";
 
 const BookCard = ({
   id,
@@ -18,23 +17,37 @@ const BookCard = ({
   returnDate,
 }: Book) => {
   const isLoanedBook = status === "BORROWED" ? true : false;
-
+  console.log(isLoanedBook);
   const remainingDays = dayjs(dueDate).diff(dayjs(), "days");
 
   return (
     <li className={cn(isLoanedBook && "xs:w-52 w-full")}>
       <Link
         href={`/books/${id}`}
-        className={cn(isLoanedBook && "w-full flex flex-col items-center")}
+        className={cn(
+          isLoanedBook && "w-full flex flex-col items-center relative"
+        )}
       >
+        {remainingDays <= 0 && (
+          <Image
+            src="/icons/warning.svg"
+            alt="warning"
+            width={20}
+            height={20}
+            className="absolute -top-3 left-1"
+          />
+        )}
+
         <BookCover
           coverColor={coverColor}
           coverUrl={coverUrl}
         />
+
         <div className={cn("mt-4", !isLoanedBook && "xs:max-w-40 max-w-28")}>
           <p className="book-title">{title}</p>
           <p className="book-genre">{genre}</p>
         </div>
+
         {isLoanedBook && (
           <div className="mt-3 w-full">
             {borrowDate && (
@@ -54,15 +67,19 @@ const BookCard = ({
 
             <div className="book-loaned">
               <Image
-                src="/icons/calendar.svg"
-                alt="calendar"
+                src={
+                  remainingDays <= 0
+                    ? "/icons/warning.svg"
+                    : "/icons/calendar.svg"
+                }
+                alt={remainingDays <= 0 ? "warning" : "calendar"}
                 width={18}
                 height={18}
                 className="object-contain"
               />
 
               {remainingDays <= 0 ? (
-                <p className="text-light-100">Overdue</p>
+                <p className="text-[#FF6C6F]">Overdue</p>
               ) : (
                 <p className="text-light-100">{remainingDays} days left</p>
               )}

@@ -6,6 +6,13 @@ import { BookOpen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { borrowBook } from "@/lib/actions/book";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface BorrowBookProps {
   bookId: string;
@@ -56,14 +63,42 @@ const BorrowBook = ({
     }
   };
   return (
-    <Button
-      className="book-overview_btn"
-      onClick={handleBorrow}
-      disabled={borrowing}
-    >
-      <BookOpen size={20} />
-      <p className="font-bebas-neue text-xl text-dark-100">Borrow Book</p>
-    </Button>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger
+          className={cn(
+            "w-fit",
+            borrowingEligibility.isEligible
+              ? "cursor-pointer"
+              : "cursor-not-allowed"
+          )}
+        >
+          <Button
+            className={"book-overview_btn"}
+            onClick={handleBorrow}
+            disabled={borrowing || !borrowingEligibility.isEligible}
+          >
+            <BookOpen size={20} />
+            <p className="font-bebas-neue text-xl text-dark-100">Borrow book</p>
+          </Button>
+        </TooltipTrigger>
+
+        <TooltipContent>
+          <p
+            className={cn(
+              " text-lg",
+              borrowingEligibility.isEligible
+                ? "text-dark-100"
+                : "text-[#FF6C6F]"
+            )}
+          >
+            {borrowingEligibility.isEligible
+              ? "Borrow book"
+              : borrowingEligibility.message}
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 

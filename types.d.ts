@@ -18,6 +18,19 @@ interface Book {
   status?: "BORROWED" | "RETURNED";
 }
 
+interface User {
+  status: "PENDING" | "APPROVED" | "REJECTED" | null;
+  role: "USER" | "ADMIN" | null;
+  id: string;
+  fullName: string;
+  email: string;
+  universityId: number;
+  password: string;
+  universityCard: string;
+  lastActivityDate: string | null;
+  createdAt: Date | null;
+}
+
 interface AuthCredentials {
   fullName: string;
   email: string;

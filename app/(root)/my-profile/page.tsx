@@ -3,11 +3,9 @@ import { eq } from "drizzle-orm";
 
 import { auth } from "@/auth";
 import BookList from "@/components/BookList";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { db } from "@/db/drizzle";
 import { books, borrowRecords, users } from "@/db/schema";
-import { getInitials } from "@/lib/utils";
-import Image from "next/image";
+import UserInformation from "@/components/UserInformation";
 
 const page = async () => {
   const session = await auth();
@@ -44,34 +42,9 @@ const page = async () => {
     .leftJoin(books, eq(borrowRecords.bookId, books.id))
     .where(eq(borrowRecords.userId, session?.user?.id as string))) as Book[];
 
-  const isApproved = user.status === "APPROVED";
-
   return (
-    <div className="flex flex-col md:flex-row justify-between gap-10">
-      <section className="gradient-vertical p-5 rounded-lg w-full md:w-[calc(60%)]">
-        <div className="flex gap-6">
-          <Avatar>
-            <AvatarFallback className="bg-amber-100 w-full">
-              {getInitials(session?.user?.name || "IN")}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="text-white flex ">
-              <Image
-                src={isApproved ? "/icons/verified.svg" : "/icons/warning.svg"}
-                alt="status"
-                width={18}
-                height={18}
-              />
-              {user.status === "APPROVED"
-                ? "Verified Student"
-                : "Status Pending"}
-            </p>
-            <p className="text-white">{user.fullName}</p>
-            <p>{user.email}</p>
-          </div>
-        </div>
-      </section>
+    <div className="flex flex-col md:flex-row justify-evenly gap-10">
+      <UserInformation user={user} />
       <BookList
         title="Borrowed Books"
         books={borrowedBooks}
