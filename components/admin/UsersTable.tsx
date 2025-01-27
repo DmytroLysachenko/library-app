@@ -9,8 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getInitials } from "@/lib/utils";
 import dayjs from "dayjs";
 import {
   Select,
@@ -25,6 +23,7 @@ import config from "@/lib/config";
 import { changeUserRole, deleteUser } from "@/lib/admin/actions/users";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
+import UserAvatar from "../UserAvatar";
 
 const UsersTable = ({ users }: { users: User[] }) => {
   return (
@@ -43,102 +42,107 @@ const UsersTable = ({ users }: { users: User[] }) => {
         </TableHeader>
         <TableBody>
           {users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  <Avatar>
-                    <AvatarImage
-                      src={
-                        user.avatar
-                          ? config.env.imagekit.urlEndpoint + user.avatar
-                          : undefined
-                      }
-                    />
-                    <AvatarFallback className="bg-amber-100 w-full">
-                      {getInitials(user.fullName) || "IN"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col">
-                    <span className="font-medium">{user.fullName}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {user.email}
-                    </span>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>
-                {dayjs(user.createdAt).format("DD/MM/YYYY")}
-              </TableCell>
-              <TableCell>
-                <Select
-                  defaultValue={user.role || "USER"}
-                  onValueChange={async (value: "USER" | "ADMIN") => {
-                    try {
-                      await changeUserRole(user.id, value);
-                      toast({
-                        title: "Success",
-                        description: "User role changed successfully",
-                      });
-                    } catch (error) {
-                      console.log(error);
-                      toast({
-                        title: "Error",
-                        description: "An error occurred. Please try again.",
-                        variant: "destructive",
-                      });
-                      window.location.reload();
-                    }
-                  }}
-                >
-                  <SelectTrigger
-                    className={`w-24 ${user.role === "ADMIN" ? "text-green-500" : "text-rose-500"}`}
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="USER">
-                      <span className="text-rose-500">User</span>
-                    </SelectItem>
-                    <SelectItem value="ADMIN">
-                      <span className="text-green-500">Admin</span>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </TableCell>
-              <TableCell>{user.borrowedBooks}</TableCell>
-              <TableCell>{user.universityId}</TableCell>
-              <TableCell>
-                <Button
-                  variant="link"
-                  className="px-0 text-blue-500"
-                  asChild
-                >
-                  <Link
-                    href={config.env.imagekit.urlEndpoint + user.universityCard}
-                    target="_blank"
-                  >
-                    View ID Card <ExternalLink className="h-4 w-4 ml-1" />
-                  </Link>
-                </Button>
-              </TableCell>
-              <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={async () => {
-                    await deleteUser(user.id!);
-                    window.location.reload();
-                  }}
-                >
-                  <Trash2 className="h-4 w-4 text-red-500" />
-                </Button>
-              </TableCell>
-            </TableRow>
+            <UserRecord
+              key={user.id}
+              user={user}
+            />
           ))}
         </TableBody>
       </Table>
     </div>
+  );
+};
+
+const UserRecord = ({ user }: { user: User }) => {
+  const [isChangingStatus, setIsChangingStatus] = React.useState(false);
+  const [userRole, setUserRole] = React.useState(user.role);
+  return (
+    <TableRow key={user.id}>
+      <TableCell>
+        <div className="flex items-center gap-3">
+          <UserAvatar
+            avatarUrl={user.avatar}
+            fullName={user.fullName}
+            className="w-12 h-12"
+          />
+          <div className="flex flex-col">
+            <span className="font-medium">{user.fullName}</span>
+            <span className="text-sm text-muted-foreground">{user.email}</span>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell>{dayjs(user.createdAt).format("DD/MM/YYYY")}</TableCell>
+      <TableCell>
+        <Select
+          value={userRole}
+          disabled={isChangingStatus}
+          onValueChange={async (value: "USER" | "ADMIN") => {
+            try {
+              setIsChangingStatus(true);
+              await changeUserRole(user.id, value);
+              toast({
+                title: "Success",
+                description: "User role changed successfully",
+              });
+              setUserRole(value);
+            } catch (error) {
+              console.log(error);
+              toast({
+                title: "Error",
+                description: "An error occurred. Please try again.",
+                variant: "destructive",
+              });
+              setUserRole(user.role);
+            } finally {
+              setIsChangingStatus(false);
+            }
+          }}
+        >
+          <SelectTrigger
+            className={`w-24 ${user.role === "ADMIN" ? "text-green-500" : "text-rose-500"}`}
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="USER">
+              <span className="text-rose-500">User</span>
+            </SelectItem>
+            <SelectItem value="ADMIN">
+              <span className="text-green-500">Admin</span>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </TableCell>
+      <TableCell>{user.borrowedBooks}</TableCell>
+      <TableCell>{user.universityId}</TableCell>
+      <TableCell>
+        <Button
+          variant="link"
+          className="px-0 text-blue-500"
+          asChild
+        >
+          <Link
+            href={config.env.imagekit.urlEndpoint + user.universityCard}
+            target="_blank"
+          >
+            View ID Card <ExternalLink className="h-4 w-4 ml-1" />
+          </Link>
+        </Button>
+      </TableCell>
+      <TableCell className="text-right">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={async () => {
+            await deleteUser(user.id!);
+            window.location.reload();
+          }}
+        >
+          <Trash2 className="h-4 w-4 text-red-500" />
+        </Button>
+      </TableCell>
+    </TableRow>
   );
 };
 

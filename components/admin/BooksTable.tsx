@@ -11,11 +11,10 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
-import { IKImage } from "imagekitio-next";
-import config from "@/lib/config";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { deleteBook } from "@/lib/admin/actions/books";
+import BookCover from "../BookCover";
 
 const BooksTable = ({ books }: { books: Book[] }) => {
   return (
@@ -36,16 +35,12 @@ const BooksTable = ({ books }: { books: Book[] }) => {
               <TableRow key={book.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="relative w-8 h-10">
-                      <IKImage
-                        urlEndpoint={config.env.imagekit.urlEndpoint}
-                        path={book.coverUrl}
-                        alt={book.title}
-                        width={40}
-                        height={60}
-                        className="object-cover rounded"
-                      />
-                    </div>
+                    <BookCover
+                      coverUrl={book.coverUrl}
+                      variant="small"
+                      coverColor={book.coverColor}
+                    />
+
                     <span className="font-medium">{book.title}</span>
                   </div>
                 </TableCell>

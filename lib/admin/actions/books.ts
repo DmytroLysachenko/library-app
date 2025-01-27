@@ -12,11 +12,12 @@ export const createBook = async (params: BookParams) => {
         ...params,
         availableCopies: params.totalCopies,
       })
-      .returning();
+      .returning()
+      .then((res) => res[0]);
 
     return {
       success: true,
-      data: JSON.parse(JSON.stringify(newBook[0])),
+      data: JSON.parse(JSON.stringify(newBook)),
     };
   } catch (error) {
     console.log(error);
@@ -34,11 +35,12 @@ export const editBook = async (bookId: string, params: BookParams) => {
       .update(books)
       .set(params)
       .where(eq(books.id, bookId))
-      .returning();
+      .returning()
+      .then((res) => res[0]);
 
     return {
       success: true,
-      data: JSON.parse(JSON.stringify(newBook[0])),
+      data: JSON.parse(JSON.stringify(newBook)),
     };
   } catch (error) {
     console.log(error);

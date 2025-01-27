@@ -13,11 +13,12 @@ export const changeUserRole = async (
       .update(users)
       .set({ role: newRole })
       .where(eq(users.id, userId))
-      .returning();
+      .returning()
+      .then((res) => res[0]);
 
     return {
       success: true,
-      data: JSON.parse(JSON.stringify(user[0])),
+      data: JSON.parse(JSON.stringify(user)),
     };
   } catch (error) {
     console.log(error);

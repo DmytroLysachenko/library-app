@@ -4,24 +4,11 @@ import React from "react";
 import Image from "next/image";
 import { IKImage } from "imagekitio-next";
 
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import {
-  cn,
-  getInitials,
-  getUserStatusIcon,
-  getUserStatusLabel,
-} from "@/lib/utils";
+import { cn, getUserStatusIcon, getUserStatusLabel } from "@/lib/utils";
 import { Card, CardContent } from "./ui/card";
 import config from "@/lib/config";
 import FileUpload from "./FileUpload";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
 import { useForm } from "react-hook-form";
 import { userUpdateSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +16,7 @@ import { z } from "zod";
 import { Button } from "./ui/button";
 import { uploadAvatar } from "@/lib/actions/auth";
 import { toast } from "@/hooks/use-toast";
+import UserAvatar from "./UserAvatar";
 
 const UserInformation = ({ user }: { user: User }) => {
   const form = useForm<z.infer<typeof userUpdateSchema>>({
@@ -58,8 +46,8 @@ const UserInformation = ({ user }: { user: User }) => {
   return (
     <section className="w-full max-w-md space-y-6">
       <div className="relative">
-        <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-dark-700 h-16 w-12 rounded-lg flex items-end justify-center p-3 rounded-b-full">
-          <div className="w-8 h-2 gradient-vertical rounded-lg" />
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-dark-700 h-14 w-12 rounded-lg flex items-end justify-center p-2 rounded-b-full">
+          <div className="w-6 h-2 gradient-vertical rounded-lg" />
         </div>
       </div>
 
@@ -67,18 +55,11 @@ const UserInformation = ({ user }: { user: User }) => {
         <CardContent className="py-10 px-6 space-y-6">
           <div className="flex items-center gap-3">
             <div className="bg-dark-600/10 p-2 rounded-full">
-              <Avatar className="w-16 h-16 ">
-                <AvatarImage
-                  src={
-                    user.avatar
-                      ? config.env.imagekit.urlEndpoint + user.avatar
-                      : undefined
-                  }
-                />
-                <AvatarFallback className="bg-amber-100 w-full">
-                  {getInitials(user.fullName) || "IN"}
-                </AvatarFallback>
-              </Avatar>
+              <UserAvatar
+                avatarUrl={user.avatar}
+                fullName={user.fullName}
+                className="w-12 h-12"
+              />
             </div>
             <div>
               <div
@@ -129,7 +110,12 @@ const UserInformation = ({ user }: { user: User }) => {
                   </FormItem>
                 )}
               />
-              <Button className="absolute right-2 bottom-0 ">Confirm</Button>
+              <Button
+                className="absolute right-2 bottom-0 "
+                disabled={!form.getFieldState("avatar").isDirty}
+              >
+                Confirm
+              </Button>
             </form>
           </Form>
 

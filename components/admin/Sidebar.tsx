@@ -1,13 +1,13 @@
 "use client";
 
 import { adminSideBarLinks } from "@/constants";
-import { cn, getInitials } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { Avatar, AvatarFallback } from "../ui/avatar";
 import { ArrowLeft } from "lucide-react";
+import UserAvatar from "../UserAvatar";
 
 const Sidebar = ({ user }: { user: Partial<User> }) => {
   const pathname = usePathname();
@@ -60,7 +60,7 @@ const Sidebar = ({ user }: { user: Partial<User> }) => {
           })}
         </div>
       </div>
-      <Link
+      {/* <Link
         href={"/"}
         key={"back-home"}
       >
@@ -70,13 +70,13 @@ const Sidebar = ({ user }: { user: Partial<User> }) => {
           </div>
           <p className={"text-dark"}>Go Back to Home page</p>
         </div>
-      </Link>
+      </Link> */}
       <div className="user">
-        <Avatar>
-          <AvatarFallback className="bg-amber-100">
-            {getInitials(user.fullName || "I N")}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar
+          avatarUrl={user.avatar}
+          fullName={user.fullName}
+          className="w-12 h-12"
+        />
         <div className="flex flex-col max-md:hidden">
           <p className="font-semibold text-dark-200">{user?.fullName}</p>
           <p className="text-light-500 text-xs">{user?.email}</p>

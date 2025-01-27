@@ -11,7 +11,7 @@ interface Book {
   coverUrl: string;
   videoUrl: string;
   summary: string;
-  createdAt: Date | null;
+  createdAt: Date;
   borrowDate?: Date | null;
   dueDate?: string;
   returnDate?: string | null;
@@ -20,7 +20,7 @@ interface Book {
 
 interface User {
   status: "PENDING" | "APPROVED" | "REJECTED" | null;
-  role: "USER" | "ADMIN" | null;
+  role: "USER" | "ADMIN";
   id: string;
   fullName: string;
   email: string;
@@ -28,7 +28,7 @@ interface User {
   password: string;
   universityCard: string;
   lastActivityDate: string | null;
-  createdAt: Date | null;
+  createdAt: Date;
   avatar: string | null;
   borrowedBooks: number;
 }
@@ -57,4 +57,16 @@ interface BookParams {
 interface BorrowBookParams {
   bookId: string;
   userId: string;
+}
+
+interface BorrowRecord {
+  id: string;
+  bookId: string;
+  userId: string;
+  createdAt: Date;
+  dueDate: Date;
+  returnDate: Date | null;
+  status: "BORROWED" | "RETURNED";
+  user: User;
+  book: Book;
 }

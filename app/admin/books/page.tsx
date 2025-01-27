@@ -1,18 +1,8 @@
 import BooksTable from "@/components/admin/BooksTable";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { db } from "@/db/drizzle";
 import { books } from "@/db/schema";
 import { getSortingOrder } from "@/lib/utils";
-import { Pencil, Trash2 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 

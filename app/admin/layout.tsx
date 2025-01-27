@@ -14,12 +14,17 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 
   if (!session?.user?.id) redirect("/sign-in");
 
-  const user = await db
-    .select({ role: users.role, fullName: users.fullName, email: users.email })
+  const user = (await db
+    .select({
+      role: users.role,
+      avatar: users.avatar,
+      fullName: users.fullName,
+      email: users.email,
+    })
     .from(users)
     .where(eq(users.id, session?.user!.id!))
     .limit(1)
-    .then((res) => res[0]);
+    .then((res) => res[0])) as Partial<User>;
 
   if (user.role !== "ADMIN") redirect("/");
 

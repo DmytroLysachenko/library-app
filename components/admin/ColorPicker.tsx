@@ -9,7 +9,7 @@ interface ColorPickerProps {
 const ColorPicker = ({ value, onPickerChange }: ColorPickerProps) => {
   return (
     <div className="relative">
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-center justify-center mb-4">
         <p>#</p>
         <HexColorInput
           color={value}

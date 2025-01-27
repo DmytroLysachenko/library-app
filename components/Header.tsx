@@ -7,8 +7,7 @@ import React from "react";
 import { LogOut } from "lucide-react";
 import { signOutAction } from "@/lib/actions/auth";
 import { redirect, usePathname } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import config from "@/lib/config";
+import UserAvatar from "./UserAvatar";
 
 const Header = ({ user }: { user: Partial<User> }) => {
   const pathname = usePathname();
@@ -64,19 +63,10 @@ const Header = ({ user }: { user: Partial<User> }) => {
             className="flex items-center gap-2"
             href={"/my-profile"}
           >
-            <Avatar>
-              <AvatarImage
-                src={
-                  user.avatar
-                    ? config.env.imagekit.urlEndpoint + user.avatar
-                    : undefined
-                }
-              />
-              <AvatarFallback className="bg-amber-100">
-                {getInitials(user.fullName || "IN")}
-              </AvatarFallback>
-            </Avatar>
-
+            <UserAvatar
+              avatarUrl={user.avatar}
+              fullName={user.fullName}
+            />
             <p className="text-white">{user?.fullName?.split(" ")[0]}</p>
           </Link>
         </li>
