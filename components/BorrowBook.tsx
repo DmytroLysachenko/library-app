@@ -72,6 +72,7 @@ const BorrowBook = ({
               ? "cursor-pointer"
               : "cursor-not-allowed"
           )}
+          asChild
         >
           <Button
             className={"book-overview_btn"}

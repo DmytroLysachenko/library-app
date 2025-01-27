@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { IKImage } from "imagekitio-next";
 
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   cn,
   getInitials,
@@ -13,8 +13,48 @@ import {
 } from "@/lib/utils";
 import { Card, CardContent } from "./ui/card";
 import config from "@/lib/config";
+import FileUpload from "./FileUpload";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
+import { useForm } from "react-hook-form";
+import { userUpdateSchema } from "@/lib/validations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "./ui/button";
+import { uploadAvatar } from "@/lib/actions/auth";
+import { toast } from "@/hooks/use-toast";
 
 const UserInformation = ({ user }: { user: User }) => {
+  const form = useForm<z.infer<typeof userUpdateSchema>>({
+    resolver: zodResolver(userUpdateSchema),
+    defaultValues: {
+      avatar: user.avatar || "",
+    },
+  });
+
+  const onAvatarSubmit = async (values: z.infer<typeof userUpdateSchema>) => {
+    const result = await uploadAvatar(user.id, values.avatar);
+
+    if (result.success) {
+      toast({
+        title: "Success",
+        description: "Avatar updated successfully",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: result.error,
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <section className="w-full max-w-md space-y-6">
       <div className="relative">
@@ -23,13 +63,20 @@ const UserInformation = ({ user }: { user: User }) => {
         </div>
       </div>
 
-      <Card className=" border-0 border-dashed border-slate-700 gradient-vertical">
+      <Card className=" border-0 gradient-vertical w-full">
         <CardContent className="py-10 px-6 space-y-6">
           <div className="flex items-center gap-3">
             <div className="bg-dark-600/10 p-2 rounded-full">
               <Avatar className="w-16 h-16 ">
+                <AvatarImage
+                  src={
+                    user.avatar
+                      ? config.env.imagekit.urlEndpoint + user.avatar
+                      : undefined
+                  }
+                />
                 <AvatarFallback className="bg-amber-100 w-full">
-                  {getInitials(user.fullName || "IN")}
+                  {getInitials(user.fullName) || "IN"}
                 </AvatarFallback>
               </Avatar>
             </div>
@@ -56,6 +103,35 @@ const UserInformation = ({ user }: { user: User }) => {
               <p className="text-sm text-slate-400">{user.email}</p>
             </div>
           </div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onAvatarSubmit)}
+              className="space-y-8 w-full relative"
+            >
+              <FormField
+                control={form.control}
+                name={"avatar"}
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-1">
+                    <FormControl>
+                      <FileUpload
+                        type="image"
+                        accept="image/*"
+                        placeholder="Upload an Avatar"
+                        folder="user/avatars"
+                        variant="dark"
+                        onFileChange={field.onChange}
+                        value={field.value}
+                        size={60}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button className="absolute right-2 bottom-0 ">Confirm</Button>
+            </form>
+          </Form>
 
           <div className="space-y-2">
             <p className="text-sm text-slate-400">University</p>

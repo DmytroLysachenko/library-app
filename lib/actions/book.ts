@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db/drizzle";
-import { books, borrowRecords } from "@/db/schema";
+import { books, borrowRecords, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import dayjs from "dayjs";
 
@@ -19,6 +19,12 @@ export const borrowBook = async (params: BorrowBookParams) => {
       return { success: false, error: "Book is not available" };
     }
 
+    const [user] = await db
+      .select({ borrowedBooks: users.borrowedBooks })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
     const dueDate = dayjs().add(7, "day").toDate().toDateString();
 
     const record = await db.insert(borrowRecords).values({
@@ -33,6 +39,13 @@ export const borrowBook = async (params: BorrowBookParams) => {
       .set({ availableCopies: book[0].availableCopies - 1 })
       .where(eq(books.id, bookId));
 
+    await db
+      .update(users)
+      .set({
+        lastActivityDate: new Date().toISOString().slice(0, 10),
+        borrowedBooks: user.borrowedBooks + 1,
+      })
+      .where(eq(users.id, userId));
     return { success: true, data: JSON.parse(JSON.stringify(record)) };
   } catch (error) {
     console.log(error);

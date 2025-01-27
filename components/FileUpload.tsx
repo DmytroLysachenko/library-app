@@ -15,6 +15,7 @@ interface FileUploadProps {
   variant: "dark" | "light";
   onFileChange: (filePath: string) => void;
   value?: string;
+  size?: number;
 }
 
 const {
@@ -53,6 +54,7 @@ const FileUpload = ({
   folder,
   variant,
   value,
+  size = 400,
 }: FileUploadProps) => {
   const ikUploadRef = useRef(null);
   const [progress, setProgress] = useState(0);
@@ -150,9 +152,6 @@ const FileUpload = ({
           className="object-contain"
         />
         <p className={cn("text-base", styles.placeholder)}>{placeholder}</p>
-        {file && (
-          <p className={cn("upload-filename", styles.text)}>{file.filePath}</p>
-        )}
       </button>
 
       {progress > 0 && progress !== 100 && (
@@ -171,8 +170,8 @@ const FileUpload = ({
           <IKImage
             alt={file.filePath || "image preview"}
             path={file.filePath ?? undefined}
-            width={500}
-            height={300}
+            width={size}
+            height={size}
             className="object-contain"
           />
         ) : type === "video" ? (

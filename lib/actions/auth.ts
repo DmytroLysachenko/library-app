@@ -87,3 +87,18 @@ export const signOutAction = async () => {
     return { success: false, error: "Signout error" };
   }
 };
+
+export const uploadAvatar = async (userId: string, avatarUrl: string) => {
+  try {
+    const updatedUser = await db
+      .update(users)
+      .set({ avatar: avatarUrl })
+      .where(eq(users.id, userId))
+      .returning();
+
+    return { success: true, updatedUser };
+  } catch (error) {
+    console.log(error, "Avatar update error");
+    return { success: false, error: "Avatar update error" };
+  }
+};

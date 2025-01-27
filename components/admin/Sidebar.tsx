@@ -7,9 +7,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { Session } from "next-auth";
+import { ArrowLeft } from "lucide-react";
 
-const Sidebar = ({ session }: { session: Session }) => {
+const Sidebar = ({ user }: { user: Partial<User> }) => {
   const pathname = usePathname();
 
   return (
@@ -60,15 +60,26 @@ const Sidebar = ({ session }: { session: Session }) => {
           })}
         </div>
       </div>
+      <Link
+        href={"/"}
+        key={"back-home"}
+      >
+        <div className="link">
+          <div className="relative size-5">
+            <ArrowLeft />
+          </div>
+          <p className={"text-dark"}>Go Back to Home page</p>
+        </div>
+      </Link>
       <div className="user">
         <Avatar>
           <AvatarFallback className="bg-amber-100">
-            {getInitials(session?.user?.name || "IN")}
+            {getInitials(user.fullName || "I N")}
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col max-md:hidden">
-          <p className="font-semibold text-dark-200">{session.user?.name}</p>
-          <p className="text-light-500 text-xs">{session.user?.email}</p>
+          <p className="font-semibold text-dark-200">{user?.fullName}</p>
+          <p className="text-light-500 text-xs">{user?.email}</p>
         </div>
       </div>
     </div>

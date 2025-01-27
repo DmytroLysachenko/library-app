@@ -28,7 +28,7 @@ const BookCard = ({
           isLoanedBook && "w-full flex flex-col items-center relative"
         )}
       >
-        {remainingDays <= 0 && (
+        {remainingDays <= 0 && isLoanedBook && (
           <Image
             src="/icons/warning.svg"
             alt="warning"

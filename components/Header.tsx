@@ -4,14 +4,13 @@ import { cn, getInitials } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-// import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Session } from "next-auth";
 import { LogOut } from "lucide-react";
 import { signOutAction } from "@/lib/actions/auth";
 import { redirect, usePathname } from "next/navigation";
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import config from "@/lib/config";
 
-const Header = ({ session }: { session: Session }) => {
+const Header = ({ user }: { user: Partial<User> }) => {
   const pathname = usePathname();
 
   return (
@@ -47,18 +46,38 @@ const Header = ({ session }: { session: Session }) => {
             Search
           </Link>
         </li>
+        {user.role === "ADMIN" && (
+          <li>
+            <Link
+              className={cn(
+                "text-xl hover:text-amber-200",
+                pathname === "/admin" ? "text-amber-100" : "text-white"
+              )}
+              href="/admin"
+            >
+              Admin Console
+            </Link>
+          </li>
+        )}
         <li>
           <Link
             className="flex items-center gap-2"
             href={"/my-profile"}
           >
             <Avatar>
+              <AvatarImage
+                src={
+                  user.avatar
+                    ? config.env.imagekit.urlEndpoint + user.avatar
+                    : undefined
+                }
+              />
               <AvatarFallback className="bg-amber-100">
-                {getInitials(session?.user?.name || "IN")}
+                {getInitials(user.fullName || "IN")}
               </AvatarFallback>
             </Avatar>
 
-            <p className="text-white">{session.user?.name?.split(" ")[0]}</p>
+            <p className="text-white">{user?.fullName?.split(" ")[0]}</p>
           </Link>
         </li>
         <li>

@@ -29,6 +29,8 @@ interface User {
   universityCard: string;
   lastActivityDate: string | null;
   createdAt: Date | null;
+  avatar: string | null;
+  borrowedBooks: number;
 }
 
 interface AuthCredentials {
