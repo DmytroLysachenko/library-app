@@ -18,6 +18,20 @@ interface Book {
   status?: "BORROWED" | "RETURNED";
 }
 
+interface BookCard
+  extends Pick<
+    Book,
+    | "id"
+    | "title"
+    | "genre"
+    | "coverColor"
+    | "coverUrl"
+    | "status"
+    | "borrowDate"
+    | "dueDate"
+    | "returnDate"
+  > {}
+
 interface User {
   status: "PENDING" | "APPROVED" | "REJECTED";
   role: "USER" | "ADMIN";

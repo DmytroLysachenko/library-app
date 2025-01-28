@@ -5,7 +5,7 @@ import SortSelector from "./SortSelector";
 
 interface BookListProps {
   title: string;
-  books: Book[];
+  books: BookCard[];
   containerClassName?: string;
   isSearch?: boolean;
 }

@@ -17,6 +17,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     .from(books)
     .where(eq(books.id, id))
     .limit(1);
+
   if (!bookDetails) redirect("/404");
 
   const latestBooks = (await db

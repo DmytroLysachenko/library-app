@@ -31,7 +31,9 @@ const page = async () => {
     })
     .from(borrowRecords)
     .leftJoin(books, eq(borrowRecords.bookId, books.id))
-    .where(eq(borrowRecords.userId, session?.user?.id as string))) as Book[];
+    .where(
+      eq(borrowRecords.userId, session?.user?.id as string)
+    )) as BookCard[];
 
   return (
     <div className="flex flex-col md:flex-row justify-evenly gap-10">

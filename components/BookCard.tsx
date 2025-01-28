@@ -15,10 +15,10 @@ const BookCard = ({
   borrowDate,
   dueDate,
   returnDate,
-}: Book) => {
+}: BookCard) => {
   const isLoanedBook = Boolean(status);
   const isReturnedBook = status === "RETURNED";
-  console.log(isLoanedBook);
+
   const remainingDays = dayjs(dueDate).diff(dayjs(), "days");
 
   return (
@@ -29,7 +29,7 @@ const BookCard = ({
           isLoanedBook && "w-full flex flex-col items-center relative"
         )}
       >
-        {remainingDays <= 0 && !isReturnedBook && (
+        {isLoanedBook && !isReturnedBook && remainingDays <= 0 && (
           <Image
             src="/icons/warning.svg"
             alt="warning"
