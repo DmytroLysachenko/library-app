@@ -17,15 +17,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { ExternalLink, Trash2 } from "lucide-react";
+import { CircleX, ExternalLink, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import config from "@/lib/config";
-import { changeUserRole, deleteUser } from "@/lib/admin/actions/users";
+import {
+  approveUser,
+  changeUserRole,
+  deleteUser,
+  rejectUser,
+} from "@/lib/admin/actions/users";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
+import Image from "next/image";
 
-const UsersTable = ({ users }: { users: User[] }) => {
+const UsersTable = ({
+  users,
+  type,
+}: {
+  users: User[];
+  type: "users" | "requests";
+}) => {
+  const isUsersTable = type === "users";
+
   return (
     <div className="rounded-md border mt-7">
       <Table>
@@ -33,11 +47,16 @@ const UsersTable = ({ users }: { users: User[] }) => {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Date Joined</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Books Borrowed</TableHead>
+            {isUsersTable && (
+              <>
+                <TableHead>Role</TableHead>
+                <TableHead>Books Borrowed</TableHead>
+              </>
+            )}
             <TableHead>University ID No</TableHead>
             <TableHead>University ID Card</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+
+            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -45,6 +64,7 @@ const UsersTable = ({ users }: { users: User[] }) => {
             <UserRecord
               key={user.id}
               user={user}
+              isUsersTable={isUsersTable}
             />
           ))}
         </TableBody>
@@ -53,7 +73,13 @@ const UsersTable = ({ users }: { users: User[] }) => {
   );
 };
 
-const UserRecord = ({ user }: { user: User }) => {
+const UserRecord = ({
+  user,
+  isUsersTable,
+}: {
+  user: User;
+  isUsersTable: boolean;
+}) => {
   const [isChangingStatus, setIsChangingStatus] = React.useState(false);
   const [userRole, setUserRole] = React.useState(user.role);
   return (
@@ -72,48 +98,55 @@ const UserRecord = ({ user }: { user: User }) => {
         </div>
       </TableCell>
       <TableCell>{dayjs(user.createdAt).format("DD/MM/YYYY")}</TableCell>
-      <TableCell>
-        <Select
-          value={userRole}
-          disabled={isChangingStatus}
-          onValueChange={async (value: "USER" | "ADMIN") => {
-            try {
-              setIsChangingStatus(true);
-              await changeUserRole(user.id, value);
-              toast({
-                title: "Success",
-                description: "User role changed successfully",
-              });
-              setUserRole(value);
-            } catch (error) {
-              console.log(error);
-              toast({
-                title: "Error",
-                description: "An error occurred. Please try again.",
-                variant: "destructive",
-              });
-              setUserRole(user.role);
-            } finally {
-              setIsChangingStatus(false);
-            }
-          }}
-        >
-          <SelectTrigger
-            className={`w-24 ${user.role === "ADMIN" ? "text-green-500" : "text-rose-500"}`}
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="USER">
-              <span className="text-rose-500">User</span>
-            </SelectItem>
-            <SelectItem value="ADMIN">
-              <span className="text-green-500">Admin</span>
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </TableCell>
-      <TableCell>{user.borrowedBooks}</TableCell>
+      {isUsersTable && (
+        <>
+          <TableCell>
+            <Select
+              value={userRole}
+              disabled={isChangingStatus}
+              onValueChange={async (value: "USER" | "ADMIN") => {
+                try {
+                  setIsChangingStatus(true);
+                  await changeUserRole(user.id, value);
+                  toast({
+                    title: "Success",
+                    description: "User role changed successfully",
+                  });
+                  setUserRole(value);
+                } catch (error) {
+                  console.log(error);
+                  toast({
+                    title: "Error",
+                    description: "An error occurred. Please try again.",
+                    variant: "destructive",
+                  });
+                  setUserRole(user.role);
+                } finally {
+                  setIsChangingStatus(false);
+                }
+              }}
+            >
+              <SelectTrigger
+                className={`w-24 ${user.role === "ADMIN" ? "text-green-500" : "text-rose-500"}`}
+              >
+                <SelectValue />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value="USER">
+                  <span className="text-rose-500">User</span>
+                </SelectItem>
+
+                <SelectItem value="ADMIN">
+                  <span className="text-green-500">Admin</span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </TableCell>
+
+          <TableCell>{user.borrowedBooks}</TableCell>
+        </>
+      )}
       <TableCell>{user.universityId}</TableCell>
       <TableCell>
         <Button
@@ -129,17 +162,48 @@ const UserRecord = ({ user }: { user: User }) => {
           </Link>
         </Button>
       </TableCell>
-      <TableCell className="text-right">
+
+      <TableCell className="flex justify-between items-center">
+        {!isUsersTable && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-right text-green-700"
+            onClick={async () => {
+              await approveUser(user.id!);
+              window.location.reload();
+            }}
+          >
+            Approve User
+          </Button>
+        )}
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8"
+          className="h-10 w-10 text-right"
           onClick={async () => {
-            await deleteUser(user.id!);
+            if (isUsersTable) {
+              await deleteUser(user.id!);
+            } else {
+              await rejectUser(user.id!);
+            }
+
             window.location.reload();
           }}
         >
-          <Trash2 className="h-4 w-4 text-red-500" />
+          {isUsersTable ? (
+            <Trash2
+              width={24}
+              height={24}
+              className=" text-red-700"
+            />
+          ) : (
+            <CircleX
+              width={24}
+              height={24}
+              className=" text-red-700"
+            />
+          )}
         </Button>
       </TableCell>
     </TableRow>

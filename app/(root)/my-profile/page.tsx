@@ -10,34 +10,25 @@ import UserInformation from "@/components/UserInformation";
 const page = async () => {
   const session = await auth();
 
-  const [user] = await db
+  const user = (await db
     .select()
     .from(users)
     .where(eq(users.id, session?.user?.id as string))
-    .limit(1);
-
-  console.log(user, session);
+    .limit(1)
+    .then((res) => res[0])) as User;
 
   const borrowedBooks = (await db
     .select({
       id: books.id,
       title: books.title,
-      author: books.author,
       genre: books.genre,
-      rating: books.rating,
       coverUrl: books.coverUrl,
       coverColor: books.coverColor,
-      description: books.description,
-      totalCopies: books.totalCopies,
-      availableCopies: books.availableCopies,
-      videoUrl: books.videoUrl,
-      summary: books.summary,
-      createdAt: books.createdAt,
       borrowDate: borrowRecords.createdAt,
       dueDate: borrowRecords.dueDate,
       returnDate: borrowRecords.returnDate,
       status: borrowRecords.status,
-    }) // Explicitly specify the fields from books
+    })
     .from(borrowRecords)
     .leftJoin(books, eq(borrowRecords.bookId, books.id))
     .where(eq(borrowRecords.userId, session?.user?.id as string))) as Book[];

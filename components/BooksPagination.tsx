@@ -7,7 +7,6 @@ import {
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
 } from "@/components/ui/pagination";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -24,7 +23,7 @@ const BooksPagination = ({
   const toPage = (page: number) => {
     const params = new URLSearchParams(window.location.search);
     params.set("page", page.toString());
-    return `/search?${params.toString()}`;
+    return `?${params.toString()}`;
   };
 
   return (

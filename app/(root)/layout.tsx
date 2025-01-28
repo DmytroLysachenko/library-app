@@ -32,7 +32,7 @@ const Layout = async ({
     if (!session.user?.id) return;
 
     const user = await db
-      .select()
+      .select({ lastActivityDate: users.lastActivityDate })
       .from(users)
       .where(eq(users.id, session?.user!.id!))
       .limit(1)

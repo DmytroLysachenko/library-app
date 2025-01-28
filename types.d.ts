@@ -12,14 +12,14 @@ interface Book {
   videoUrl: string;
   summary: string;
   createdAt: Date;
-  borrowDate?: Date | null;
+  borrowDate?: Date;
   dueDate?: string;
-  returnDate?: string | null;
+  returnDate?: Date | null;
   status?: "BORROWED" | "RETURNED";
 }
 
 interface User {
-  status: "PENDING" | "APPROVED" | "REJECTED" | null;
+  status: "PENDING" | "APPROVED" | "REJECTED";
   role: "USER" | "ADMIN";
   id: string;
   fullName: string;
@@ -27,7 +27,7 @@ interface User {
   universityId: number;
   password: string;
   universityCard: string;
-  lastActivityDate: string | null;
+  lastActivityDate: Date | null;
   createdAt: Date;
   avatar: string | null;
   borrowedBooks: number;

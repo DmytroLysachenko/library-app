@@ -27,11 +27,13 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   universityCard: text("university_card").notNull(),
   avatar: text("avatar"),
-  status: STATUS_ENUM("status").default("PENDING"),
-  role: ROLE_ENUM("role").default("USER"),
+  status: STATUS_ENUM("status").default("PENDING").notNull(),
+  role: ROLE_ENUM("role").default("USER").notNull(),
   lastActivityDate: date("last_activity_date").defaultNow(),
   borrowedBooks: integer("borrowed_books").notNull().default(0),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 export const books = pgTable("books", {
@@ -47,7 +49,9 @@ export const books = pgTable("books", {
   availableCopies: integer("available_copies").notNull().default(0),
   videoUrl: text("video_url").notNull(),
   summary: varchar("summary").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 export const borrowRecords = pgTable("borrow_records", {
@@ -61,5 +65,7 @@ export const borrowRecords = pgTable("borrow_records", {
   dueDate: date("due_date").notNull(),
   returnDate: date("return_date"),
   status: BORROW_STATUS("status").default("BORROWED").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });

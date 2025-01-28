@@ -22,7 +22,7 @@ const SortSelector = () => {
     const params = new URLSearchParams(window.location.search);
     params.set("sort", sortValue);
 
-    router.push(`/search?${params.toString()}`);
+    router.push(`?${params.toString()}`);
   };
 
   return (

@@ -15,7 +15,7 @@ export const getInitials = (name: string) =>
     .toUpperCase()
     .slice(0, 2);
 
-export const getSortingOrder = (sortValue?: string) => {
+export const getBooksSortingOrder = (sortValue?: string) => {
   switch (sortValue) {
     case "oldest":
       return asc(books.createdAt);
@@ -25,7 +25,6 @@ export const getSortingOrder = (sortValue?: string) => {
       return desc(books.availableCopies);
     case "highestRated":
       return desc(books.rating);
-
     default:
       return desc(books.createdAt);
   }

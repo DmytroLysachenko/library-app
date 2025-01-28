@@ -16,7 +16,8 @@ const BookCard = ({
   dueDate,
   returnDate,
 }: Book) => {
-  const isLoanedBook = status === "BORROWED" ? true : false;
+  const isLoanedBook = Boolean(status);
+  const isReturnedBook = status === "RETURNED";
   console.log(isLoanedBook);
   const remainingDays = dayjs(dueDate).diff(dayjs(), "days");
 
@@ -28,7 +29,7 @@ const BookCard = ({
           isLoanedBook && "w-full flex flex-col items-center relative"
         )}
       >
-        {remainingDays <= 0 && isLoanedBook && (
+        {remainingDays <= 0 && !isReturnedBook && (
           <Image
             src="/icons/warning.svg"
             alt="warning"
@@ -68,20 +69,32 @@ const BookCard = ({
             <div className="book-loaned">
               <Image
                 src={
-                  remainingDays <= 0
-                    ? "/icons/warning.svg"
-                    : "/icons/calendar.svg"
+                  isReturnedBook
+                    ? "/icons/tick.svg"
+                    : remainingDays >= 0
+                      ? "/icons/calendar.svg"
+                      : "/icons/warning.svg"
                 }
-                alt={remainingDays <= 0 ? "warning" : "calendar"}
+                alt={
+                  isReturnedBook
+                    ? "tick"
+                    : remainingDays >= 0
+                      ? "calendar"
+                      : "warning"
+                }
                 width={18}
                 height={18}
                 className="object-contain"
               />
 
-              {remainingDays <= 0 ? (
-                <p className="text-[#FF6C6F]">Overdue</p>
-              ) : (
+              {isReturnedBook ? (
+                <p className="text-light-100">
+                  Returned on {dayjs(returnDate).format("MMM DD")}
+                </p>
+              ) : remainingDays >= 0 ? (
                 <p className="text-light-100">{remainingDays} days left</p>
+              ) : (
+                <p className="text-[#FF6C6F]">Overdue Return</p>
               )}
 
               {/* <button className="flex w-fit">

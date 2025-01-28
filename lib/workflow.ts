@@ -16,9 +16,7 @@ export const sendEmail = async ({
   subject: string;
   message: string;
 }) => {
-  console.log("Sending mail");
-
-  const response = await emailjs.send(
+  await emailjs.send(
     config.env.emailjs.serviceId,
     config.env.emailjs.templateId,
     {
@@ -31,6 +29,4 @@ export const sendEmail = async ({
       privateKey: config.env.emailjs.privateKey,
     }
   );
-
-  console.log(response);
 };
