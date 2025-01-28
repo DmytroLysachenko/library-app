@@ -26,7 +26,7 @@ import {
   deleteUser,
   rejectUser,
 } from "@/lib/admin/actions/users";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/lib/actions/hooks/use-toast";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
 import Image from "next/image";

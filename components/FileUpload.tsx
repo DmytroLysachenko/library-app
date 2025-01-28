@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import { IKImage, ImageKitProvider, IKUpload, IKVideo } from "imagekitio-next";
 import config from "@/lib/config";
 import Image from "next/image";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/lib/actions/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 interface FileUploadProps {

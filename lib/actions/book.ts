@@ -4,13 +4,18 @@ import { db } from "@/db/drizzle";
 import { books, borrowRecords, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import dayjs from "dayjs";
+import { workflowClient } from "../workflow";
+import config from "../config";
 
 export const borrowBook = async (params: BorrowBookParams) => {
   const { userId, bookId } = params;
 
   try {
     const book = await db
-      .select({ availableCopies: books.availableCopies })
+      .select({
+        availableCopies: books.availableCopies,
+        bookTitle: books.title,
+      })
       .from(books)
       .where(eq(books.id, bookId))
       .limit(1);
@@ -19,20 +24,29 @@ export const borrowBook = async (params: BorrowBookParams) => {
       return { success: false, error: "Book is not available" };
     }
 
-    const [user] = await db
-      .select({ borrowedBooks: users.borrowedBooks })
+    const user = await db
+      .select({
+        borrowedBooks: users.borrowedBooks,
+        name: users.fullName,
+        mail: users.email,
+      })
       .from(users)
       .where(eq(users.id, userId))
-      .limit(1);
+      .limit(1)
+      .then((res) => res[0]);
 
     const dueDate = dayjs().add(7, "day").toDate().toDateString();
 
-    const record = await db.insert(borrowRecords).values({
-      userId,
-      bookId,
-      dueDate,
-      status: "BORROWED",
-    });
+    const record = await db
+      .insert(borrowRecords)
+      .values({
+        userId,
+        bookId,
+        dueDate,
+        status: "BORROWED",
+      })
+      .returning()
+      .then((res) => res[0]);
 
     await db
       .update(books)
@@ -46,6 +60,20 @@ export const borrowBook = async (params: BorrowBookParams) => {
         borrowedBooks: user.borrowedBooks + 1,
       })
       .where(eq(users.id, userId));
+
+    await workflowClient.trigger({
+      url: `${config.env.prodApiEndpoint}/api/workflows/book`,
+      body: {
+        bookId,
+        borrowRecordId: record.id,
+        bookTitle: book[0].bookTitle,
+        bookBorrowDate: dayjs().toDate().toDateString(),
+        bookDueDate: dueDate,
+        studentName: user.name,
+        userEmail: user.mail,
+      },
+    });
+
     return { success: true, data: JSON.parse(JSON.stringify(record)) };
   } catch (error) {
     console.log(error);

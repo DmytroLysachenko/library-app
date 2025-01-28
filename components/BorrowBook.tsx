@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { BookOpen } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/lib/actions/hooks/use-toast";
 import { borrowBook } from "@/lib/actions/book";
 import {
   Tooltip,

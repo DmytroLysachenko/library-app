@@ -1,6 +1,7 @@
+import { EmailTemplate } from "@/constants";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
-import { sendEmail } from "@/lib/workflow";
+import { sendEmail } from "@/lib/email";
 import { serve } from "@upstash/workflow/nextjs";
 import { eq } from "drizzle-orm";
 
@@ -38,15 +39,18 @@ const getUserState = async (email: string): Promise<UserState> => {
 
 export const { POST } = serve<InitialData>(async (context) => {
   const { email, fullName } = context.requestPayload;
-  console.log("start workflow");
+
   await context.run("new-signup", async () => {
     await sendEmail({
-      subject: "Welcome to the platform",
-      message: `Welcome ${fullName}`,
-      email,
+      to: email,
+      template: EmailTemplate.WELCOME,
+      subject: "Welcome to LibraryView!",
+      data: {
+        studentName: fullName,
+        loginUrl: "https://library-app-rust-five.vercel.app/sign-in",
+      },
     });
   });
-
   await context.sleep("wait-for-3-days", 60 * 60 * 24 * 3);
 
   while (true) {
@@ -56,18 +60,26 @@ export const { POST } = serve<InitialData>(async (context) => {
 
     if (state === "non-active") {
       await context.run("send-email-non-active", async () => {
-        await sendEmail({
-          subject: "Are you still there?",
-          message: `Hey, ${fullName}, we miss you!`,
-          email,
+        sendEmail({
+          to: email,
+          template: EmailTemplate.INACTIVITY_REMINDER,
+          subject: "Are you there?",
+          data: {
+            studentName: fullName.split(" ")[0],
+            exploreUrl: "https://library-app-rust-five.vercel.app",
+          },
         });
       });
     } else if (state === "active") {
       await context.run("send-email-active", async () => {
         await sendEmail({
-          subject: "Welcome back!",
-          message: `Welcome back, ${fullName}!`,
-          email,
+          to: email,
+          template: EmailTemplate.CHECK_IN_REMINDER,
+          subject: "Are you there?",
+          data: {
+            studentName: fullName.split(" ")[0],
+            loginUrl: "https://library-app-rust-five.vercel.app/sign-in",
+          },
         });
       });
     }

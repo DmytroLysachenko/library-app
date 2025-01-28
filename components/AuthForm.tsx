@@ -25,7 +25,7 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { FIELD_NAMES, FIELD_TYPES } from "@/constants";
 import FileUpload from "./FileUpload";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/lib/actions/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
 interface AuthFormProps<T extends FieldValues> {

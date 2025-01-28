@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "./ui/button";
 import { uploadAvatar } from "@/lib/actions/auth";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/lib/actions/hooks/use-toast";
 import UserAvatar from "./UserAvatar";
 
 const UserInformation = ({ user }: { user: User }) => {

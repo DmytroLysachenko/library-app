@@ -23,7 +23,7 @@ import UserAvatar from "../UserAvatar";
 import dayjs from "dayjs";
 import { cn } from "@/lib/utils";
 import { changeRecordStatus } from "@/lib/admin/actions/records";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/lib/actions/hooks/use-toast";
 
 const BorrowRequestsTable = ({ records }: { records: BorrowRecord[] }) => {
   return (
