@@ -41,7 +41,7 @@ export const { POST } = serve<InitialData>(async (context) => {
   const { email, fullName } = context.requestPayload;
 
   await context.run("new-signup", async () => {
-    await sendEmail({
+    return await sendEmail({
       to: email,
       template: EmailTemplate.WELCOME,
       subject: "Welcome to LibraryView!",
@@ -51,6 +51,7 @@ export const { POST } = serve<InitialData>(async (context) => {
       },
     });
   });
+
   await context.sleep("wait-for-3-days", 60 * 60 * 24 * 3);
 
   while (true) {
