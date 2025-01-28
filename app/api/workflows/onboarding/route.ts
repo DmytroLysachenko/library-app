@@ -41,7 +41,7 @@ export const { POST } = serve<InitialData>(async (context) => {
   const { email, fullName } = context.requestPayload;
 
   await context.run("new-signup", async () => {
-    return await sendEmail({
+    await sendEmail({
       to: email,
       template: EmailTemplate.WELCOME,
       subject: "Welcome to LibraryView!",
