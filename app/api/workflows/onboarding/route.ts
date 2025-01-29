@@ -40,7 +40,15 @@ const getUserState = async (email: string): Promise<UserState> => {
 export const { POST } = serve<InitialData>(async (context) => {
   const { email, fullName } = context.requestPayload;
 
-  await context.run("new-signup", async () => {
+  const result1 = await context.run("test-step-1", async () => {
+    return 10 + 10;
+  });
+
+  const result2 = await context.run("test-step-2", async () => {
+    return 20 + 20;
+  });
+
+  const result3 = await context.run("new-signup", async () => {
     return await sendEmail({
       to: email,
       template: EmailTemplate.WELCOME,
