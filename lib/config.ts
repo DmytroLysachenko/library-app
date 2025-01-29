@@ -11,8 +11,8 @@ const config = {
     upstash: {
       redisUrl: process.env.UPSTASH_REDIS_URL!,
       redisToken: process.env.UPSTASH_REDIS_TOKEN!,
-      qstashUrl: process.env.UPSTASH_QSTASH_URL!,
-      qstashToken: process.env.UPSTASH_QSTASH_TOKEN!,
+      qstashUrl: process.env.QSTASH_URL!,
+      qstashToken: process.env.QSTASH_TOKEN!,
     },
     email: {
       GMAIL_USER: process.env.GMAIL_USER!,

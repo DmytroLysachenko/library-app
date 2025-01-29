@@ -40,16 +40,8 @@ const getUserState = async (email: string): Promise<UserState> => {
 export const { POST } = serve<InitialData>(async (context) => {
   const { email, fullName } = context.requestPayload;
 
-  const result1 = await context.run("test-step-1", async () => {
-    return 10 + 10;
-  });
-
-  const result2 = await context.run("test-step-2", async () => {
-    return 20 + 20;
-  });
-
-  const result3 = await context.run("new-signup", async () => {
-    return await sendEmail({
+  await context.run("new-signup", async () => {
+    await sendEmail({
       to: email,
       template: EmailTemplate.WELCOME,
       subject: "Welcome to LibraryView!",
@@ -69,7 +61,7 @@ export const { POST } = serve<InitialData>(async (context) => {
 
     if (state === "non-active") {
       await context.run("send-email-non-active", async () => {
-        return await sendEmail({
+        await sendEmail({
           to: email,
           template: EmailTemplate.INACTIVITY_REMINDER,
           subject: "Are you there?",
@@ -81,7 +73,7 @@ export const { POST } = serve<InitialData>(async (context) => {
       });
     } else if (state === "active") {
       await context.run("send-email-active", async () => {
-        return await sendEmail({
+        await sendEmail({
           to: email,
           template: EmailTemplate.CHECK_IN_REMINDER,
           subject: "Are you there?",
