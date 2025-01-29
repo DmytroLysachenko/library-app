@@ -37,14 +37,14 @@ export const { POST } = serve<InitialData>(async (context) => {
         bookTitle,
         borrowDate: dayjs(bookBorrowDate).format("DD MMMM YYYY"),
         dueDate: dayjs(bookDueDate).format("DD MMMM YYYY"),
-        borrowedBookUrl: `https://library-app-rust-five.vercel.app/books/${bookId}`,
+        borrowedBooksUrl: "https://library-app-rust-five.vercel.app/my-profile",
       },
     });
   });
 
-  const waitingTime = dayjs(bookDueDate).diff(dayjs(), "day") - 1;
+  const waitingDays = dayjs(bookDueDate).diff(dayjs(), "day") - 1;
 
-  await context.sleep("wait-for-return-date", 60 * 60 * 24 * waitingTime);
+  await context.sleep("wait-for-return-date", 60 * 60 * 24 * waitingDays);
 
   const status = await context.run("check-record-status", async () => {
     return await db

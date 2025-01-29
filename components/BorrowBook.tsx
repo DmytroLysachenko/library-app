@@ -68,36 +68,32 @@ const BorrowBook = ({
         <TooltipTrigger
           className={cn(
             "w-fit",
-            borrowingEligibility.isEligible
-              ? "cursor-pointer"
-              : "cursor-not-allowed"
+            !borrowingEligibility.isEligible && "cursor-not-allowed"
           )}
           asChild
         >
-          <Button
-            className={"book-overview_btn"}
-            onClick={handleBorrow}
-            disabled={borrowing || !borrowingEligibility.isEligible}
-          >
-            <BookOpen size={20} />
-            <p className="font-bebas-neue text-xl text-dark-100">Borrow book</p>
-          </Button>
+          <div>
+            <Button
+              className={"book-overview_btn"}
+              onClick={handleBorrow}
+              disabled={borrowing || !borrowingEligibility.isEligible}
+            >
+              <BookOpen size={20} />
+
+              <p className="font-bebas-neue text-xl text-dark-100">
+                Borrow book
+              </p>
+            </Button>
+          </div>
         </TooltipTrigger>
 
-        <TooltipContent>
-          <p
-            className={cn(
-              " text-lg",
-              borrowingEligibility.isEligible
-                ? "text-dark-100"
-                : "text-[#FF6C6F]"
-            )}
-          >
-            {borrowingEligibility.isEligible
-              ? "Borrow book"
-              : borrowingEligibility.message}
-          </p>
-        </TooltipContent>
+        {!borrowingEligibility.isEligible && (
+          <TooltipContent>
+            <p className={cn(" text-lg", "text-[#FF6C6F]")}>
+              {borrowingEligibility.message}
+            </p>
+          </TooltipContent>
+        )}
       </Tooltip>
     </TooltipProvider>
   );

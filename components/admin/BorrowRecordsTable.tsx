@@ -22,7 +22,7 @@ import BookCover from "../BookCover";
 import UserAvatar from "../UserAvatar";
 import dayjs from "dayjs";
 import { cn } from "@/lib/utils";
-import { changeRecordStatus } from "@/lib/admin/actions/records";
+import { confirmBookReturnStatus } from "@/lib/admin/actions/records";
 import { toast } from "@/lib/actions/hooks/use-toast";
 
 const BorrowRequestsTable = ({ records }: { records: BorrowRecord[] }) => {
@@ -100,11 +100,13 @@ const BorrowRequestRecord = ({
       <TableCell>
         <Select
           value={status}
-          disabled={isChangingStatus}
+          disabled={isChangingStatus || status === "RETURNED"}
           onValueChange={async (value: "BORROWED" | "RETURNED") => {
+            if (value === "BORROWED") return;
+
             try {
               setIsChangingStatus(true);
-              await changeRecordStatus(record.id, value);
+              await confirmBookReturnStatus(record.id);
               setStatus(value);
               toast({
                 title: "Success",

@@ -20,8 +20,8 @@ const Page = async ({
     .orderBy(sort === "asc" ? asc(books.title) : desc(books.title))) as Book[];
 
   return (
-    <section className="w-full rounded-2xl bg-white p-7">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+    <div className="admin-container">
+      <section className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xl font-semibold"> All Books</h2>
         <div className="flex flex-row items-center gap-2">
           <SortSelector type="alphabetical" />
@@ -37,9 +37,9 @@ const Page = async ({
             </Link>
           </Button>
         </div>
-      </div>
+      </section>
       <BooksTable books={allBooks} />
-    </section>
+    </div>
   );
 };
 

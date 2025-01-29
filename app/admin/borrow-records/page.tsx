@@ -1,4 +1,4 @@
-import BorrowRequestsTable from "@/components/admin/BorrowRequestsTable";
+import BorrowRequestsTable from "@/components/admin/BorrowRecordsTable";
 import SortSelector from "@/components/admin/SortSelector";
 import { db } from "@/db/drizzle";
 import { books, borrowRecords, users } from "@/db/schema";
@@ -31,7 +31,7 @@ const Page = async ({
     })) as BorrowRecord[];
 
   return (
-    <section className="w-full rounded-2xl bg-white p-7">
+    <section className="admin-container">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xl font-semibold"> Borrow book requests</h2>
         <SortSelector type="date" />

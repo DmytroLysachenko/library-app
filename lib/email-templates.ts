@@ -31,7 +31,7 @@ export const emailTemplates = {
       <body>
         <div class="container">
           <h1 class="header">Welcome to LibraryView!</h1>
-          <p>Hi ${data.studentName},</p>
+          <p>Hi, ${data.studentName},</p>
           <p>We're excited to have you join our community of book enthusiasts. Explore a wide range of books, borrow with ease, and manage your reading journey seamlessly.</p>
           ${data.loginUrl ? `<a href="${data.loginUrl}" class="button">Get Started</a>` : ""}
           <div class="footer">
@@ -49,7 +49,7 @@ export const emailTemplates = {
       <body>
         <div class="container">
           <h1 class="header">Account Approved!</h1>
-          <p>Hi ${data.studentName},</p>
+          <p>Hi, ${data.studentName},</p>
           <p>Congratulations! Your LibraryView account has been approved. You can now browse our library, borrow books, and enjoy all the features of your new account.</p>
           ${data.loginUrl ? `<a href="${data.loginUrl}" class="button">Log In Now</a>` : ""}
           <div class="footer">
@@ -67,13 +67,13 @@ export const emailTemplates = {
       <body>
         <div class="container">
           <h1 class="header">You've Borrowed a Book!</h1>
-          <p>Hi ${data.studentName},</p>
+          <p>Hi, ${data.studentName},</p>
           <div class="details">
             <p><strong>Title:</strong> ${data.bookTitle}</p>
             <p><strong>Borrowed On:</strong> ${data.borrowDate}</p>
             <p><strong>Due Date:</strong> ${data.dueDate}</p>
           </div>
-          ${data.borrowedBookUrl ? `<a href="${data.borrowedBookUrl}" class="button">View Borrowed Books</a>` : ""}
+          ${data.borrowedBooksUrl ? `<a href="${data.borrowedBooksUrl}" class="button">View Borrowed Books</a>` : ""}
           <div class="footer">
             <p>Happy reading,<br>The LibraryView Team</p>
           </div>
@@ -89,7 +89,7 @@ export const emailTemplates = {
       <body>
         <div class="container">
           <h1 class="header">Reminder: ${data.bookTitle} is Due Soon!</h1>
-          <p>Hi ${data.studentName},</p>
+          <p>Hi, ${data.studentName},</p>
           <p>Just a reminder that ${data.bookTitle} is due for return on ${data.dueDate}.</p>
           <div class="details">
             <p>Kindly return it on time to avoid late fees.</p>
@@ -110,7 +110,7 @@ export const emailTemplates = {
       <body>
         <div class="container">
           <h1 class="header">Thank You for Returning ${data.bookTitle}!</h1>
-          <p>Hi ${data.studentName},</p>
+          <p>Hi, ${data.studentName},</p>
           <p>We've successfully received your return of ${data.bookTitle}. Thank you for returning it on time.</p>
           ${data.exploreUrl ? `<a href="${data.exploreUrl}" class="button">Explore New Books</a>` : ""}
           <div class="footer">
@@ -128,7 +128,7 @@ export const emailTemplates = {
       <body>
         <div class="container">
           <h1 class="header">We Miss You at LibraryView!</h1>
-          <p>Hi ${data.studentName},</p>
+          <p>Hi, ${data.studentName},</p>
           <p>It's been a while since we last saw you - over three days, to be exact! New books are waiting for you, and your next great read might just be a click away.</p>
           ${data.exploreUrl ? `<a href="${data.exploreUrl}" class="button">Explore Books</a>` : ""}
           <div class="footer">
@@ -145,7 +145,7 @@ export const emailTemplates = {
     <body>
       <div class="container">
         <h1 class="header">Don't Forget to Check In at LibraryView!</h1>
-        <p>Hi ${data.studentName},</p>
+        <p>Hi, ${data.studentName},</p>
         <p>We noticed you haven't checked in recently. Stay active and keep track of your borrowed books, due dates, and new arrivals.</p>
         ${data.loginUrl ? `<a href="${data.loginUrl}" class="button">Log In Now</a>` : ""}
         <div class="footer">
@@ -163,7 +163,7 @@ export const emailTemplates = {
       <body>
         <div class="container">
           <h1 class="header">Congratulations on Your Milestone!</h1>
-          <p>Hi ${data.studentName},</p>
+          <p>Hi, ${data.studentName},</p>
           <p>Great news! You've reached a new milestone in your reading journey. Whether it's finishing a challenging book, staying consistent with your goals, or exploring new genres, your dedication inspires us.</p>
           ${data.discoverUrl ? `<a href="${data.discoverUrl}" class="button">Discover New Reads</a>` : ""}
           <div class="footer">
@@ -188,7 +188,7 @@ export const emailTemplates = {
       <body>
         <div class="container">
           <h1 class="header">Your Receipt for ${data.bookTitle}</h1>
-          <p>Hi ${data.studentName},</p>
+          <p>Hi, ${data.studentName},</p>
           <div class="details">
             <div class="receipt-header">Borrow Receipt</div>
             <table class="receipt-table">
