@@ -41,7 +41,7 @@ export const { POST } = serve<InitialData>(async (context) => {
   const { email, fullName } = context.requestPayload;
 
   await context.run("new-signup", async () => {
-    await sendEmail({
+    return await sendEmail({
       to: email,
       template: EmailTemplate.WELCOME,
       subject: "Welcome to LibraryView!",
@@ -61,7 +61,7 @@ export const { POST } = serve<InitialData>(async (context) => {
 
     if (state === "non-active") {
       await context.run("send-email-non-active", async () => {
-        sendEmail({
+        return await sendEmail({
           to: email,
           template: EmailTemplate.INACTIVITY_REMINDER,
           subject: "Are you there?",
@@ -73,7 +73,7 @@ export const { POST } = serve<InitialData>(async (context) => {
       });
     } else if (state === "active") {
       await context.run("send-email-active", async () => {
-        await sendEmail({
+        return await sendEmail({
           to: email,
           template: EmailTemplate.CHECK_IN_REMINDER,
           subject: "Are you there?",

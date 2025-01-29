@@ -58,10 +58,10 @@ export const borrowRecords = pgTable("borrow_records", {
   id: uuid("id").notNull().primaryKey().defaultRandom().unique(),
   userId: uuid("user_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   bookId: uuid("book_id")
     .notNull()
-    .references(() => books.id),
+    .references(() => books.id, { onDelete: "cascade" }),
   dueDate: date("due_date").notNull(),
   returnDate: date("return_date"),
   status: BORROW_STATUS("status").default("BORROWED").notNull(),

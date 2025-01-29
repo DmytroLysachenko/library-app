@@ -67,6 +67,7 @@ export const signUp = async (params: AuthCredentials) => {
         email,
         fullName,
       },
+      retries: 0,
     });
 
     await signInWithCredentials({ email, password });

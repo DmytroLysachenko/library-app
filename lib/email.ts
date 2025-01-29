@@ -23,9 +23,9 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = async (options: EmailOptions): Promise<void> => {
+export const sendEmail = async (options: EmailOptions) => {
   const html = generateTemplate(options.template, options.data);
-  await transporter.sendMail({
+  return await transporter.sendMail({
     from: `LibraryView <${config.env.email.GMAIL_USER}>`,
     to: options.to,
     subject: options.subject,
