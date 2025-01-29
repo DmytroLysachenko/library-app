@@ -1,7 +1,9 @@
 import { Client as WorkflowClient } from "@upstash/workflow";
-import config from "./config";
+import { config } from "dotenv";
+
+config({ path: ".env.local" });
 
 export const workflowClient = new WorkflowClient({
-  baseUrl: config.env.upstash.qstashUrl,
-  token: config.env.upstash.qstashToken,
+  baseUrl: process.env.UPSTASH_QSTASH_URL!,
+  token: process.env.UPSTASH_QSTASH_TOKEN!,
 });
