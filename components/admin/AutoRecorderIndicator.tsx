@@ -24,20 +24,18 @@ export function AutoRecorderIndicator({ status }: AutoRecorderIndicatorProps) {
   const handleToggle = async () => {
     const newState = !isEnabled;
     setIsLoading(true);
-    try {
-      await setStatsRecorderStatus(newState);
 
+    const response = await setStatsRecorderStatus(newState);
+    if (response.success) {
       setIsEnabled(newState);
-    } catch (error) {
-      console.log(error);
+    } else {
       toast({
         title: "Error",
-        description: "An error occurred. Please try again later.",
+        description: response.error,
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -50,25 +48,27 @@ export function AutoRecorderIndicator({ status }: AutoRecorderIndicatorProps) {
                 className={`size-2 rounded-full ${isEnabled ? "bg-green-500 animate-pulse" : "bg-red-500"}`}
               />
               <span className="text-xs font-medium text-dark-400">
-                Auto Recorder {isEnabled ? "On" : "Off"}
+                Auto Statistics Recorder : {isEnabled ? "On" : "Off"}
               </span>
             </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              disabled={isLoading}
-              className={`shrink-0 ${
-                isEnabled
-                  ? "text-green-500 hover:text-green-600"
-                  : "text-red-500 hover:text-red-600"
-              }`}
-              onClick={handleToggle}
-            >
-              <Power className="size-4" />
-              <span className="sr-only">
-                {isEnabled ? "Turn off" : "Turn on"} auto recorder
-              </span>
-            </Button>
+            {process.env.NODE_ENV !== "production" && (
+              <Button
+                size="icon"
+                variant="ghost"
+                disabled={isLoading}
+                className={`shrink-0 ${
+                  isEnabled
+                    ? "text-green-500 hover:text-green-600"
+                    : "text-red-500 hover:text-red-600"
+                }`}
+                onClick={handleToggle}
+              >
+                <Power className="size-4" />
+                <span className="sr-only">
+                  {isEnabled ? "Turn off" : "Turn on"} auto recorder
+                </span>
+              </Button>
+            )}
           </div>
         </TooltipTrigger>
         <TooltipContent>

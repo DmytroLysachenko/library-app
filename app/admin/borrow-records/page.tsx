@@ -1,5 +1,5 @@
 import React from "react";
-import { asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, ilike } from "drizzle-orm";
 
 import BorrowRequestsTable from "@/components/admin/BorrowRecordsTable";
 import SortSelector from "@/components/admin/SortSelector";
@@ -9,9 +9,9 @@ import { books, borrowRecords, users } from "@/db/schema";
 const Page = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ page: string; sort: "asc" | "desc" }>;
+  searchParams: Promise<{ page: string; sort: "asc" | "desc"; query: string }>;
 }) => {
-  const { sort } = await searchParams;
+  const { sort, query } = await searchParams;
 
   const allRecords = (await db
     .select()
@@ -23,7 +23,12 @@ const Page = async ({
         ? asc(borrowRecords.createdAt)
         : desc(borrowRecords.createdAt)
     )
-    .where(eq(borrowRecords.status, "RETURNED"))
+    .where(
+      and(
+        eq(borrowRecords.status, "RETURNED"),
+        query ? ilike(users.fullName, `%${query}%`) : undefined
+      )
+    )
     .then((res) => {
       return res.map((record) => ({
         ...record.borrow_records,

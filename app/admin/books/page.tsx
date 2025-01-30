@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { asc, desc } from "drizzle-orm";
+import { asc, desc, ilike } from "drizzle-orm";
 
 import BooksTable from "@/components/admin/BooksTable";
 import SortSelector from "@/components/admin/SortSelector";
@@ -11,13 +11,14 @@ import { books } from "@/db/schema";
 const Page = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ page: string; sort: "asc" | "desc" }>;
+  searchParams: Promise<{ page: string; sort: "asc" | "desc"; query: string }>;
 }) => {
-  const { sort } = await searchParams;
+  const { sort, query } = await searchParams;
 
   const allBooks = (await db
     .select()
     .from(books)
+    .where(query ? ilike(books.title, `%${query}%`) : undefined)
     .orderBy(sort === "asc" ? asc(books.title) : desc(books.title))) as Book[];
 
   return (

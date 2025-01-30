@@ -4,6 +4,7 @@ import { desc } from "drizzle-orm";
 import { AutoRecorderIndicator } from "./AutoRecorderIndicator";
 import { db } from "@/db/drizzle";
 import { appStatsRecords } from "@/db/schema";
+import SearchInput from "../SearchInput";
 
 const Header = async ({ user }: { user: Partial<User> }) => {
   const lastStatRecordStatus = await db
@@ -24,6 +25,10 @@ const Header = async ({ user }: { user: Partial<User> }) => {
         </p>
       </div>
       <AutoRecorderIndicator status={lastStatRecordStatus} />
+      <SearchInput
+        variant="admin"
+        placeholder="Search users, books by title, author, or genre..."
+      />
     </header>
   );
 };

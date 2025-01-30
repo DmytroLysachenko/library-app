@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { count, ilike, or } from "drizzle-orm";
 
 import BookList from "@/components/BookList";
@@ -60,14 +60,13 @@ const Page = async ({
       <SearchSection />
       {filteredBooks.length > 0 ? (
         <>
-          <Suspense fallback={"Loading"}>
-            <BookList
-              books={filteredBooks}
-              title={"Search Results"}
-              containerClassName="pb-20"
-              isSearch={true}
-            />
-          </Suspense>
+          <BookList
+            books={filteredBooks}
+            title={"Search Results"}
+            containerClassName="pb-20"
+            isSearch={true}
+          />
+
           <BooksPagination
             currentPage={Number(page)}
             lastPage={Math.ceil(totalCountResults[0].count / 12)}

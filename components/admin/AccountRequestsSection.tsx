@@ -3,8 +3,13 @@ import Link from "next/link";
 
 import EmptyState from "./EmptyState";
 import { Button } from "@/components/ui/button";
+import UserAvatar from "../UserAvatar";
 
-const AccountRequestsSection = () => {
+const AccountRequestsSection = ({
+  recentAccountRequests,
+}: {
+  recentAccountRequests: User[];
+}) => {
   return (
     <section>
       <div className="flex justify-between items-center mb-5">
@@ -20,10 +25,26 @@ const AccountRequestsSection = () => {
       </div>
 
       <div className="space-y-3">
-        <EmptyState
-          title="No Pending Account Requests"
-          description="There are currently no account requests awaiting approval."
-        />
+        {recentAccountRequests.length > 0 ? (
+          recentAccountRequests.map((request) => (
+            <div
+              key={request.id}
+              className="user-card"
+            >
+              <UserAvatar
+                avatarUrl={request.avatar}
+                fullName={request.fullName}
+              />
+              <p className="name">{request.fullName}</p>
+              <p className="email">{request.email}</p>
+            </div>
+          ))
+        ) : (
+          <EmptyState
+            title="No Pending Account Requests"
+            description="There are currently no account requests awaiting approval."
+          />
+        )}
       </div>
     </section>
   );

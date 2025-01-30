@@ -34,6 +34,7 @@ const UserInformation = ({ user }: { user: User }) => {
         title: "Success",
         description: "Avatar updated successfully",
       });
+      window.location.reload();
     } else {
       toast({
         title: "Error",

@@ -1,49 +1,101 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import React, { useRef } from "react";
-import { SearchIcon, X } from "lucide-react";
+import { Search, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useRef } from "react";
 
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
-const SearchInput = () => {
+interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  variant?: "user" | "admin";
+  onReset?: () => void;
+  searchParam?: string;
+  placeholder?: string;
+}
+
+const SearchInput = ({
+  variant = "user",
+  onReset,
+  searchParam = "query",
+  className,
+  placeholder = "Search",
+  ...props
+}: SearchInputProps) => {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(
+    typeof window !== "undefined" ? window.location.search : ""
+  );
+  const pathname = usePathname();
+
   const handleReset = () => {
-    const params = new URLSearchParams(window.location.search);
     if (input.current && input.current.value) {
-      params.delete("query");
+      params.delete(searchParam);
       input.current.value = "";
-      router.push(`/search?${params.toString()}`, { scroll: false });
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+      onReset?.();
     }
   };
 
-  return (
-    <div className="search">
-      <SearchIcon className="text-light-200" />
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const params = new URLSearchParams(window.location.search);
+    if (event.target.value) {
+      params.set(searchParam, event.target.value);
+    } else {
+      params.delete(searchParam);
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
-      <Input
-        placeholder="Search..."
-        name="search"
-        id="search"
-        defaultValue={params.get("query") || ""}
-        className="search-input"
-        ref={input}
-        onChange={(event) => {
-          const params = new URLSearchParams(window.location.search);
-          if (event.target.value) {
-            params.set("query", event.target.value);
-          } else {
-            params.delete("query");
-          }
-          router.push(`/search?${params.toString()}`, { scroll: false });
-        }}
+  return (
+    <div
+      className={cn(
+        "relative flex items-center gap-2",
+        variant === "user" && "search",
+        variant === "admin" && "admin-search",
+        className
+      )}
+    >
+      <Search
+        className={cn(
+          "size-4",
+          variant === "user" && "text-light-200",
+          variant === "admin" && "text-light-500"
+        )}
       />
 
-      <button onClick={handleReset}>
-        <X className="text-light-200" />
-      </button>
+      <Input
+        {...props}
+        ref={input}
+        defaultValue={params.get(searchParam) || ""}
+        onChange={handleChange}
+        placeholder={placeholder}
+        className={cn(
+          variant === "user" && "search-input",
+          variant === "admin" && "admin-search_input"
+        )}
+      />
+
+      {input.current?.value && (
+        <button
+          onClick={handleReset}
+          className={cn(
+            "p-1 hover:opacity-70 transition-opacity",
+            variant === "admin" && "mr-2"
+          )}
+        >
+          <X
+            className={cn(
+              "size-4",
+              variant === "user" && "text-light-200",
+              variant === "admin" && "text-light-500"
+            )}
+          />
+
+          <span className="sr-only">Clear search</span>
+        </button>
+      )}
     </div>
   );
 };

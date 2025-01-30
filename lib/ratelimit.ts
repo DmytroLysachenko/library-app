@@ -1,5 +1,5 @@
 import redis from "@/db/redis";
-import { Ratelimit } from "@upstash/ratelimit"; // for deno: see above
+import { Ratelimit } from "@upstash/ratelimit";
 
 export const authRatelimit = new Ratelimit({
   redis,
@@ -10,7 +10,7 @@ export const authRatelimit = new Ratelimit({
 
 export const statsRecorderRatelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.tokenBucket(1, "1h", 5),
+  limiter: Ratelimit.tokenBucket(1, "12h", 4),
   analytics: true,
   prefix: "@upstash/ratelimit",
 });

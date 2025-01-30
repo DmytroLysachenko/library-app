@@ -78,9 +78,9 @@ interface BorrowRecord {
   bookId: string;
   userId: string;
   createdAt: Date;
-  dueDate: Date;
+  dueDate: Date | null;
   returnDate: Date | null;
-  status: "BORROWED" | "RETURNED";
+  status: "BORROWED" | "RETURNED" | "PENDING";
   user: User;
   book: Book;
 }

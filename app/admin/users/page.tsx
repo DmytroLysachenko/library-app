@@ -1,5 +1,5 @@
 import React from "react";
-import { asc, desc } from "drizzle-orm";
+import { asc, desc, ilike } from "drizzle-orm";
 
 import SortSelector from "@/components/admin/SortSelector";
 import UsersTable from "@/components/admin/UsersTable";
@@ -9,18 +9,17 @@ import { users } from "@/db/schema";
 const Page = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ page: string; sort: "asc" | "desc" }>;
+  searchParams: Promise<{ page: string; sort: "asc" | "desc"; query: string }>;
 }) => {
-  const { sort } = await searchParams;
+  const { sort, query } = await searchParams;
 
   const allUsers = (await db
     .select()
     .from(users)
+    .where(query ? ilike(users.fullName, `%${query}%`) : undefined)
     .orderBy(
       sort === "asc" ? asc(users.fullName) : desc(users.fullName)
     )) as User[];
-
-  console.log(allUsers);
 
   return (
     <section className="admin-container">

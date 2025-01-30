@@ -1,8 +1,9 @@
 import React from "react";
-import { count, desc, eq } from "drizzle-orm";
+import { asc, count, eq, gt } from "drizzle-orm";
 
 import { db } from "@/db/drizzle";
 import { appStatsRecords, books, borrowRecords, users } from "@/db/schema";
+import dayjs from "dayjs";
 
 const StatCard = ({
   label,
@@ -11,17 +12,19 @@ const StatCard = ({
 }: {
   label: string;
   count: number;
-  change: number;
+  change: number | null;
 }) => {
   return (
     <div className="stat">
       <div className="stat-info">
         <p className="stat-label">{label}</p>
-        <p
-          className={`text-sm font-medium ${change > 0 ? "text-green-500" : change < 0 ? "text-red-500" : "text-gray-500"}`}
-        >
-          {change > 0 ? "+" : change < 0 ? "-" : ""} {Math.abs(change)}
-        </p>
+        {change && (
+          <p
+            className={`text-sm font-medium ${change > 0 ? "text-green-500" : change < 0 ? "text-red-500" : "text-gray-500"}`}
+          >
+            {change > 0 ? "+" : change < 0 ? "-" : ""} {Math.abs(change)}
+          </p>
+        )}
       </div>
       <p className="stat-count">{count}</p>
     </div>
@@ -34,13 +37,11 @@ const StatisticsBoard = async () => {
       await db
         .select()
         .from(appStatsRecords)
-        .orderBy(desc(appStatsRecords.createdAt))
-        .limit(1)
-        .then((res) =>
-          res.length
-            ? res[0]
-            : { totalBooks: 0, totalUsers: 0, totalBorrowedBooks: 0 }
-        ),
+        .orderBy(asc(appStatsRecords.createdAt))
+        .where(
+          gt(appStatsRecords.createdAt, dayjs().subtract(2, "day").toDate())
+        )
+        .then((res) => (res.length ? res[0] : null)),
 
       await db
         .select({ totalCopies: books.totalCopies })
@@ -61,10 +62,15 @@ const StatisticsBoard = async () => {
         .then((res) => res[0].count),
     ]);
 
-  const changedUsers = totalUsers - lastStatsRecord.totalUsers;
-  const changedBooks = totalBooks - lastStatsRecord.totalBooks;
-  const changedBorrowedBooks =
-    totalBorrowedBooks - lastStatsRecord.totalBorrowedBooks;
+  const changedUsers = lastStatsRecord
+    ? totalUsers - lastStatsRecord.totalUsers
+    : null;
+  const changedBooks = lastStatsRecord
+    ? totalBooks - lastStatsRecord.totalBooks
+    : null;
+  const changedBorrowedBooks = lastStatsRecord
+    ? totalBorrowedBooks - lastStatsRecord.totalBorrowedBooks
+    : null;
 
   return (
     <section className="grid grid-cols-3 gap-5 mb-10">

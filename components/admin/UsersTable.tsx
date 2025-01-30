@@ -31,6 +31,7 @@ import {
 import { toast } from "@/lib/actions/hooks/use-toast";
 import UserAvatar from "../UserAvatar";
 import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
 
 const getStatusBadgeColor = (status: string) => {
   switch (status) {
@@ -151,7 +152,10 @@ const UserRecord = ({
               }}
             >
               <SelectTrigger
-                className={`w-24 ${user.role === "ADMIN" ? "text-green-500" : "text-rose-500"}`}
+                className={cn(
+                  "w-24",
+                  userRole === "ADMIN" ? "text-green-500" : "text-rose-500"
+                )}
               >
                 <SelectValue />
               </SelectTrigger>

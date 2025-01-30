@@ -67,7 +67,7 @@ export const borrowRecords = pgTable("borrow_records", {
   bookId: uuid("book_id")
     .notNull()
     .references(() => books.id, { onDelete: "cascade" }),
-  dueDate: date("due_date").notNull(),
+  dueDate: date("due_date"),
   returnDate: date("return_date"),
   status: BORROW_STATUS("status").default("PENDING").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
