@@ -40,7 +40,7 @@ export const borrowBook = async (params: BorrowBookParams) => {
           userId,
           bookId,
           dueDate,
-          status: "BORROWED",
+          status: "PENDING",
         })
         .returning()
         .then((res) => res[0]),
