@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import {
   Pagination,
@@ -8,8 +10,6 @@ import {
   PaginationEllipsis,
   PaginationItem,
 } from "@/components/ui/pagination";
-import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const BooksPagination = ({
   currentPage,

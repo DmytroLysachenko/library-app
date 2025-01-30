@@ -1,8 +1,9 @@
 import React from "react";
+import { desc } from "drizzle-orm";
+
 import { AutoRecorderIndicator } from "./AutoRecorderIndicator";
 import { db } from "@/db/drizzle";
 import { appStatsRecords } from "@/db/schema";
-import { desc } from "drizzle-orm";
 
 const Header = async ({ user }: { user: Partial<User> }) => {
   const lastStatRecordStatus = await db

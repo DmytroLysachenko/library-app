@@ -1,13 +1,12 @@
 import React, { Suspense } from "react";
+import { count, ilike, or } from "drizzle-orm";
 
 import BookList from "@/components/BookList";
 import SearchSection from "@/components/SearchSection";
-import { db } from "@/db/drizzle";
-
-import { books } from "@/db/schema";
-import { count, desc, ilike, or } from "drizzle-orm";
 import BooksPagination from "@/components/BooksPagination";
 import NotFoundSection from "@/components/NotFoundSection";
+import { db } from "@/db/drizzle";
+import { books } from "@/db/schema";
 import { getBooksSortingOrder } from "@/lib/utils";
 
 const Page = async ({

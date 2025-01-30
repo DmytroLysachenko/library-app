@@ -1,8 +1,9 @@
 import Image from "next/image";
 import React from "react";
+import { eq } from "drizzle-orm";
+
 import BookCover from "./BookCover";
 import BorrowBook from "./BorrowBook";
-import { eq } from "drizzle-orm";
 import { users } from "@/db/schema";
 import { db } from "@/db/drizzle";
 

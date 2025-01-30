@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import React from "react";
-import { Button } from "./ui/button";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+
+import { Button } from "./ui/button";
 
 const NotFoundSection = ({ query }: { query: string }) => {
   const router = useRouter();

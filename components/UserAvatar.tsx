@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import config from "@/lib/config";
 import { getInitials } from "@/lib/utils";

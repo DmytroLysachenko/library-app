@@ -1,6 +1,10 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import dayjs from "dayjs";
+import { CircleX, ExternalLink, Trash2 } from "lucide-react";
+
 import {
   Table,
   TableBody,
@@ -9,7 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import dayjs from "dayjs";
 import {
   Select,
   SelectContent,
@@ -17,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { CircleX, ExternalLink, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import config from "@/lib/config";
 import {
@@ -27,7 +29,6 @@ import {
   rejectUser,
 } from "@/lib/admin/actions/users";
 import { toast } from "@/lib/actions/hooks/use-toast";
-import Link from "next/link";
 import UserAvatar from "../UserAvatar";
 import { Badge } from "../ui/badge";
 

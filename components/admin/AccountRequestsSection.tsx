@@ -1,7 +1,8 @@
 import React from "react";
-import { Button } from "../ui/button";
-import EmptyState from "./EmptyState";
 import Link from "next/link";
+
+import EmptyState from "./EmptyState";
+import { Button } from "@/components/ui/button";
 
 const AccountRequestsSection = () => {
   return (

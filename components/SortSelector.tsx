@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 
 import {
   Select,
@@ -11,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { sorts } from "@/constants";
-import { useRouter } from "next/navigation";
 
 const SortSelector = () => {
   const router = useRouter();

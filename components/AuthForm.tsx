@@ -1,5 +1,6 @@
 "use client";
-
+import React from "react";
+import { ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   DefaultValues,
@@ -9,9 +10,9 @@ import {
   useForm,
   UseFormReturn,
 } from "react-hook-form";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import React from "react";
-import { ZodType } from "zod";
 import {
   Form,
   FormControl,
@@ -22,11 +23,9 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import Link from "next/link";
 import { FIELD_NAMES, FIELD_TYPES } from "@/constants";
 import FileUpload from "./FileUpload";
 import { toast } from "@/lib/actions/hooks/use-toast";
-import { useRouter } from "next/navigation";
 
 interface AuthFormProps<T extends FieldValues> {
   schema: ZodType<T>;

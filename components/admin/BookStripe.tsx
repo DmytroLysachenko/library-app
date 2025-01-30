@@ -1,8 +1,9 @@
 import React from "react";
-import BookCover from "../BookCover";
 import { Calendar } from "lucide-react";
 import dayjs from "dayjs";
 import Link from "next/link";
+
+import BookCover from "../BookCover";
 
 const BookStripe = ({ book }: { book: Book }) => {
   return (

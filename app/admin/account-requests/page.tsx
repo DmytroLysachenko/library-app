@@ -1,9 +1,10 @@
+import React from "react";
+import { asc, desc, eq } from "drizzle-orm";
+
 import SortSelector from "@/components/admin/SortSelector";
 import UsersTable from "@/components/admin/UsersTable";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
-import { asc, desc, eq } from "drizzle-orm";
-import React from "react";
 
 const Page = async ({
   searchParams,

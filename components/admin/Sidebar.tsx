@@ -1,11 +1,11 @@
 "use client";
-
-import { adminSideBarLinks } from "@/constants";
-import { cn } from "@/lib/utils";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+
+import { adminSideBarLinks } from "@/constants";
+import { cn } from "@/lib/utils";
 import UserAvatar from "../UserAvatar";
 
 const Sidebar = ({ user }: { user: Partial<User> }) => {

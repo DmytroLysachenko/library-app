@@ -1,12 +1,13 @@
+import React from "react";
+import { redirect } from "next/navigation";
+import { desc, eq, not } from "drizzle-orm";
+
 import { auth } from "@/auth";
 import BookList from "@/components/BookList";
 import BookOverview from "@/components/BookOverview";
 import BookVideo from "@/components/BookVideo";
 import { db } from "@/db/drizzle";
 import { books } from "@/db/schema";
-import { desc, eq, not } from "drizzle-orm";
-import { redirect } from "next/navigation";
-import React from "react";
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;

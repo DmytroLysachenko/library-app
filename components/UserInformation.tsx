@@ -3,16 +3,16 @@
 import React from "react";
 import Image from "next/image";
 import { IKImage } from "imagekitio-next";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
 
 import { cn, getUserStatusIcon, getUserStatusLabel } from "@/lib/utils";
 import { Card, CardContent } from "./ui/card";
 import config from "@/lib/config";
 import FileUpload from "./FileUpload";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
-import { useForm } from "react-hook-form";
 import { userUpdateSchema } from "@/lib/validations";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "./ui/button";
 import { uploadAvatar } from "@/lib/actions/auth";
 import { toast } from "@/lib/actions/hooks/use-toast";

@@ -1,12 +1,12 @@
+import React from "react";
+import { redirect } from "next/navigation";
+import { after } from "next/server";
+import { eq } from "drizzle-orm";
+
 import { auth } from "@/auth";
 import Header from "@/components/Header";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
-import { after } from "next/server";
-
-import React from "react";
 
 const Layout = async ({
   children,

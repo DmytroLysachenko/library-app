@@ -1,8 +1,8 @@
 "use client";
+import React from "react";
 
 import config from "@/lib/config";
 import { IKVideo, ImageKitProvider } from "imagekitio-next";
-import React from "react";
 
 const BookVideo = ({ videoUrl }: { videoUrl: string }) => {
   return (

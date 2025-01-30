@@ -1,12 +1,12 @@
 "use client";
-
-import { cn, getInitials } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { LogOut } from "lucide-react";
-import { signOutAction } from "@/lib/actions/auth";
 import { redirect, usePathname } from "next/navigation";
+
+import { cn } from "@/lib/utils";
+import { signOutAction } from "@/lib/actions/auth";
 import UserAvatar from "./UserAvatar";
 
 const Header = ({ user }: { user: Partial<User> }) => {

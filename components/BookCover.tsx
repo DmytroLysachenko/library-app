@@ -1,9 +1,10 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import React from "react";
-import BookCoverSvg from "./BookCoverSvg";
 import { IKImage } from "imagekitio-next";
+
+import BookCoverSvg from "./BookCoverSvg";
+import { cn } from "@/lib/utils";
 import config from "@/lib/config";
 
 type BookCoverVariant = "extraSmall" | "small" | "medium" | "regular" | "wide";

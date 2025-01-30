@@ -8,27 +8,26 @@ import AccountRequestsSection from "@/components/admin/AccountRequestsSection";
 import StatisticsBoard from "@/components/admin/StatisticsBoard";
 
 const Page = async () => {
-  const recentBooks = (await db
-    .select()
-    .from(books)
-    .limit(6)
-    .orderBy(desc(books.createdAt))) as Book[];
-
-  const recentBorrowRecords = (await db
-    .select()
-    .from(borrowRecords)
-    .where(eq(borrowRecords.status, "BORROWED"))
-    .leftJoin(books, eq(borrowRecords.bookId, books.id))
-    .leftJoin(users, eq(borrowRecords.userId, users.id))
-    .orderBy(desc(borrowRecords.createdAt))
-    .limit(3)
-    .then((res) => {
-      return res.map((record) => ({
-        ...record.borrow_records,
-        book: { ...record.books },
-        user: { ...record.users },
-      }));
-    })) as BorrowRecord[];
+  const [recentBooks, recentBorrowRecords] = await Promise.all([
+    db.select().from(books).limit(6).orderBy(desc(books.createdAt)) as Promise<
+      Book[]
+    >,
+    db
+      .select()
+      .from(borrowRecords)
+      .where(eq(borrowRecords.status, "BORROWED"))
+      .leftJoin(books, eq(borrowRecords.bookId, books.id))
+      .leftJoin(users, eq(borrowRecords.userId, users.id))
+      .orderBy(desc(borrowRecords.createdAt))
+      .limit(3)
+      .then((res) => {
+        return res.map((record) => ({
+          ...record.borrow_records,
+          book: { ...record.books },
+          user: { ...record.users },
+        }));
+      }) as Promise<BorrowRecord[]>,
+  ]);
 
   return (
     <div className="admin-container">
