@@ -18,9 +18,9 @@ const StatCard = ({
       <div className="stat-info">
         <p className="stat-label">{label}</p>
         <p
-          className={`text-sm font-medium ${count > 0 ? "text-green-500" : count < 0 ? "text-red-500" : "text-gray-500"}`}
+          className={`text-sm font-medium ${change > 0 ? "text-green-500" : change < 0 ? "text-red-500" : "text-gray-500"}`}
         >
-          {count > 0 ? "+" : count < 0 ? "-" : ""} {Math.abs(change)}
+          {change > 0 ? "+" : change < 0 ? "-" : ""} {Math.abs(change)}
         </p>
       </div>
       <p className="stat-count">{count}</p>
