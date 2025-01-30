@@ -6,7 +6,7 @@ import { users } from "@/db/schema";
 import { hash } from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import ratelimit from "../ratelimit";
+import { authRatelimit } from "../ratelimit";
 import { redirect } from "next/navigation";
 import { workflowClient } from "../workflow";
 import config from "../config";
@@ -37,7 +37,7 @@ export const signUp = async (params: AuthCredentials) => {
   const { fullName, email, password, universityId, universityCard } = params;
 
   const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1";
-  const { success } = await ratelimit.limit(ip);
+  const { success } = await authRatelimit.limit(ip);
 
   if (!success) return redirect("too-fast");
 

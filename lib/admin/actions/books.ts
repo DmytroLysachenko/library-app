@@ -31,9 +31,24 @@ export const createBook = async (params: BookParams) => {
 
 export const editBook = async (bookId: string, params: BookParams) => {
   try {
+    const previousBook = await db
+      .select({
+        totalCopies: books.totalCopies,
+        availableCopies: books.availableCopies,
+      })
+      .from(books)
+      .where(eq(books.id, bookId))
+      .limit(1)
+      .then((res) => res[0]);
+
+    const totalCopiesDifference = params.totalCopies - previousBook.totalCopies;
+
     const newBook = await db
       .update(books)
-      .set(params)
+      .set({
+        ...params,
+        availableCopies: previousBook.availableCopies + totalCopiesDifference,
+      })
       .where(eq(books.id, bookId))
       .returning()
       .then((res) => res[0]);

@@ -44,32 +44,27 @@ export const deleteUser = async (userId: string) => {
 
     return {
       success: false,
-      message: "An error occurred while deleting the book",
+      message: "An error occurred while deleting the user",
     };
   }
 };
 
 export const approveUser = async (userId: string) => {
   try {
-    const userInfo = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId))
-      .limit(1)
-      .then((res) => res[0]);
-
-    if (!userInfo)
-      return {
-        success: false,
-        message: "User not found",
-      };
-
-    const newUser = await db
-      .update(users)
-      .set({ status: "APPROVED" })
-      .where(eq(users.id, userId))
-      .returning()
-      .then((res) => res[0]);
+    const [userInfo, newUser] = await Promise.all([
+      db
+        .select()
+        .from(users)
+        .where(eq(users.id, userId))
+        .limit(1)
+        .then((res) => res[0]),
+      db
+        .update(users)
+        .set({ status: "APPROVED" })
+        .where(eq(users.id, userId))
+        .returning()
+        .then((res) => res[0]),
+    ]);
 
     await sendEmail({
       to: userInfo.email,
@@ -90,7 +85,7 @@ export const approveUser = async (userId: string) => {
 
     return {
       success: false,
-      message: "An error occurred while deleting the book",
+      message: "An error occurred while approving the user",
     };
   }
 };
@@ -113,7 +108,7 @@ export const rejectUser = async (userId: string) => {
 
     return {
       success: false,
-      message: "An error occurred while deleting the book",
+      message: "An error occurred while rejecting the user",
     };
   }
 };

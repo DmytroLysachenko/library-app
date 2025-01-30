@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { ArrowLeft } from "lucide-react";
 import UserAvatar from "../UserAvatar";
 
 const Sidebar = ({ user }: { user: Partial<User> }) => {

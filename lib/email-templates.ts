@@ -7,8 +7,22 @@ type TemplateData = {
 
 const baseStyles = `
   <style>
-    .container { max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; }
-    .header { color: #2B6CB0; font-size: 24px; margin-bottom: 20px; }
+    .container { 
+      max-width: 600px; 
+      margin: 0 auto; 
+      font-family: 'Arial', sans-serif; 
+      background-color: #ffffff; 
+      padding: 20px; 
+      border-radius: 8px; 
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    }
+    .header { 
+      color: #2B6CB0; 
+      font-size: 28px; 
+      font-weight: bold; 
+      margin-bottom: 20px; 
+      text-align: center; 
+    }
     .button { 
       background: #2B6CB0; 
       color: white; 
@@ -17,12 +31,58 @@ const baseStyles = `
       border-radius: 4px; 
       display: inline-block; 
       margin: 20px 0; 
+      font-size: 16px; 
+      text-align: center; 
+      transition: background-color 0.3s ease; 
     }
-    .details { background: #F7FAFC; padding: 20px; border-radius: 8px; margin: 15px 0; }
-    .footer { color: #718096; font-size: 14px; margin-top: 30px; }
+    .button:hover { 
+      background-color: #1E4E8C; 
+    }
+    .details { 
+      background: #F7FAFC; 
+      padding: 20px; 
+      border-radius: 8px; 
+      margin: 15px 0; 
+      font-size: 14px; 
+      color: #4A5568; 
+    }
+    .footer { 
+      color: #718096; 
+      font-size: 14px; 
+      margin-top: 30px; 
+      text-align: center; 
+    }
+    p { 
+      font-size: 16px; 
+      line-height: 1.5; 
+      color: #4A5568; 
+      margin: 10px 0; 
+    }
+    a { 
+      color: #2B6CB0; 
+      text-decoration: none; 
+    }
+    a:hover { 
+      text-decoration: underline; 
+    }
+    .receipt-table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin: 20px 0; 
+    }
+    .receipt-table td { 
+      padding: 12px; 
+      border-bottom: 1px solid #E2E8F0; 
+      font-size: 14px; 
+    }
+    .receipt-header { 
+      font-size: 18px; 
+      font-weight: bold; 
+      margin: 15px 0; 
+      color: #2B6CB0; 
+    }
   </style>
 `;
-
 export const emailTemplates = {
   [EmailTemplate.WELCOME]: (data: TemplateData) => `
     <!DOCTYPE html>
@@ -59,6 +119,23 @@ export const emailTemplates = {
       </body>
     </html>
   `,
+  [EmailTemplate.REJECTION]: (data: TemplateData) => `
+  <!DOCTYPE html>
+  <html>
+    <head>${baseStyles}</head>
+    <body>
+      <div class="container">
+        <h1 class="header">Account Application Rejected</h1>
+        <p>Hi, ${data.studentName},</p>
+        <p>We regret to inform you that your LibraryView account application has been rejected. If you believe this is a mistake or need further clarification, please contact our administration team for assistance.</p>
+        <p>You can reach out to us at <a href="mailto:admin@libraryview.com">admin@libraryview.com</a> or call us at +1-234-567-8900.</p>
+        <div class="footer">
+          <p>Thank you for your understanding,<br>The LibraryView Team</p>
+        </div>
+      </div>
+    </body>
+  </html>
+`,
 
   [EmailTemplate.BORROW_CONFIRMATION]: (data: TemplateData) => `
     <!DOCTYPE html>

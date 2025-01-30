@@ -51,7 +51,7 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
     const result =
       type === "create"
         ? await createBook(values)
-        : await editBook(book.id || "", values);
+        : await editBook(book.id as string, values);
 
     if (result.success) {
       toast({
@@ -168,7 +168,11 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
               <FormControl>
                 <Input
                   type="number"
-                  min={1}
+                  min={
+                    book.totalCopies && book.availableCopies
+                      ? book.totalCopies - book.availableCopies
+                      : 1
+                  }
                   max={10000}
                   placeholder="Total copies"
                   {...field}

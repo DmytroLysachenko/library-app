@@ -1,4 +1,5 @@
 import {
+  boolean,
   date,
   integer,
   pgEnum,
@@ -68,4 +69,17 @@ export const borrowRecords = pgTable("borrow_records", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+});
+
+export const appStatsRecords = pgTable("app_stats_records", {
+  id: uuid("id").notNull().primaryKey().defaultRandom().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  totalUsers: integer("total_users").notNull(),
+  totalBooks: integer("total_books").notNull(),
+  totalBorrowedBooks: integer("total_borrowed_books").notNull(),
+  statsRecordingStatus: boolean("stats_recording_status")
+    .notNull()
+    .default(false),
 });
