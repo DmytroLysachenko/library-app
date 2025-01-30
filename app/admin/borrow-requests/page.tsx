@@ -1,5 +1,5 @@
 import React from "react";
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, ne } from "drizzle-orm";
 
 import BorrowRequestsTable from "@/components/admin/BorrowRecordsTable";
 import SortSelector from "@/components/admin/SortSelector";
@@ -23,7 +23,7 @@ const Page = async ({
         ? asc(borrowRecords.createdAt)
         : desc(borrowRecords.createdAt)
     )
-    .where(eq(borrowRecords.status, "RETURNED"))
+    .where(ne(borrowRecords.status, "RETURNED"))
     .then((res) => {
       return res.map((record) => ({
         ...record.borrow_records,
@@ -35,7 +35,7 @@ const Page = async ({
   return (
     <section className="admin-container">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-xl font-semibold"> Borrow book records</h2>
+        <h2 className="text-xl font-semibold"> Borrow book requests</h2>
         <SortSelector type="date" />
       </div>
       <BorrowRequestsTable records={allRecords} />

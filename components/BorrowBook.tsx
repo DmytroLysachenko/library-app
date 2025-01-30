@@ -48,7 +48,8 @@ const BorrowBook = ({
       if (result.success) {
         toast({
           title: "Success",
-          description: "Book borrowed successfully",
+          description:
+            "Your borrow request sent successfully, book will appear in your profile soon!",
         });
 
         router.push(`/my-profile`);

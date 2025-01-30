@@ -1,5 +1,5 @@
 import React from "react";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import { auth } from "@/auth";
 import BookList from "@/components/BookList";
@@ -30,13 +30,16 @@ const page = async () => {
       status: borrowRecords.status,
     })
     .from(borrowRecords)
-    .leftJoin(books, eq(borrowRecords.bookId, books.id))
     .where(
-      eq(borrowRecords.userId, session?.user?.id as string)
-    )) as BookCard[];
+      and(
+        eq(borrowRecords.userId, user.id),
+        eq(borrowRecords.status, "BORROWED")
+      )
+    )
+    .leftJoin(books, eq(borrowRecords.bookId, books.id))) as BookCard[];
 
   return (
-    <div className="flex flex-col md:flex-row justify-evenly gap-10">
+    <div className="flex flex-col items-center md:items-start md:flex-row gap-10">
       <UserInformation user={user} />
       <BookList
         title="Borrowed Books"

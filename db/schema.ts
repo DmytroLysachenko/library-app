@@ -18,7 +18,11 @@ export const STATUS_ENUM = pgEnum("status", [
 
 export const ROLE_ENUM = pgEnum("role", ["USER", "ADMIN"]);
 
-export const BORROW_STATUS = pgEnum("borrow_status", ["BORROWED", "RETURNED"]);
+export const BORROW_STATUS = pgEnum("borrow_status", [
+  "BORROWED",
+  "RETURNED",
+  "PENDING",
+]);
 
 export const users = pgTable("users", {
   id: uuid("id").notNull().primaryKey().defaultRandom().unique(),
@@ -65,7 +69,7 @@ export const borrowRecords = pgTable("borrow_records", {
     .references(() => books.id, { onDelete: "cascade" }),
   dueDate: date("due_date").notNull(),
   returnDate: date("return_date"),
-  status: BORROW_STATUS("status").default("BORROWED").notNull(),
+  status: BORROW_STATUS("status").default("PENDING").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
