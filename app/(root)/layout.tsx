@@ -34,7 +34,7 @@ const Layout = async ({
     const user = await db
       .select({ lastActivityDate: users.lastActivityDate })
       .from(users)
-      .where(eq(users.id, session?.user!.id!))
+      .where(eq(users.id, session.user.id))
       .limit(1)
       .then((res) => res[0]);
 

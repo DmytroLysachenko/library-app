@@ -11,7 +11,7 @@ const Page = async ({
 }: {
   searchParams: Promise<{ page: string; sort: "asc" | "desc" }>;
 }) => {
-  const { page = 1, sort } = await searchParams;
+  const { sort } = await searchParams;
 
   const allRecords = (await db
     .select()

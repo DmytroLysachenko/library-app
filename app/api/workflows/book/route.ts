@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { EmailTemplate } from "@/constants";
 import { db } from "@/db/drizzle";
-import { books, borrowRecords, users } from "@/db/schema";
+import { borrowRecords } from "@/db/schema";
 import { sendEmail } from "@/lib/email";
 import { serve } from "@upstash/workflow/nextjs";
 import { eq } from "drizzle-orm";
@@ -18,7 +18,6 @@ type InitialData = {
 
 export const { POST } = serve<InitialData>(async (context) => {
   const {
-    bookId,
     borrowRecordId,
     bookTitle,
     bookBorrowDate,

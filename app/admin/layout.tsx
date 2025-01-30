@@ -22,7 +22,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
       email: users.email,
     })
     .from(users)
-    .where(eq(users.id, session?.user!.id!))
+    .where(eq(users.id, session.user.id))
     .limit(1)
     .then((res) => res[0])) as Partial<User>;
 

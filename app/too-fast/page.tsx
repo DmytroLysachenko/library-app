@@ -7,9 +7,9 @@ const Page = () => {
         Too many requests, slow down.
       </h1>
       <p className="mt-3 max-2-xl text-center text-light-400">
-        Looks like you've been making a lot of requests recently! To keep things
-        running smoothly for everyone, we have a temporary limit in place.
-        Please try again in a few minutes.
+        Looks like you&apos;ve been making a lot of requests recently! To keep
+        things running smoothly for everyone, we have a temporary limit in
+        place. Please try again in a few minutes.
       </p>
     </main>
   );

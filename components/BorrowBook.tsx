@@ -54,6 +54,7 @@ const BorrowBook = ({
         router.push(`/my-profile`);
       }
     } catch (error) {
+      console.log(error);
       toast({
         title: "Error",
         description: "An error occurred. Please try again.",

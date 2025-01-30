@@ -7,6 +7,10 @@ import { IKImage, ImageKitProvider, IKUpload, IKVideo } from "imagekitio-next";
 import config from "@/lib/config";
 import { toast } from "@/lib/actions/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import {
+  IKUploadResponse,
+  UploadError,
+} from "imagekitio-next/dist/types/components/IKUpload/props";
 
 interface FileUploadProps {
   type: "image" | "video";
@@ -37,13 +41,17 @@ const authenticator = async () => {
       );
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as {
+      signature: string;
+      expire: number;
+      token: string;
+    };
 
     const { signature, expire, token } = data;
 
     return { token, expire, signature };
-  } catch (error: any) {
-    throw new Error(`Authentication request failed: ${error.message}`);
+  } catch (error: unknown) {
+    throw new Error(`Authentication request failed: ${error}`);
   }
 };
 
@@ -72,7 +80,7 @@ const FileUpload = ({
     text: variant === "dark" ? "text-light-100" : "text-dark-400",
   };
 
-  const onError = (error: any) => {
+  const onError = (error: UploadError) => {
     console.log(error);
     toast({
       title: `${type} upload failed`,
@@ -81,7 +89,7 @@ const FileUpload = ({
     });
   };
 
-  const onSuccess = (response: any) => {
+  const onSuccess = (response: IKUploadResponse) => {
     setFile(response);
     onFileChange(response.filePath);
     toast({
@@ -140,7 +148,7 @@ const FileUpload = ({
           e.preventDefault();
 
           if (ikUploadRef.current) {
-            // @ts-ignore
+            // @ts-expect-error To avoid redeclaring types from never
             ikUploadRef.current?.click();
           }
         }}
