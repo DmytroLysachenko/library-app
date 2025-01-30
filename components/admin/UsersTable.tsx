@@ -29,7 +29,20 @@ import {
 import { toast } from "@/lib/actions/hooks/use-toast";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
-import Image from "next/image";
+import { Badge } from "../ui/badge";
+
+const getStatusBadgeColor = (status: string) => {
+  switch (status) {
+    case "PENDING":
+      return "bg-yellow-500 text-white";
+    case "APPROVED":
+      return "bg-green-500 text-white";
+    case "REJECTED":
+      return "bg-red-500 text-white";
+    default:
+      return "bg-gray-500 text-white";
+  }
+};
 
 const UsersTable = ({
   users,
@@ -45,6 +58,7 @@ const UsersTable = ({
       <Table>
         <TableHeader className="bg-slate-100">
           <TableRow>
+            <TableHead>Status</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Date Joined</TableHead>
             {isUsersTable && (
@@ -84,6 +98,15 @@ const UserRecord = ({
   const [userRole, setUserRole] = React.useState(user.role);
   return (
     <TableRow key={user.id}>
+      <TableCell>
+        <Badge className={`${getStatusBadgeColor(user.status)}`}>
+          {user.status === "APPROVED" ? (
+            user.status
+          ) : (
+            <Link href="/admin/account-requests">{user.status}</Link>
+          )}
+        </Badge>
+      </TableCell>
       <TableCell>
         <div className="flex items-center gap-3">
           <UserAvatar

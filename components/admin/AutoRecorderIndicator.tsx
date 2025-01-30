@@ -25,6 +25,7 @@ export function AutoRecorderIndicator({ status }: AutoRecorderIndicatorProps) {
     const newState = !isEnabled;
     setIsLoading(true);
     try {
+      console.log(newState);
       await setStatsRecorderStatus(newState);
       setIsEnabled(newState);
     } catch (error) {

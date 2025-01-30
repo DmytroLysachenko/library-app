@@ -1,43 +1,44 @@
 import { db } from "@/db/drizzle";
-import { appStatsRecords, books, borrowRecords, users } from "@/db/schema";
+import { appStatsRecords } from "@/db/schema";
+import { fetchStatistics } from "@/lib/admin/actions/statsRecords";
 import { serve } from "@upstash/workflow/nextjs";
-import { count, desc, eq } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 
-type InitialData = {
-  totalUsers: number;
-  totalBooks: number;
-  totalBorrowedBooks: number;
+interface InitialData {
   statsRecordingStatus: boolean;
-};
+}
 
 export const { POST } = serve<InitialData>(async (context) => {
-  let { statsRecordingStatus } = context.requestPayload;
+  const { statsRecordingStatus } = context.requestPayload;
+
+  await context.run("set-first-record", async () => {
+    const stats = await fetchStatistics();
+
+    await db.insert(appStatsRecords).values({
+      ...stats,
+      statsRecordingStatus,
+    });
+  });
 
   while (statsRecordingStatus) {
+    await context.sleep("wait-for-1-day", 60 * 60 * 24);
+
+    const latestStatus = await db
+      .select({ status: appStatsRecords.statsRecordingStatus })
+      .from(appStatsRecords)
+      .orderBy(desc(appStatsRecords.createdAt))
+      .limit(1)
+      .then((res) => res[0]?.status ?? false);
+
+    if (!latestStatus) break;
+
     await context.run("set-record", async () => {
-      const totalUsers = await db
-        .select({ value: count() })
-        .from(users)
-        .then((res) => res[0].value);
+      const stats = await fetchStatistics();
 
-      const totalBooks = await db
-        .select({ value: count() })
-        .from(books)
-        .then((res) => res[0].value);
-
-      const totalBorrowedBooks = await db
-        .select({ value: count() })
-        .from(borrowRecords)
-        .where(eq(borrowRecords.status, "BORROWED"))
-        .then((res) => res[0].value);
-
-      const newRecord = await db.insert(appStatsRecords).values({
-        totalUsers,
-        totalBooks,
-        totalBorrowedBooks,
+      await db.insert(appStatsRecords).values({
+        ...stats,
+        statsRecordingStatus: latestStatus,
       });
     });
-
-    await context.sleep("wait-for-1-day", 60 * 60 * 24);
   }
 });

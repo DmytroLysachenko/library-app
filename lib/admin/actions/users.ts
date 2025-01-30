@@ -92,16 +92,32 @@ export const approveUser = async (userId: string) => {
 
 export const rejectUser = async (userId: string) => {
   try {
-    const user = await db
-      .update(users)
-      .set({ status: "REJECTED" })
-      .where(eq(users.id, userId))
-      .returning()
-      .then((res) => res[0]);
+    const [userInfo, newUser] = await Promise.all([
+      db
+        .select()
+        .from(users)
+        .where(eq(users.id, userId))
+        .limit(1)
+        .then((res) => res[0]),
+      db
+        .update(users)
+        .set({ status: "REJECTED" })
+        .where(eq(users.id, userId))
+        .returning()
+        .then((res) => res[0]),
+    ]);
 
+    await sendEmail({
+      to: userInfo.email,
+      subject: "Your account has been Rejected!",
+      template: EmailTemplate.REJECTION,
+      data: {
+        studentName: userInfo.fullName,
+      },
+    });
     return {
       success: true,
-      newUser: JSON.parse(JSON.stringify(user)),
+      newUser: JSON.parse(JSON.stringify(newUser)),
     };
   } catch (error) {
     console.log(error);
