@@ -71,6 +71,13 @@
       "when": 1738276198378,
       "tag": "0009_magical_wild_child",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1738335046170,
+      "tag": "0010_amazing_blackheart",
+      "breakpoints": true
     }
   ]
 }

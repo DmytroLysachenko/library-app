@@ -19,7 +19,7 @@ const BorrowRecordsSection = ({ requests }: { requests: BorrowRecord[] }) => {
           className="view-btn px-0"
           asChild
         >
-          <Link href={"/admin/barrow-records"}>View all</Link>
+          <Link href={"/admin/borrow-records"}>View all</Link>
         </Button>
       </div>
 

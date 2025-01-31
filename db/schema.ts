@@ -73,6 +73,7 @@ export const borrowRecords = pgTable("borrow_records", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+  receiptUrl: text("receipt_url"),
 });
 
 export const appStatsRecords = pgTable("app_stats_records", {

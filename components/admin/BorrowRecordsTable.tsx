@@ -29,7 +29,13 @@ import {
 } from "@/lib/admin/actions/records";
 import { toast } from "@/lib/actions/hooks/use-toast";
 
-const BorrowRecordsTable = ({ records }: { records: BorrowRecord[] }) => {
+const BorrowRecordsTable = ({
+  records,
+  isRequest,
+}: {
+  records: BorrowRecord[];
+  isRequest: boolean;
+}) => {
   return (
     <div className="rounded-md border mt-7">
       <Table>
@@ -37,20 +43,21 @@ const BorrowRecordsTable = ({ records }: { records: BorrowRecord[] }) => {
           <TableRow>
             <TableHead>Book</TableHead>
             <TableHead>User Requested</TableHead>
-            <TableHead>Borrowed status</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead>Borrowed date</TableHead>
             <TableHead>Return date</TableHead>
             <TableHead>Due Date</TableHead>
-            <TableHead>Receipt</TableHead>
+            {isRequest && <TableHead>Receipt</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {records.map(({ book, user, ...record }) => (
-            <BorrowRequestRecord
+            <BorrowRecord
               key={record.id}
               record={record}
               book={book}
               user={user}
+              isRequest={isRequest}
             />
           ))}
         </TableBody>
@@ -59,14 +66,16 @@ const BorrowRecordsTable = ({ records }: { records: BorrowRecord[] }) => {
   );
 };
 
-const BorrowRequestRecord = ({
+const BorrowRecord = ({
   record,
   book,
   user,
+  isRequest,
 }: {
   record: Omit<BorrowRecord, "book" | "user">;
   book: Book;
   user: User;
+  isRequest: boolean;
 }) => {
   const [isChangingStatus, setIsChangingStatus] = React.useState(false);
   const [status, setStatus] = React.useState(record.status);
@@ -76,7 +85,6 @@ const BorrowRequestRecord = ({
     (record.dueDate ? new Date(record.dueDate) : new Date()) >=
     (record.returnDate ? new Date(record.returnDate) : new Date());
 
-  // Determine the next status based on the current status
   const getNextStatus = (currentStatus: string) => {
     switch (currentStatus) {
       case "PENDING":
@@ -84,7 +92,7 @@ const BorrowRequestRecord = ({
       case "BORROWED":
         return "RETURNED";
       default:
-        return null; // No next status for "RETURNED"
+        return null;
     }
   };
 
@@ -132,6 +140,7 @@ const BorrowRequestRecord = ({
           <span className="font-medium">{book.title}</span>
         </div>
       </TableCell>
+
       <TableCell>
         <div className="flex items-center gap-3">
           <UserAvatar
@@ -146,44 +155,64 @@ const BorrowRequestRecord = ({
           </div>
         </div>
       </TableCell>
-      <TableCell>
-        {nextStatus ? (
-          <Select
-            value={status}
-            disabled={isChangingStatus || status === "RETURNED"}
-            onValueChange={onChangeBorrowStatus}
-          >
-            <SelectTrigger
-              className={cn(
-                "w-36 text-xs",
-                inTimeReturn ? "bg-purple-100" : "bg-red-300"
-              )}
-            >
-              <SelectValue>{status}</SelectValue>
-            </SelectTrigger>
 
-            <SelectContent className="w-36 text-xs">
-              <SelectItem value={nextStatus}>
-                <span
-                  className={cn(
-                    "text-xs",
-                    inTimeReturn ? "text-purple-500" : "text-red-500"
-                  )}
-                >
-                  {nextStatus === "BORROWED"
-                    ? "Borrowed"
-                    : inTimeReturn
-                      ? "Returned in time"
-                      : "Late Return"}
-                </span>
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        ) : (
-          <div className="text-sm text-muted-foreground">No further action</div>
-        )}
-      </TableCell>
+      {isRequest ? (
+        <TableCell>
+          {nextStatus ? (
+            <Select
+              value={status}
+              disabled={isChangingStatus || status === "RETURNED"}
+              onValueChange={onChangeBorrowStatus}
+            >
+              <SelectTrigger
+                className={cn(
+                  "w-36 text-xs",
+                  inTimeReturn ? "bg-purple-100" : "bg-red-300"
+                )}
+              >
+                <SelectValue>{status}</SelectValue>
+              </SelectTrigger>
+
+              <SelectContent className="w-36 text-xs">
+                <SelectItem value={nextStatus}>
+                  <span
+                    className={cn(
+                      "text-xs",
+                      inTimeReturn ? "text-purple-500" : "text-red-500"
+                    )}
+                  >
+                    {nextStatus === "BORROWED"
+                      ? "Borrowed"
+                      : inTimeReturn
+                        ? "Returned in time"
+                        : "Late Return"}
+                  </span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          ) : (
+            <div className="text-sm text-muted-foreground">
+              No further action
+            </div>
+          )}
+        </TableCell>
+      ) : (
+        <TableCell
+          className={cn(
+            "text-md",
+            inTimeReturn ? "text-purple-500" : "text-red-500"
+          )}
+        >
+          {nextStatus === "BORROWED"
+            ? "Borrowed"
+            : inTimeReturn
+              ? "Returned in time"
+              : "Late Return"}
+        </TableCell>
+      )}
+
       <TableCell>{dayjs(record.createdAt).format("YYYY-MM-DD")}</TableCell>
+
       <TableCell>
         {record.returnDate
           ? dayjs(record.returnDate).format("YYYY-MM-DD")
@@ -191,6 +220,7 @@ const BorrowRequestRecord = ({
             ? dayjs().format("YYYY-MM-DD")
             : "N/A"}
       </TableCell>
+
       <TableCell>
         {dueDate
           ? dayjs(dueDate).format("YYYY-MM-DD")
@@ -198,15 +228,18 @@ const BorrowRequestRecord = ({
             ? dayjs().format("YYYY-MM-DD")
             : "N/A"}
       </TableCell>
-      <TableCell>
-        <Button
-          variant="link"
-          className="px-0 text-blue-500"
-        >
-          Generate
-          <FileText className="h-4 w-4 ml-1" />
-        </Button>
-      </TableCell>
+
+      {isRequest && (
+        <TableCell>
+          <Button
+            variant="link"
+            className="px-0 text-blue-500"
+          >
+            Generate
+            <FileText className="h-4 w-4 ml-1" />
+          </Button>
+        </TableCell>
+      )}
     </TableRow>
   );
 };

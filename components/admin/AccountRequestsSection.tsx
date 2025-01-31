@@ -24,7 +24,7 @@ const AccountRequestsSection = ({
         </Button>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 grid grid-cols-3">
         {recentAccountRequests.length > 0 ? (
           recentAccountRequests.map((request) => (
             <div

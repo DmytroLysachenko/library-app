@@ -43,7 +43,7 @@ const baseStyles = `
       text-align: center; 
     }
     .button { 
-      background: #aef5e5; 
+      background: #2B6CB0; 
       color: white !important; 
       padding: 12px 24px; 
       text-decoration: none; 
@@ -55,7 +55,7 @@ const baseStyles = `
       transition: background-color 0.3s ease; 
     }
     .button:hover { 
-      background-color: #89c9bb; 
+      background-color: #1E4E8C;
     }
     .details { 
       background: #F7FAFC; 
@@ -95,6 +95,13 @@ const baseStyles = `
     }
     body {
       padding: 10px 20px;
+    }
+    a { 
+      color: #2B6CB0; 
+      text-decoration: none; 
+    }
+    a:hover { 
+      text-decoration: underline; 
     }
   </style>
 `;

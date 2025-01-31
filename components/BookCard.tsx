@@ -61,6 +61,7 @@ const BookCard = ({
                   height={18}
                   className="object-contain"
                 />
+
                 <p className="text-light-100">
                   Borrowed on {dayjs(borrowDate).format("MMM DD")}
                 </p>

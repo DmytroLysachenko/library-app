@@ -64,6 +64,7 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                       <Pencil className="h-4 w-4 text-blue-500" />
                     </Link>
                   </Button>
+
                   <Button
                     variant="ghost"
                     size="icon"

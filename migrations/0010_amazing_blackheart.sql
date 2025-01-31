@@ -1,0 +1,1 @@
+ALTER TABLE "borrow_records" ADD COLUMN "receipt_url" text;

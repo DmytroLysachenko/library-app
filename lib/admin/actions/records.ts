@@ -74,45 +74,44 @@ export const confirmBookBorrowStatus = async (recordId: string) => {
   const dueDate = dayjs().add(7, "day").format("YYYY-MM-DD");
 
   try {
-    const [data, newRecord] = await Promise.all([
-      db
-        .select({
-          bookId: borrowRecords.bookId,
-          userId: borrowRecords.userId,
-          bookTitle: books.title,
-          availableCopies: books.availableCopies,
-          email: users.email,
-          studentName: users.fullName,
-          userBorrowedBooks: users.borrowedBooks,
-          borrowDate: borrowRecords.createdAt,
-        })
-        .from(borrowRecords)
-        .where(eq(borrowRecords.id, recordId))
-        .leftJoin(books, eq(borrowRecords.bookId, books.id))
-        .leftJoin(users, eq(borrowRecords.userId, users.id))
-        .limit(1)
-        .then((res) => res[0]) as Promise<{
-        bookId: string;
-        userId: string;
-        bookTitle: string;
-        availableCopies: number;
-        email: string;
-        studentName: string;
-        userBorrowedBooks: number;
-        borrowDate: Date;
-      }>,
-      db
-        .update(borrowRecords)
-        .set({
-          status: "BORROWED",
-          dueDate,
-        })
-        .where(eq(borrowRecords.id, recordId))
-        .returning()
-        .then((res) => res[0]),
-    ]);
+    const data = (await db
+      .select({
+        bookId: borrowRecords.bookId,
+        userId: borrowRecords.userId,
+        bookTitle: books.title,
+        availableCopies: books.availableCopies,
+        email: users.email,
+        studentName: users.fullName,
+        userBorrowedBooks: users.borrowedBooks,
+        borrowDate: borrowRecords.createdAt,
+      })
+      .from(borrowRecords)
+      .where(eq(borrowRecords.id, recordId))
+      .leftJoin(books, eq(borrowRecords.bookId, books.id))
+      .leftJoin(users, eq(borrowRecords.userId, users.id))
+      .limit(1)
+      .then((res) => res[0])) as {
+      bookId: string;
+      userId: string;
+      bookTitle: string;
+      availableCopies: number;
+      email: string;
+      studentName: string;
+      userBorrowedBooks: number;
+      borrowDate: Date;
+    };
 
-    Promise.all([
+    const newRecord = await db
+      .update(borrowRecords)
+      .set({
+        status: "BORROWED",
+        dueDate,
+      })
+      .where(eq(borrowRecords.id, recordId))
+      .returning()
+      .then((res) => res[0]);
+
+    await Promise.all([
       db
         .update(books)
         .set({ availableCopies: data.availableCopies - 1 })

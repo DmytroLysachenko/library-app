@@ -1,19 +1,8 @@
 import React from "react";
-import { desc } from "drizzle-orm";
 
-import { AutoRecorderIndicator } from "./AutoRecorderIndicator";
-import { db } from "@/db/drizzle";
-import { appStatsRecords } from "@/db/schema";
 import SearchInput from "../SearchInput";
 
 const Header = async ({ user }: { user: Partial<User> }) => {
-  const lastStatRecordStatus = await db
-    .select()
-    .from(appStatsRecords)
-    .orderBy(desc(appStatsRecords.createdAt))
-    .limit(1)
-    .then((res) => (res.length ? res[0].statsRecordingStatus : false));
-
   return (
     <header className="admin-header">
       <div>
@@ -24,7 +13,6 @@ const Header = async ({ user }: { user: Partial<User> }) => {
           Monitor all of your users and books here
         </p>
       </div>
-      <AutoRecorderIndicator status={lastStatRecordStatus} />
       <SearchInput
         variant="admin"
         placeholder="Search users, books by title, author, or genre..."

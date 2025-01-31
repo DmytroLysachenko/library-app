@@ -1,7 +1,7 @@
 import React from "react";
 import { and, asc, desc, eq, ilike, ne } from "drizzle-orm";
 
-import BorrowRequestsTable from "@/components/admin/BorrowRecordsTable";
+import BorrowRecordsTable from "@/components/admin/BorrowRecordsTable";
 import SortSelector from "@/components/admin/SortSelector";
 import { db } from "@/db/drizzle";
 import { books, borrowRecords, users } from "@/db/schema";
@@ -43,7 +43,10 @@ const Page = async ({
         <h2 className="text-xl font-semibold"> Borrow book requests</h2>
         <SortSelector type="date" />
       </div>
-      <BorrowRequestsTable records={allRecords} />
+      <BorrowRecordsTable
+        records={allRecords}
+        isRequest
+      />
     </section>
   );
 };

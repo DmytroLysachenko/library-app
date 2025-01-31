@@ -1,9 +1,10 @@
 import React from "react";
-import { asc, count, eq, gt } from "drizzle-orm";
+import { asc, count, desc, eq, gt } from "drizzle-orm";
 
 import { db } from "@/db/drizzle";
 import { appStatsRecords, books, borrowRecords, users } from "@/db/schema";
 import dayjs from "dayjs";
+import AutoRecorderIndicator from "./AutoRecorderIndicator";
 
 const StatCard = ({
   label,
@@ -32,35 +33,42 @@ const StatCard = ({
 };
 
 const StatisticsBoard = async () => {
-  const [lastStatsRecord, totalBooks, totalUsers, totalBorrowedBooks] =
-    await Promise.all([
-      await db
-        .select()
-        .from(appStatsRecords)
-        .orderBy(asc(appStatsRecords.createdAt))
-        .where(
-          gt(appStatsRecords.createdAt, dayjs().subtract(2, "day").toDate())
-        )
-        .then((res) => (res.length ? res[0] : null)),
+  const [
+    lastStatsRecord,
+    totalBooks,
+    totalUsers,
+    totalBorrowedBooks,
+    lastStatRecordStatus,
+  ] = await Promise.all([
+    db
+      .select()
+      .from(appStatsRecords)
+      .orderBy(asc(appStatsRecords.createdAt))
+      .where(gt(appStatsRecords.createdAt, dayjs().subtract(2, "day").toDate()))
+      .then((res) => (res.length ? res[0] : null)),
 
-      await db
-        .select({ totalCopies: books.totalCopies })
-        .from(books)
-        .then((res) =>
-          res.reduce((total, book) => total + book.totalCopies, 0)
-        ),
+    db
+      .select({ totalCopies: books.totalCopies })
+      .from(books)
+      .then((res) => res.reduce((total, book) => total + book.totalCopies, 0)),
 
-      await db
-        .select({ count: count(users.id) })
-        .from(users)
-        .then((res) => res[0].count),
+    db
+      .select({ count: count(users.id) })
+      .from(users)
+      .then((res) => res[0].count),
 
-      await db
-        .select({ count: count(borrowRecords.id) })
-        .from(borrowRecords)
-        .where(eq(borrowRecords.status, "BORROWED"))
-        .then((res) => res[0].count),
-    ]);
+    db
+      .select({ count: count(borrowRecords.id) })
+      .from(borrowRecords)
+      .where(eq(borrowRecords.status, "BORROWED"))
+      .then((res) => res[0].count),
+    db
+      .select()
+      .from(appStatsRecords)
+      .orderBy(desc(appStatsRecords.createdAt))
+      .limit(1)
+      .then((res) => (res.length ? res[0].statsRecordingStatus : false)),
+  ]);
 
   const changedUsers = lastStatsRecord
     ? totalUsers - lastStatsRecord.totalUsers
@@ -74,6 +82,7 @@ const StatisticsBoard = async () => {
 
   return (
     <section className="grid grid-cols-3 gap-5 mb-10">
+      <AutoRecorderIndicator status={lastStatRecordStatus} />
       <StatCard
         label="Borrowed Books"
         count={totalBorrowedBooks}
