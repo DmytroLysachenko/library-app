@@ -58,7 +58,9 @@ const seed = async () => {
 
       console.log("Successfully seeded book: ", book.title);
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 seed();
