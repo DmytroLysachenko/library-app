@@ -1,5 +1,5 @@
 import React from "react";
-import { and, asc, desc, eq, ilike } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, or } from "drizzle-orm";
 
 import BorrowRequestsTable from "@/components/admin/BorrowRecordsTable";
 import SortSelector from "@/components/admin/SortSelector";
@@ -26,7 +26,12 @@ const Page = async ({
     .where(
       and(
         eq(borrowRecords.status, "RETURNED"),
-        query ? ilike(users.fullName, `%${query}%`) : undefined
+        query
+          ? or(
+              ilike(users.fullName, `%${query}%`),
+              ilike(books.title, `%${query}%`)
+            )
+          : undefined
       )
     )
     .then((res) => {

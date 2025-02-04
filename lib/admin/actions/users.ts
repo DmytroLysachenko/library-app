@@ -3,6 +3,7 @@
 import { EmailTemplate } from "@/constants";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
+import config from "@/lib/config";
 import { sendEmail } from "@/lib/email";
 import { eq } from "drizzle-orm";
 
@@ -72,7 +73,7 @@ export const approveUser = async (userId: string) => {
       template: EmailTemplate.APPROVAL,
       data: {
         studentName: userInfo.fullName,
-        loginUrl: "https://library-app-rust-five.vercel.app/sign-in",
+        loginUrl: `${config.env.prodApiEndpoint}/sign-in`,
       },
     });
 

@@ -1,10 +1,12 @@
 import dayjs from "dayjs";
+import { serve } from "@upstash/workflow/nextjs";
+import { eq } from "drizzle-orm";
+
 import { EmailTemplate } from "@/constants";
 import { db } from "@/db/drizzle";
 import { borrowRecords } from "@/db/schema";
 import { sendEmail } from "@/lib/email";
-import { serve } from "@upstash/workflow/nextjs";
-import { eq } from "drizzle-orm";
+import config from "@/lib/config";
 
 type InitialData = {
   bookId: string;
@@ -36,7 +38,7 @@ export const { POST } = serve<InitialData>(async (context) => {
         bookTitle,
         borrowDate: dayjs(bookBorrowDate).format("DD MMMM YYYY"),
         dueDate: dayjs(bookDueDate).format("DD MMMM YYYY"),
-        borrowedBooksUrl: "https://library-app-rust-five.vercel.app/my-profile",
+        borrowedBooksUrl: `${config.env.prodApiEndpoint}/my-profile`,
       },
     });
   });
@@ -51,7 +53,7 @@ export const { POST } = serve<InitialData>(async (context) => {
       .from(borrowRecords)
       .where(eq(borrowRecords.id, borrowRecordId))
       .limit(1)
-      .then((res) => res[0]?.status);
+      .then((res) => res.length && res[0]?.status);
   });
 
   if (status !== "RETURNED") {
@@ -59,7 +61,7 @@ export const { POST } = serve<InitialData>(async (context) => {
       await sendEmail({
         to: userEmail,
         template: EmailTemplate.DUE_REMINDER,
-        subject: "Welcome to LibraryView!",
+        subject: `Remember borrowing ${bookTitle} on LibraryView?`,
         data: {
           studentName: studentName,
           bookTitle: bookTitle,

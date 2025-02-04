@@ -28,6 +28,7 @@ const page = async () => {
       dueDate: borrowRecords.dueDate,
       returnDate: borrowRecords.returnDate,
       status: borrowRecords.status,
+      receiptUrl: borrowRecords.receiptUrl,
     })
     .from(borrowRecords)
     .where(

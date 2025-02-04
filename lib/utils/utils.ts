@@ -1,8 +1,8 @@
 import { asc, desc } from "drizzle-orm";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { books } from "@/db/schema";
 
+import { books } from "@/db/schema";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

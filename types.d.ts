@@ -15,6 +15,7 @@ interface Book {
   borrowDate?: Date;
   dueDate?: string;
   returnDate?: Date | null;
+  receiptUrl?: string | null;
   status?: "BORROWED" | "RETURNED";
 }
 
@@ -30,6 +31,7 @@ interface BookCard
     | "borrowDate"
     | "dueDate"
     | "returnDate"
+    | "receiptUrl"
   > {}
 
 interface User {
@@ -81,6 +83,7 @@ interface BorrowRecord {
   dueDate: Date | null;
   returnDate: Date | null;
   status: "BORROWED" | "RETURNED" | "PENDING";
+  receiptUrl: string | null;
   user: User;
   book: Book;
 }

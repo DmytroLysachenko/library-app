@@ -16,6 +16,7 @@ const BookCard = ({
   borrowDate,
   dueDate,
   returnDate,
+  receiptUrl,
 }: BookCard) => {
   const isLoanedBook = Boolean(status);
   const isReturnedBook = status === "RETURNED";
@@ -99,15 +100,20 @@ const BookCard = ({
                 <p className="text-[#FF6C6F]">Overdue Return</p>
               )}
 
-              {/* <button className="flex w-fit">
-                <Image
-                  src="/icons/receipt.svg"
-                  alt="receipt"
-                  width={18}
-                  height={18}
-                  className="object-contain"
-                />
-              </button> */}
+              {receiptUrl && (
+                <Link
+                  href={receiptUrl}
+                  className="flex w-fit ml-auto mr-5"
+                >
+                  <Image
+                    src="/icons/receipt.svg"
+                    alt="receipt"
+                    width={18}
+                    height={18}
+                    className="object-contain"
+                  />
+                </Link>
+              )}
             </div>
           </div>
         )}

@@ -12,7 +12,7 @@ type EmailOptions = {
 
 type TemplateData = {
   studentName: string;
-  [key: string]: string | number | undefined; // Allow optional fields
+  [key: string]: string | number | undefined;
 };
 
 const transporter = nodemailer.createTransport({

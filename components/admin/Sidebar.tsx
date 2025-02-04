@@ -59,17 +59,6 @@ const Sidebar = ({ user }: { user: Partial<User> }) => {
           })}
         </div>
       </div>
-      {/* <Link
-        href={"/"}
-        key={"back-home"}
-      >
-        <div className="link">
-          <div className="relative size-5">
-            <ArrowLeft />
-          </div>
-          <p className={"text-dark"}>Go Back to Home page</p>
-        </div>
-      </Link> */}
       <div className="user">
         <UserAvatar
           avatarUrl={user.avatar}

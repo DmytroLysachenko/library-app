@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/lib/sendMails.ts
 
 # next.js
 /.next/

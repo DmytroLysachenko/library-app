@@ -1,8 +1,9 @@
+import { serve } from "@upstash/workflow/nextjs";
+import { desc } from "drizzle-orm";
+
 import { db } from "@/db/drizzle";
 import { appStatsRecords } from "@/db/schema";
 import { fetchStatistics } from "@/lib/admin/actions/statsRecords";
-import { serve } from "@upstash/workflow/nextjs";
-import { desc } from "drizzle-orm";
 
 interface InitialData {
   statsRecordingStatus: boolean;

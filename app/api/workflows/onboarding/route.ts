@@ -1,9 +1,11 @@
+import { serve } from "@upstash/workflow/nextjs";
+import { eq } from "drizzle-orm";
+
 import { EmailTemplate } from "@/constants";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
+import config from "@/lib/config";
 import { sendEmail } from "@/lib/email";
-import { serve } from "@upstash/workflow/nextjs";
-import { eq } from "drizzle-orm";
 
 type UserState = "non-active" | "active";
 
@@ -47,7 +49,7 @@ export const { POST } = serve<InitialData>(async (context) => {
       subject: "Welcome to LibraryView!",
       data: {
         studentName: fullName,
-        loginUrl: "https://library-app-rust-five.vercel.app/sign-in",
+        loginUrl: `${config.env.prodApiEndpoint}/sign-in`,
       },
     });
   });
@@ -67,7 +69,7 @@ export const { POST } = serve<InitialData>(async (context) => {
           subject: "Are you there?",
           data: {
             studentName: fullName.split(" ")[0],
-            exploreUrl: "https://library-app-rust-five.vercel.app",
+            exploreUrl: config.env.prodApiEndpoint,
           },
         });
       });
@@ -79,7 +81,7 @@ export const { POST } = serve<InitialData>(async (context) => {
           subject: "Are you there?",
           data: {
             studentName: fullName.split(" ")[0],
-            loginUrl: "https://library-app-rust-five.vercel.app/sign-in",
+            loginUrl: `${config.env.prodApiEndpoint}/sign-in`,
           },
         });
       });

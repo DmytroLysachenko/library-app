@@ -18,6 +18,12 @@ const config = {
       GMAIL_USER: process.env.GMAIL_USER!,
       GMAIL_PASSWORD: process.env.GMAIL_PASSWORD!,
     },
+    amazon: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      region: process.env.AWS_REGION!,
+      bucketName: process.env.AWS_S3_BUCKET_NAME!,
+    },
   },
 };
 

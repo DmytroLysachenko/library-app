@@ -5,6 +5,7 @@ import { db } from "@/db/drizzle";
 import { books, borrowRecords, users } from "@/db/schema";
 import config from "@/lib/config";
 import { sendEmail } from "@/lib/email";
+import { generatePdf } from "@/lib/utils";
 import { workflowClient } from "@/lib/workflow";
 import dayjs from "dayjs";
 import { eq } from "drizzle-orm";
@@ -51,7 +52,7 @@ export const confirmBookReturnStatus = async (recordId: string) => {
         data: {
           studentName: data.studentName as string,
           bookTitle: data.bookTitle as string,
-          exploreUrl: "https://library-app-rust-five.vercel.app",
+          exploreUrl: config.env.prodApiEndpoint,
         },
       }),
     ]);
@@ -79,6 +80,8 @@ export const confirmBookBorrowStatus = async (recordId: string) => {
         bookId: borrowRecords.bookId,
         userId: borrowRecords.userId,
         bookTitle: books.title,
+        bookAuthor: books.author,
+        bookGenre: books.genre,
         availableCopies: books.availableCopies,
         email: users.email,
         studentName: users.fullName,
@@ -94,6 +97,8 @@ export const confirmBookBorrowStatus = async (recordId: string) => {
       bookId: string;
       userId: string;
       bookTitle: string;
+      bookAuthor: string;
+      bookGenre: string;
       availableCopies: number;
       email: string;
       studentName: string;
@@ -131,13 +136,97 @@ export const confirmBookBorrowStatus = async (recordId: string) => {
         bookId: data.bookId,
         borrowRecordId: recordId,
         bookTitle: data.bookTitle,
-        bookBorrowDate: data.borrowDate,
+        bookBorrowDate: data.borrowDate.toISOString().slice(0, 10),
         bookDueDate: dueDate,
         studentName: data.studentName,
         userEmail: data.email,
       },
     });
 
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(newRecord)),
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      success: false,
+      message: "An error occurred while updating record status",
+    };
+  }
+};
+
+export const generateReceipt = async (recordId: string) => {
+  try {
+    const data = (await db
+      .select({
+        bookId: borrowRecords.bookId,
+        userId: borrowRecords.userId,
+        bookTitle: books.title,
+        bookAuthor: books.author,
+        bookGenre: books.genre,
+        availableCopies: books.availableCopies,
+        email: users.email,
+        studentName: users.fullName,
+        userBorrowedBooks: users.borrowedBooks,
+        borrowDate: borrowRecords.createdAt,
+        dueDate: borrowRecords.dueDate,
+      })
+      .from(borrowRecords)
+      .where(eq(borrowRecords.id, recordId))
+      .leftJoin(books, eq(borrowRecords.bookId, books.id))
+      .leftJoin(users, eq(borrowRecords.userId, users.id))
+      .limit(1)
+      .then((res) => res[0])) as {
+      bookId: string;
+      userId: string;
+      bookTitle: string;
+      bookAuthor: string;
+      bookGenre: string;
+      availableCopies: number;
+      email: string;
+      studentName: string;
+      userBorrowedBooks: number;
+      borrowDate: Date;
+      dueDate: string;
+    };
+
+    const borrowReceiptPdf = await generatePdf({
+      receiptId: recordId,
+      studentName: data.studentName,
+      bookTitle: data.bookTitle,
+      bookAuthor: data.bookAuthor,
+      bookGenre: data.bookGenre,
+      borrowDate: dayjs(data.borrowDate).format("YYYY-MM-DD"),
+      dueDate: dayjs(data.dueDate).format("YYYY-MM-DD"),
+      duration: 7,
+      issueDate: dayjs().format("YYYY-MM-DD"),
+      websiteUrl: config.env.prodApiEndpoint,
+      supportEmail: "libraryview-support@mail.com",
+    });
+
+    const newRecord = await db
+      .update(borrowRecords)
+      .set({
+        receiptUrl: borrowReceiptPdf,
+      })
+      .where(eq(borrowRecords.id, recordId))
+      .returning()
+      .then((res) => res[0]);
+
+    await sendEmail({
+      to: data.email,
+      subject: "Book receipt",
+      template: EmailTemplate.RECEIPT_GENERATED,
+      data: {
+        studentName: data.studentName,
+        bookTitle: data.bookTitle,
+        borrowDate: dayjs(data.borrowDate).format("YYYY-MM-DD"),
+        dueDate: dayjs(data.dueDate).format("YYYY-MM-DD"),
+        downloadUrl: borrowReceiptPdf,
+      },
+    });
     return {
       success: true,
       data: JSON.parse(JSON.stringify(newRecord)),

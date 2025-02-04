@@ -26,15 +26,17 @@ import { cn } from "@/lib/utils";
 import {
   confirmBookBorrowStatus,
   confirmBookReturnStatus,
+  generateReceipt,
 } from "@/lib/admin/actions/records";
 import { toast } from "@/lib/actions/hooks/use-toast";
+import Link from "next/link";
 
 const BorrowRecordsTable = ({
   records,
   isRequest,
 }: {
   records: BorrowRecord[];
-  isRequest: boolean;
+  isRequest?: boolean;
 }) => {
   return (
     <div className="rounded-md border mt-7">
@@ -47,7 +49,7 @@ const BorrowRecordsTable = ({
             <TableHead>Borrowed date</TableHead>
             <TableHead>Return date</TableHead>
             <TableHead>Due Date</TableHead>
-            {isRequest && <TableHead>Receipt</TableHead>}
+            <TableHead>Receipt</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -75,11 +77,21 @@ const BorrowRecord = ({
   record: Omit<BorrowRecord, "book" | "user">;
   book: Book;
   user: User;
-  isRequest: boolean;
+  isRequest?: boolean;
 }) => {
   const [isChangingStatus, setIsChangingStatus] = React.useState(false);
   const [status, setStatus] = React.useState(record.status);
   const [dueDate, setDueDate] = React.useState<Date | null>(record.dueDate);
+  const [canGenerateReceipt, setCanGenerateReceipt] = React.useState(
+    !Boolean(record.receiptUrl) && record.status !== "PENDING"
+  );
+
+  console.log(
+    !Boolean(record.receiptUrl),
+    record.receiptUrl,
+    record.status !== "PENDING",
+    record.status
+  );
 
   const inTimeReturn =
     (record.dueDate ? new Date(record.dueDate) : new Date()) >=
@@ -105,13 +117,14 @@ const BorrowRecord = ({
 
     if (value === "BORROWED") {
       response = await confirmBookBorrowStatus(record.id);
-      setDueDate(dayjs().add(7, "day").toDate());
     } else if (value === "RETURNED") {
       response = await confirmBookReturnStatus(record.id);
     }
 
     if (response?.success) {
+      if (value === "BORROWED") setCanGenerateReceipt(true);
       setStatus(value);
+      setDueDate(dayjs().add(7, "day").toDate());
       toast({
         title: "Success",
         description: "Record status changed successfully",
@@ -128,6 +141,25 @@ const BorrowRecord = ({
     setIsChangingStatus(false);
   };
 
+  const onGenerateReceipt = async () => {
+    setIsChangingStatus(true);
+    const response = await generateReceipt(record.id);
+    if (response.success) {
+      toast({
+        title: "Success",
+        description: "Receipt generated successfully",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: response.message,
+        variant: "destructive",
+      });
+    }
+    setIsChangingStatus(false);
+    setCanGenerateReceipt(false);
+  };
+
   return (
     <TableRow key={record.id}>
       <TableCell>
@@ -140,7 +172,6 @@ const BorrowRecord = ({
           <span className="font-medium">{book.title}</span>
         </div>
       </TableCell>
-
       <TableCell>
         <div className="flex items-center gap-3">
           <UserAvatar
@@ -155,7 +186,6 @@ const BorrowRecord = ({
           </div>
         </div>
       </TableCell>
-
       {isRequest ? (
         <TableCell>
           {nextStatus ? (
@@ -210,9 +240,7 @@ const BorrowRecord = ({
               : "Late Return"}
         </TableCell>
       )}
-
       <TableCell>{dayjs(record.createdAt).format("YYYY-MM-DD")}</TableCell>
-
       <TableCell>
         {record.returnDate
           ? dayjs(record.returnDate).format("YYYY-MM-DD")
@@ -220,7 +248,6 @@ const BorrowRecord = ({
             ? dayjs().format("YYYY-MM-DD")
             : "N/A"}
       </TableCell>
-
       <TableCell>
         {dueDate
           ? dayjs(dueDate).format("YYYY-MM-DD")
@@ -228,18 +255,34 @@ const BorrowRecord = ({
             ? dayjs().format("YYYY-MM-DD")
             : "N/A"}
       </TableCell>
-
-      {isRequest && (
-        <TableCell>
+      <TableCell>
+        {canGenerateReceipt ? (
           <Button
             variant="link"
             className="px-0 text-blue-500"
+            onClick={onGenerateReceipt}
           >
             Generate
             <FileText className="h-4 w-4 ml-1" />
           </Button>
-        </TableCell>
-      )}
+        ) : record.receiptUrl ? (
+          <Button
+            variant="link"
+            className="px-0 text-blue-500"
+            asChild
+          >
+            <Link
+              target="_blank"
+              href={record.receiptUrl}
+            >
+              Open
+              <FileText className="h-4 w-4 ml-1" />
+            </Link>
+          </Button>
+        ) : (
+          <p>N/A</p>
+        )}
+      </TableCell>
     </TableRow>
   );
 };
