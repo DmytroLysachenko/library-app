@@ -39,13 +39,48 @@ const page = async () => {
     )
     .leftJoin(books, eq(borrowRecords.bookId, books.id))) as BookCard[];
 
+  const pendingBookRequests = (await db
+    .select({
+      id: books.id,
+      title: books.title,
+      genre: books.genre,
+      coverUrl: books.coverUrl,
+      coverColor: books.coverColor,
+      borrowDate: borrowRecords.createdAt,
+      dueDate: borrowRecords.dueDate,
+      returnDate: borrowRecords.returnDate,
+      status: borrowRecords.status,
+      receiptUrl: borrowRecords.receiptUrl,
+    })
+    .from(borrowRecords)
+    .where(
+      and(
+        eq(borrowRecords.userId, user.id),
+        eq(borrowRecords.status, "PENDING")
+      )
+    )
+    .leftJoin(books, eq(borrowRecords.bookId, books.id))) as BookCard[];
+
   return (
     <div className="flex flex-col items-center md:items-start md:flex-row gap-10">
       <UserInformation user={user} />
-      <BookList
-        title="Borrowed Books"
-        books={borrowedBooks}
-      />
+      <div className="grid grid-cols-1 gap-20">
+        <BookList
+          title="Borrowed Books"
+          books={borrowedBooks}
+          emptyState={
+            <p className="text-light-100 mt-10 text-lg">
+              No borrowed Books for the moment.
+            </p>
+          }
+        />
+        {pendingBookRequests.length > 0 && (
+          <BookList
+            title="Pending Book Requests"
+            books={pendingBookRequests}
+          />
+        )}
+      </div>
     </div>
   );
 };

@@ -20,11 +20,12 @@ const BookCard = ({
 }: BookCard) => {
   const isLoanedBook = Boolean(status);
   const isReturnedBook = status === "RETURNED";
+  const isPendingBook = status === "PENDING";
 
   const remainingDays = dayjs(dueDate).diff(dayjs(), "days");
 
   return (
-    <li className={cn(isLoanedBook && "xs:w-52 w-full")}>
+    <li className={cn(isLoanedBook && "xs:w-52 w-full relative")}>
       <Link
         href={`/books/${id}`}
         className={cn(
@@ -51,7 +52,7 @@ const BookCard = ({
           <p className="book-genre">{genre}</p>
         </div>
 
-        {isLoanedBook && (
+        {isLoanedBook && !isPendingBook && (
           <div className="mt-3 w-full">
             {borrowDate && (
               <div className="book-loaned mb-2">
@@ -99,25 +100,24 @@ const BookCard = ({
               ) : (
                 <p className="text-[#FF6C6F]">Overdue Return</p>
               )}
-
-              {receiptUrl && (
-                <Link
-                  href={receiptUrl}
-                  className="flex w-fit ml-auto mr-5"
-                >
-                  <Image
-                    src="/icons/receipt.svg"
-                    alt="receipt"
-                    width={18}
-                    height={18}
-                    className="object-contain"
-                  />
-                </Link>
-              )}
             </div>
           </div>
         )}
       </Link>
+      {receiptUrl && (
+        <Link
+          href={receiptUrl}
+          className="absolute right-2 bottom-0"
+        >
+          <Image
+            src="/icons/receipt.svg"
+            alt="receipt"
+            width={18}
+            height={18}
+            className="object-contain"
+          />
+        </Link>
+      )}
     </li>
   );
 };

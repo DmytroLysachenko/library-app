@@ -16,7 +16,7 @@ interface Book {
   dueDate?: string;
   returnDate?: Date | null;
   receiptUrl?: string | null;
-  status?: "BORROWED" | "RETURNED";
+  status?: "BORROWED" | "RETURNED" | "PENDING";
 }
 
 interface BookCard
