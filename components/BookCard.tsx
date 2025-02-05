@@ -17,9 +17,10 @@ const BookCard = ({
   dueDate,
   returnDate,
   receiptUrl,
+  author,
 }: BookCard) => {
-  const isLoanedBook = Boolean(status);
   const isReturnedBook = status === "RETURNED";
+  const isLoanedBook = Boolean(status);
   const isPendingBook = status === "PENDING";
 
   const remainingDays = dayjs(dueDate).diff(dayjs(), "days");
@@ -48,7 +49,9 @@ const BookCard = ({
         />
 
         <div className={cn("mt-4", !isLoanedBook && "xs:max-w-40 max-w-28")}>
-          <p className="book-title">{title}</p>
+          <p className="book-title">
+            {title} - By {author}
+          </p>
           <p className="book-genre">{genre}</p>
         </div>
 

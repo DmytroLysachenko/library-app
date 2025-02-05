@@ -16,8 +16,11 @@ import {
 import { Button } from "../ui/button";
 import { deleteBook } from "@/lib/admin/actions/books";
 import BookCover from "../BookCover";
+import { useRouter } from "next/navigation";
 
 const BooksTable = ({ books }: { books: Book[] }) => {
+  const router = useRouter();
+
   return (
     <div className="mt-7 w-full overflow-hidden rounded-md border">
       <Table>
@@ -71,7 +74,7 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                     className="h-8 w-8"
                     onClick={async () => {
                       await deleteBook(book.id!);
-                      window.location.reload();
+                      router.refresh();
                     }}
                   >
                     <Trash2 className="h-4 w-4 text-red-500" />

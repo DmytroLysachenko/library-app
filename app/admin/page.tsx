@@ -2,7 +2,7 @@ import { books, borrowRecords, users } from "@/db/schema";
 import { desc, eq, ne } from "drizzle-orm";
 import { db } from "@/db/drizzle";
 
-import BarrowRequestsSection from "@/components/admin/BorrowRecordsSection";
+import BarrowRequestsSection from "@/components/admin/BorrowRequestsSection";
 import RecentlyAddedBooksSection from "@/components/admin/RecentlyAddedBooksSection";
 import AccountRequestsSection from "@/components/admin/AccountRequestsSection";
 import StatisticsBoard from "@/components/admin/StatisticsBoard";

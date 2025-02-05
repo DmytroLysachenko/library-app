@@ -2,6 +2,7 @@ import React from "react";
 
 import BookCard from "./BookCard";
 import SortSelector from "./SortSelector";
+import { userSideBookSorts } from "@/constants";
 
 interface BookListProps {
   title: string;
@@ -22,7 +23,14 @@ const BookList = ({
     <section className={containerClassName}>
       <div className="flex justify-between">
         <h2 className="font-bebas-neue text-4xl text-light-100">{title}</h2>
-        {isSearch && <SortSelector />}
+
+        {isSearch && (
+          <SortSelector
+            options={userSideBookSorts}
+            param="sort"
+            variant="user"
+          />
+        )}
       </div>
       {books.length ? (
         <ul className="book-list">

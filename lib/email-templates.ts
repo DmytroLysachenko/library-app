@@ -68,6 +68,10 @@ const baseStyles = `
     position: relative;
   }
 
+          .detail-value {
+        color: white;
+        }
+
   .details-item::before {
     content: "•";
     position: absolute;
@@ -98,6 +102,7 @@ const baseStyles = `
 
   .footer p {
     margin: 4px 0;
+    color: #a0aec0
   }
 
 </style>
@@ -231,7 +236,6 @@ export const emailTemplates = {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Welcome to LibraryView</title>
   ${baseStyles}
 </head>
 <body>
@@ -268,7 +272,6 @@ export const emailTemplates = {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Account Approved - LibraryView</title>
   ${baseStyles}
 </head>
 <body>
@@ -305,7 +308,7 @@ export const emailTemplates = {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Account Application Rejected - LibraryView</title>
+
   ${baseStyles}
 </head>
 <body>
@@ -326,8 +329,8 @@ export const emailTemplates = {
     </p>
     
     <p class="text">You can reach out to us:</p>
-    <p class="text">Email: <a href="mailto:${data.supportEmail}">${data.supportEmail}</a></p>
-    <p class="text">Telephone: <a href="tel:123-456-7890">+123-456-7890</a></p>
+    <p class="text">Email: <a class="detail-value" href="mailto:${data.supportEmail}">${data.supportEmail}</a></p>
+    <p class="text">Telephone: <a class="detail-value" href="tel:123-456-7890">+123-456-7890</a></p>
     
     <div class="footer">
       <p>Thank you for your understanding,</p>
@@ -343,7 +346,7 @@ export const emailTemplates = {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Book Borrowed - LibraryView</title>
+
   ${baseStyles}
 </head>
 <body>
@@ -360,8 +363,8 @@ export const emailTemplates = {
     <p class="text">You've successfully borrowed ${data.bookTitle}. Here are the details:</p>
     
     <div class="details">
-      <p class="details-item">Borrowed On: ${data.borrowDate}</p>
-      <p class="details-item">Due Date: ${data.dueDate}</p>
+      <p class="details-item">Borrowed On: <span class="detail-value">${data.borrowDate}</span> </p>
+      <p class="details-item">Due Date: <span class="detail-value">${data.dueDate}</span></p>
     </div>
     
     <p class="text">Enjoy your reading, and don't forget to return the book on time!</p>
@@ -382,7 +385,7 @@ export const emailTemplates = {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Book Due Reminder - LibraryView</title>
+
   ${baseStyles}
 </head>
 <body>
@@ -419,7 +422,7 @@ export const emailTemplates = {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Book Return Confirmation - LibraryView</title>
+
   ${baseStyles}
 </head>
 <body>
@@ -455,7 +458,7 @@ export const emailTemplates = {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>We Miss You - LibraryView</title>
+
   ${baseStyles}
 </head>
 <body>
@@ -492,7 +495,7 @@ export const emailTemplates = {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Check-In Reminder - LibraryView</title>
+
   ${baseStyles}
 </head>
 <body>
@@ -529,7 +532,7 @@ export const emailTemplates = {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Milestone Achievement - LibraryView</title>
+
   ${baseStyles}
 </head>
 <body>
@@ -571,7 +574,6 @@ export const emailTemplates = {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Book Receipt - LibraryView</title>
   ${baseStyles}
 </head>
 <body>
@@ -588,8 +590,8 @@ export const emailTemplates = {
     <p class="text">Your receipt for borrowing ${data.bookTitle} has been generated. Here are the details:</p>
     
     <div class="details">
-      <p class="details-item">Borrowed On: ${data.borrowDate}</p>
-      <p class="details-item">Due Date: ${data.dueDate}</p>
+      <p class="details-item">Borrowed On: <span class="detail-value">${data.borrowDate}</span></p>
+      <p class="details-item">Due Date: <span class="detail-value">${data.dueDate}</span></p>
     </div>
     
     <p class="text">You can download the receipt here:</p>
@@ -609,7 +611,6 @@ export const emailTemplates = {
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>LibraryView Receipt</title>
 ${receiptStyles}
 </head>
 <body>
@@ -672,7 +673,7 @@ ${receiptStyles}
         </section>
 
         <footer class="footer">
-            <p>Thank you for using BookWise!</p>
+            <p>Thank you for using LibraryView!</p>
             <p>Website: <a href=" ${data.websiteUrl}"> ${data.websiteUrl}</a></p>
             <p>Email: <a href="mailto:${data.supportEmail}">${data.supportEmail}</a></p>
         </footer>

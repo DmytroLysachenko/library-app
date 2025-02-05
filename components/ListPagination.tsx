@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -10,15 +10,19 @@ import {
   PaginationEllipsis,
   PaginationItem,
 } from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
-const BooksPagination = ({
+const ListPagination = ({
   currentPage,
   lastPage,
+  variant = "user",
 }: {
   currentPage: number;
   lastPage: number;
+  variant?: "user" | "admin";
 }) => {
   const isLastPage = currentPage === lastPage;
+  const isUser = variant === "user";
   const router = useRouter();
   const toPage = (page: number) => {
     const params = new URLSearchParams(window.location.search);
@@ -27,17 +31,22 @@ const BooksPagination = ({
   };
 
   return (
-    <Pagination id="pagination">
+    <Pagination
+      id="pagination"
+      className="mt-8"
+    >
       <PaginationContent>
         <PaginationItem>
           {currentPage !== 1 && (
             <button
-              className="pagination-btn_dark"
+              className={cn(
+                isUser ? "pagination-btn_dark" : "pagination-btn_light"
+              )}
               onClick={() => {
-                router.push(toPage(currentPage - 1));
+                router.push(toPage(currentPage - 1), { scroll: false });
               }}
             >
-              <ArrowBigLeft />
+              <ArrowLeftIcon className="size-4" />
             </button>
           )}
         </PaginationItem>
@@ -46,15 +55,23 @@ const BooksPagination = ({
         </PaginationItem>
         {lastPage - currentPage > 1 && (
           <PaginationItem>
-            <PaginationEllipsis className="text-white rounded-md bg-dark-300 " />
+            <PaginationEllipsis
+              className={cn(
+                isUser
+                  ? "text-white rounded-md bg-dark-300 "
+                  : " rounded-md text-dark-300 "
+              )}
+            />
           </PaginationItem>
         )}
         {!isLastPage && (
           <PaginationItem>
             <button
-              className="pagination-btn_dark"
+              className={cn(
+                isUser ? "pagination-btn_dark" : "pagination-btn_light"
+              )}
               onClick={() => {
-                router.push(toPage(lastPage));
+                router.push(toPage(lastPage), { scroll: false });
               }}
             >
               {lastPage}
@@ -64,12 +81,14 @@ const BooksPagination = ({
         {!isLastPage && (
           <PaginationItem>
             <button
-              className="pagination-btn_dark"
+              className={cn(
+                isUser ? "pagination-btn_dark" : "pagination-btn_light"
+              )}
               onClick={() => {
-                router.push(toPage(currentPage + 1));
+                router.push(toPage(currentPage + 1), { scroll: false });
               }}
             >
-              <ArrowBigRight />
+              <ArrowRightIcon className="size-4" />
             </button>
           </PaginationItem>
         )}
@@ -78,4 +97,4 @@ const BooksPagination = ({
   );
 };
 
-export default BooksPagination;
+export default ListPagination;

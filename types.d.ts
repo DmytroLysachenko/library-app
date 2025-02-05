@@ -23,6 +23,7 @@ interface BookCard
   extends Pick<
     Book,
     | "id"
+    | "author"
     | "title"
     | "genre"
     | "coverColor"

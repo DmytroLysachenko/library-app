@@ -17,14 +17,17 @@ import { Button } from "./ui/button";
 import { uploadAvatar } from "@/lib/actions/auth";
 import { toast } from "@/lib/actions/hooks/use-toast";
 import UserAvatar from "./UserAvatar";
+import { useRouter } from "next/navigation";
 
 const UserInformation = ({ user }: { user: User }) => {
   const form = useForm<z.infer<typeof userUpdateSchema>>({
     resolver: zodResolver(userUpdateSchema),
     defaultValues: {
-      avatar: user.avatar || "",
+      avatar: "",
     },
   });
+
+  const router = useRouter();
 
   const onAvatarSubmit = async (values: z.infer<typeof userUpdateSchema>) => {
     const result = await uploadAvatar(user.id, values.avatar);
@@ -34,7 +37,7 @@ const UserInformation = ({ user }: { user: User }) => {
         title: "Success",
         description: "Avatar updated successfully",
       });
-      window.location.reload();
+      router.refresh();
     } else {
       toast({
         title: "Error",
@@ -47,7 +50,7 @@ const UserInformation = ({ user }: { user: User }) => {
   return (
     <section className="w-full max-w-md space-y-6">
       <div className="relative">
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-dark-700 h-14 w-12 rounded-lg flex items-end justify-center p-2 rounded-b-full">
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-dark-700 h-12 w-12 rounded-lg flex items-end justify-center p-2 rounded-b-full">
           <div className="w-6 h-2 gradient-vertical rounded-lg" />
         </div>
       </div>
@@ -77,11 +80,14 @@ const UserInformation = ({ user }: { user: User }) => {
                   width={18}
                   height={18}
                 />
+
                 {getUserStatusLabel(user.status)}
               </div>
+
               <h2 className="text-xl font-semibold text-light-100">
                 {user.fullName.split(" ")[0]}
               </h2>
+
               <p className="text-sm text-slate-400">{user.email}</p>
             </div>
           </div>
@@ -104,19 +110,14 @@ const UserInformation = ({ user }: { user: User }) => {
                         variant="dark"
                         onFileChange={field.onChange}
                         value={field.value}
-                        size={60}
+                        size={80}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button
-                className="absolute right-2 bottom-0 "
-                disabled={!form.getFieldState("avatar").isDirty}
-              >
-                Confirm
-              </Button>
+              {form.getFieldState("avatar").isDirty && <Button>Confirm</Button>}
             </form>
           </Form>
 

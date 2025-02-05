@@ -1,49 +1,84 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowUpDown, X } from "lucide-react";
 
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { sorts } from "@/constants";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 
-const SortSelector = () => {
+const SortSelector = ({
+  options,
+  param,
+  variant,
+  placeholder = "Sort by",
+  placeholderIcon = <ArrowUpDown className="mr-2 h-4 w-4" />,
+  cancelButton = true,
+}: {
+  options: { value: string; title: string }[];
+  param: string;
+  variant: "admin" | "user";
+  placeholder?: string;
+  placeholderIcon?: React.ReactNode;
+  cancelButton?: boolean;
+}) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [value, setValue] = useState(searchParams.get(param) || "");
 
-  const handleSorting = (
-    sortValue: "oldest" | "newest" | "available" | "highestRated"
-  ) => {
-    const params = new URLSearchParams(window.location.search);
-    params.set("sort", sortValue);
-
+  const handleSort = (value: string) => {
+    setValue(value);
+    const params = new URLSearchParams(searchParams);
+    params.set(param, value);
     router.push(`?${params.toString()}`);
   };
 
+  const handleReset = () => {
+    setValue("");
+    const params = new URLSearchParams(searchParams);
+    params.delete(param);
+    router.push(`?${params.toString()}`);
+  };
+  const isUser = variant === "user";
+
   return (
-    <Select onValueChange={handleSorting}>
-      <SelectTrigger className="select-trigger">
-        <SelectValue placeholder="Sorted by" />
-      </SelectTrigger>
-      <SelectContent className="select-content">
-        <SelectGroup>
-          {sorts.map((sort) => (
+    <div className="flex gap-2 items-center">
+      <Select
+        value={value}
+        onValueChange={handleSort}
+      >
+        <SelectTrigger className={cn(isUser ? "select-trigger" : "w-fit")}>
+          {!isUser && placeholderIcon}
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+
+        <SelectContent className={cn(isUser && "select-content")}>
+          {options.map((option) => (
             <SelectItem
-              key={sort.value}
-              value={sort.value}
-              className="select-item"
+              key={option.value}
+              value={option.value}
+              className={cn(isUser && "select-item")}
             >
-              {sort.label}
+              {option.title}
             </SelectItem>
           ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+        </SelectContent>
+      </Select>
+      {cancelButton && (
+        <button
+          type="button"
+          onClick={handleReset}
+        >
+          <X className=" size-4 text-red-400" />
+        </button>
+      )}
+    </div>
   );
 };
 

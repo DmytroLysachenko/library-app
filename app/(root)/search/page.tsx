@@ -3,11 +3,12 @@ import { count, ilike, or } from "drizzle-orm";
 
 import BookList from "@/components/BookList";
 import SearchSection from "@/components/SearchSection";
-import BooksPagination from "@/components/BooksPagination";
+
 import NotFoundSection from "@/components/NotFoundSection";
 import { db } from "@/db/drizzle";
 import { books } from "@/db/schema";
 import { getBooksSortingOrder } from "@/lib/utils";
+import ListPagination from "@/components/ListPagination";
 
 const Page = async ({
   searchParams,
@@ -15,7 +16,7 @@ const Page = async ({
   searchParams: Promise<{
     query: string;
     page: string;
-    sort: "oldest" | "newest" | "available" | "highestRated";
+    sort: string;
   }>;
 }) => {
   const { query, page = 1, sort } = await searchParams;
@@ -25,6 +26,7 @@ const Page = async ({
       id: books.id,
       title: books.title,
       genre: books.genre,
+      author: books.author,
       coverUrl: books.coverUrl,
       coverColor: books.coverColor,
     })
@@ -53,7 +55,9 @@ const Page = async ({
             ilike(books.author, `%${query}%`)
           )
         : undefined
-    );
+    )
+    .limit(1)
+    .then((res) => res[0].count);
 
   return (
     <>
@@ -67,9 +71,9 @@ const Page = async ({
             isSearch={true}
           />
 
-          <BooksPagination
+          <ListPagination
             currentPage={Number(page)}
-            lastPage={Math.ceil(totalCountResults[0].count / 12)}
+            lastPage={Math.ceil(totalCountResults / 12)}
           />
         </>
       ) : (

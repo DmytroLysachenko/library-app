@@ -60,22 +60,22 @@ export const FIELD_TYPES = {
   password: "password",
 };
 
-export const sorts = [
+export const userSideBookSorts = [
   {
     value: "oldest",
-    label: "Oldest",
+    title: "Oldest",
   },
   {
     value: "newest",
-    label: "Newest",
+    title: "Newest",
   },
   {
     value: "available",
-    label: "Available",
+    title: "Available",
   },
   {
     value: "highestRated",
-    label: "Highest Rated",
+    title: "Highest Rated",
   },
 ];
 
@@ -128,3 +128,50 @@ export enum EmailTemplate {
   CHECK_IN_REMINDER = "CHECK_IN_REMINDER",
   RECEIPT = "RECEIPT",
 }
+
+export const alphabeticalSortOptions = [
+  {
+    value: "desc",
+    title: "Z to A",
+  },
+  {
+    value: "asc",
+    title: "A to Z",
+  },
+];
+export const dateSortOptions = [
+  {
+    value: "desc",
+    title: "Recent to Oldest",
+  },
+  {
+    value: "asc",
+    title: "Oldest to Recent",
+  },
+];
+
+export const requestStatusSortOptions = [
+  {
+    value: "pending",
+    title: "Pending",
+  },
+  {
+    value: "borrowed",
+    title: "Borrowed",
+  },
+];
+
+export const userStatusSortOptions = [
+  {
+    value: "approved",
+    title: "Approved",
+  },
+  {
+    value: "rejected",
+    title: "Rejected",
+  },
+  {
+    value: "pending",
+    title: "Pending",
+  },
+];

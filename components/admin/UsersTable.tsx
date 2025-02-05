@@ -4,6 +4,8 @@ import React from "react";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { CircleX, ExternalLink, Trash2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { redirect, useRouter } from "next/navigation";
 
 import {
   Table,
@@ -54,6 +56,9 @@ const UsersTable = ({
   type: "users" | "requests";
 }) => {
   const isUsersTable = type === "users";
+  const { data } = useSession();
+
+  if (!data) redirect("/sign-in");
 
   return (
     <div className="rounded-md border mt-7">
@@ -79,6 +84,7 @@ const UsersTable = ({
           {users.map((user) => (
             <UserRecord
               key={user.id}
+              isCurrentUser={user.id === data?.user?.id}
               user={user}
               isUsersTable={isUsersTable}
             />
@@ -92,10 +98,13 @@ const UsersTable = ({
 const UserRecord = ({
   user,
   isUsersTable,
+  isCurrentUser,
 }: {
   user: User;
   isUsersTable: boolean;
+  isCurrentUser?: boolean;
 }) => {
+  const router = useRouter();
   const [isChangingStatus, setIsChangingStatus] = React.useState(false);
   const [userRole, setUserRole] = React.useState(user.role);
   return (
@@ -199,7 +208,7 @@ const UserRecord = ({
             className="h-8 w-8 text-right text-green-700"
             onClick={async () => {
               await approveUser(user.id!);
-              window.location.reload();
+              router.refresh();
             }}
           >
             Approve User
@@ -209,6 +218,7 @@ const UserRecord = ({
           variant="ghost"
           size="icon"
           className="h-10 w-10 text-right"
+          disabled={isCurrentUser}
           onClick={async () => {
             if (isUsersTable) {
               await deleteUser(user.id!);
@@ -216,7 +226,7 @@ const UserRecord = ({
               await rejectUser(user.id!);
             }
 
-            window.location.reload();
+            router.refresh();
           }}
         >
           {isUsersTable ? (

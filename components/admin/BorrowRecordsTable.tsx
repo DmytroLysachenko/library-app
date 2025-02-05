@@ -30,6 +30,7 @@ import {
 } from "@/lib/admin/actions/records";
 import { toast } from "@/lib/actions/hooks/use-toast";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const BorrowRecordsTable = ({
   records,
@@ -44,10 +45,10 @@ const BorrowRecordsTable = ({
         <TableHeader>
           <TableRow>
             <TableHead>Book</TableHead>
-            <TableHead>User Requested</TableHead>
+            <TableHead>User {isRequest ? "Requested" : "Borrowed"}</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Borrowed date</TableHead>
-            <TableHead>Return date</TableHead>
+            <TableHead>{isRequest ? "Request" : "Borrowed"} date</TableHead>
+            {!isRequest && <TableHead>Return date</TableHead>}
             <TableHead>Due Date</TableHead>
             <TableHead>Receipt</TableHead>
           </TableRow>
@@ -86,12 +87,7 @@ const BorrowRecord = ({
     !Boolean(record.receiptUrl) && record.status !== "PENDING"
   );
 
-  console.log(
-    !Boolean(record.receiptUrl),
-    record.receiptUrl,
-    record.status !== "PENDING",
-    record.status
-  );
+  const router = useRouter();
 
   const inTimeReturn =
     (record.dueDate ? new Date(record.dueDate) : new Date()) >=
@@ -158,6 +154,7 @@ const BorrowRecord = ({
     }
     setIsChangingStatus(false);
     setCanGenerateReceipt(false);
+    router.refresh();
   };
 
   return (
@@ -241,13 +238,15 @@ const BorrowRecord = ({
         </TableCell>
       )}
       <TableCell>{dayjs(record.createdAt).format("YYYY-MM-DD")}</TableCell>
-      <TableCell>
-        {record.returnDate
-          ? dayjs(record.returnDate).format("YYYY-MM-DD")
-          : status === "RETURNED"
-            ? dayjs().format("YYYY-MM-DD")
-            : "N/A"}
-      </TableCell>
+      {!isRequest && (
+        <TableCell>
+          {record.returnDate
+            ? dayjs(record.returnDate).format("YYYY-MM-DD")
+            : status === "RETURNED"
+              ? dayjs().format("YYYY-MM-DD")
+              : "N/A"}
+        </TableCell>
+      )}
       <TableCell>
         {dueDate
           ? dayjs(dueDate).format("YYYY-MM-DD")

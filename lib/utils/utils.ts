@@ -30,6 +30,29 @@ export const getBooksSortingOrder = (sortValue?: string) => {
   }
 };
 
+export const getBorrowRequestsFilterValue = (sortValue?: string) => {
+  switch (sortValue) {
+    case "pending":
+      return "PENDING";
+    case "borrowed":
+      return "BORROWED";
+    default:
+      return "PENDING";
+  }
+};
+export const getUsersFilterValue = (sortValue?: string) => {
+  switch (sortValue) {
+    case "pending":
+      return "PENDING";
+    case "approved":
+      return "APPROVED";
+    case "rejected":
+      return "REJECTED";
+    default:
+      return "APPROVED";
+  }
+};
+
 export const getUserStatusIcon = (
   status: "APPROVED" | "PENDING" | "REJECTED" | null
 ) => {

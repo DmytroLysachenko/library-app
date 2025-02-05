@@ -63,7 +63,7 @@ const FileUpload = ({
   folder,
   variant,
   value,
-  size = 400,
+  size = 600,
 }: FileUploadProps) => {
   const ikUploadRef = useRef(null);
   const [progress, setProgress] = useState(0);
@@ -174,7 +174,7 @@ const FileUpload = ({
         </div>
       )}
 
-      {file &&
+      {file.filePath &&
         (type === "image" ? (
           <IKImage
             alt={file.filePath || "image preview"}

@@ -38,7 +38,7 @@
 
   /* Book Card */
   .book-title {
-    @apply mt-2 line-clamp-1 text-base font-semibold text-white xs:text-xl;
+    @apply mt-2 line-clamp-2 text-base font-semibold text-white xs:text-xl;
   }
 
   .book-genre {

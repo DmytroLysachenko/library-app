@@ -7,12 +7,12 @@ import { Button } from "../ui/button";
 import UserAvatar from "../UserAvatar";
 import BookCover from "../BookCover";
 
-const BorrowRecordsSection = ({ requests }: { requests: BorrowRecord[] }) => {
+const BorrowRequestsSection = ({ requests }: { requests: BorrowRecord[] }) => {
   return (
     <section>
       <div className="flex justify-between items-center mb-5">
         <h2 className="text-xl font-semibold text-dark-400">
-          Recent Borrow Records
+          Recent Borrow Requests
         </h2>
         <Button
           variant="link"
@@ -68,4 +68,4 @@ const BorrowRecordsSection = ({ requests }: { requests: BorrowRecord[] }) => {
   );
 };
 
-export default BorrowRecordsSection;
+export default BorrowRequestsSection;
