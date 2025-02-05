@@ -11,35 +11,6 @@
     @apply mb-10 w-fit border border-light-300 bg-white text-xs font-medium text-dark-200 hover:bg-light-300 !important;
   }
 
-  /* Confirmation Dialog */
-  .confirm-trigger {
-    @apply font-semibold text-sm shadow-none hover:bg-opacity-70 w-full !important;
-  }
-
-  .confirm-approve {
-    @apply bg-green-100 text-green-800 hover:bg-green-100/70 !important;
-  }
-
-  .confirm-reject {
-    @apply bg-red-100 text-red-800 hover:bg-red-100/70 !important;
-  }
-
-  .confirm-content {
-    @apply sm:max-w-md flex flex-col items-center justify-center p-6 !important;
-  }
-
-  .confirm-illustration {
-    @apply size-28 rounded-full flex justify-center items-center mx-auto;
-  }
-
-  .confirm-illustration div:first-child {
-    @apply size-[70%] rounded-full flex justify-center items-center;
-  }
-
-  .confirm-btn {
-    @apply w-full min-h-14 rounded-xl font-bold text-base text-light-800 !important;
-  }
-
   /* Book Form */
   .book-form_input {
     @apply min-h-14 border border-gray-100 bg-light-600 p-4 text-base font-semibold placeholder:font-normal placeholder:text-slate-500 !important;
@@ -132,15 +103,6 @@
 
   .hex-input {
     @apply h-full flex-1 bg-transparent font-ibm-plex-sans outline-none;
-  }
-
-  /* Error Fallback */
-  .error-fallback {
-    @apply p-4 bg-red-100 text-red-700 rounded-md;
-  }
-
-  .error-fallback h2 {
-    @apply text-lg font-semibold mb-2;
   }
 
   /* Header */

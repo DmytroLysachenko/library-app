@@ -17,7 +17,7 @@ export const setStatsRecorderStatus = async (statsRecordingStatus: boolean) => {
     if (!success) throw new Error("Too many requests, try again later");
 
     await workflowClient.trigger({
-      url: `${config.env.prodApiEndpoint}/api/workflows/app-stats`,
+      url: `${config.env.baseUrl}/api/workflows/app-stats`,
       body: {
         statsRecordingStatus,
       },

@@ -73,7 +73,7 @@ export const approveUser = async (userId: string) => {
       template: EmailTemplate.APPROVAL,
       data: {
         studentName: userInfo.fullName,
-        loginUrl: `${config.env.prodApiEndpoint}/sign-in`,
+        loginUrl: `${config.env.baseUrl}/sign-in`,
       },
     });
 

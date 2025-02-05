@@ -38,7 +38,7 @@ export const { POST } = serve<InitialData>(async (context) => {
         bookTitle,
         borrowDate: dayjs(bookBorrowDate).format("DD MMMM YYYY"),
         dueDate: dayjs(bookDueDate).format("DD MMMM YYYY"),
-        borrowedBooksUrl: `${config.env.prodApiEndpoint}/my-profile`,
+        borrowedBooksUrl: `${config.env.baseUrl}/my-profile`,
       },
     });
   });

@@ -52,7 +52,7 @@ export const confirmBookReturnStatus = async (recordId: string) => {
         data: {
           studentName: data.studentName as string,
           bookTitle: data.bookTitle as string,
-          exploreUrl: config.env.prodApiEndpoint,
+          exploreUrl: config.env.baseUrl,
         },
       }),
     ]);
@@ -131,7 +131,7 @@ export const confirmBookBorrowStatus = async (recordId: string) => {
     ]);
 
     await workflowClient.trigger({
-      url: `${config.env.prodApiEndpoint}/api/workflows/book`,
+      url: `${config.env.baseUrl}/api/workflows/book`,
       body: {
         bookId: data.bookId,
         borrowRecordId: recordId,
@@ -202,7 +202,7 @@ export const generateReceipt = async (recordId: string) => {
       dueDate: dayjs(data.dueDate).format("YYYY-MM-DD"),
       duration: 7,
       issueDate: dayjs().format("YYYY-MM-DD"),
-      websiteUrl: config.env.prodApiEndpoint,
+      websiteUrl: config.env.baseUrl,
       supportEmail: "libraryview-support@mail.com",
     });
 

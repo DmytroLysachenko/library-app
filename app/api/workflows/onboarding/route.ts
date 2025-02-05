@@ -49,7 +49,7 @@ export const { POST } = serve<InitialData>(async (context) => {
       subject: "Welcome to LibraryView!",
       data: {
         studentName: fullName,
-        loginUrl: `${config.env.prodApiEndpoint}/sign-in`,
+        loginUrl: `${config.env.baseUrl}/sign-in`,
       },
     });
   });
@@ -69,7 +69,7 @@ export const { POST } = serve<InitialData>(async (context) => {
           subject: "Are you there?",
           data: {
             studentName: fullName.split(" ")[0],
-            exploreUrl: config.env.prodApiEndpoint,
+            exploreUrl: config.env.baseUrl,
           },
         });
       });
@@ -81,7 +81,7 @@ export const { POST } = serve<InitialData>(async (context) => {
           subject: "Are you there?",
           data: {
             studentName: fullName.split(" ")[0],
-            loginUrl: `${config.env.prodApiEndpoint}/sign-in`,
+            loginUrl: `${config.env.baseUrl}/sign-in`,
           },
         });
       });
