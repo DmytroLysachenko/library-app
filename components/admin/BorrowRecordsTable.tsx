@@ -145,6 +145,7 @@ const BorrowRecord = ({
         title: "Success",
         description: "Receipt generated successfully",
       });
+      setCanGenerateReceipt(false);
     } else {
       toast({
         title: "Error",
@@ -153,7 +154,6 @@ const BorrowRecord = ({
       });
     }
     setIsChangingStatus(false);
-    setCanGenerateReceipt(false);
     router.refresh();
   };
 

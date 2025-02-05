@@ -1,9 +1,11 @@
 "use server";
 
-import { uploadToS3 } from "./awsS3";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 
-import puppeteer from "puppeteer";
+import { uploadToS3 } from "./awsS3";
 import { emailTemplates } from "../email-templates";
+
 export const generatePdf = async (data: {
   receiptId: string;
   studentName: string;
@@ -17,32 +19,41 @@ export const generatePdf = async (data: {
   websiteUrl: string;
   supportEmail: string;
 }) => {
-  try {
-    const browser = await puppeteer.launch({
-      headless: true,
-    });
-    const page = await browser.newPage();
+  console.log("Launching Puppeteer...");
 
-    await page.setContent(emailTemplates.RECEIPT(data), {
-      waitUntil: "networkidle0",
-    });
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    executablePath: await chromium.executablePath(),
+  });
 
-    const pdfBytes = await page.pdf({
-      format: "A4",
-      printBackground: true,
-      margin: { top: "20px", right: "20px", bottom: "20px", left: "20px" },
-    });
+  console.log("Puppeteer launched successfully.");
 
-    const fileName = `receipts/receipt_${Date.now()}.pdf`;
+  const page = await browser.newPage();
+  await page.setContent(emailTemplates.RECEIPT(data), {
+    waitUntil: "networkidle0",
+  });
 
-    const pdfUrl = await uploadToS3(
-      Buffer.from(pdfBytes),
-      fileName,
-      "application/pdf"
-    );
+  console.log("Generating PDF...");
 
-    return pdfUrl;
-  } catch (error) {
-    console.log(error);
-  }
+  const pdfBytes = await page.pdf({
+    format: "A4",
+    printBackground: true,
+    margin: { top: "20px", right: "20px", bottom: "20px", left: "20px" },
+  });
+
+  await browser.close();
+
+  console.log("PDF generated. Uploading to S3...");
+
+  const fileName = `receipts/receipt_${Date.now()}.pdf`;
+
+  const pdfUrl = await uploadToS3(
+    Buffer.from(pdfBytes),
+    fileName,
+    "application/pdf"
+  );
+
+  console.log("PDF uploaded to S3:", pdfUrl);
+
+  return pdfUrl;
 };
