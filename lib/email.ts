@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { emailTemplates } from "./email-templates";
+import { emailTemplates } from "./emailTemplates";
 import { EmailTemplate } from "@/constants";
 import config from "./config";
 

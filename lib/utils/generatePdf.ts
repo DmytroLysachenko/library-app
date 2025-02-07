@@ -4,7 +4,7 @@ import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 
 import { uploadToS3 } from "./awsS3";
-import { emailTemplates } from "../email-templates";
+import { emailTemplates } from "../emailTemplates";
 
 export const generatePdf = async (data: {
   receiptId: string;
