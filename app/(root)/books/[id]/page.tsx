@@ -40,14 +40,17 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
             <h3>Video</h3>
             <BookVideo videoUrl={bookDetails.videoUrl} />
           </section>
+
           <section className="mt-10 flex flex-col gap-7">
             <h3>Summary</h3>
+
             <div className="space-y-5 text-xl text-light-100">
               {bookDetails.summary.split("\n").map((paragraph, index) => (
                 <p key={index}>{paragraph}</p>
               ))}
             </div>
           </section>
+
           <BookList
             title="Latest Books"
             books={latestBooks}

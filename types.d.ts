@@ -1,4 +1,4 @@
-interface Book {
+interface BookData {
   id: string;
   title: string;
   author: string;
@@ -12,28 +12,27 @@ interface Book {
   videoUrl: string;
   summary: string;
   createdAt: Date;
+}
+
+type BookStatus = "BORROWED" | "RETURNED" | "PENDING";
+
+interface BorrowRecordData {
   borrowDate?: Date;
   dueDate?: string;
   returnDate?: Date | null;
   receiptUrl?: string | null;
-  status?: "BORROWED" | "RETURNED" | "PENDING";
+  receiptCreatedAt?: Date | null;
+  status?: BookStatus;
 }
+
+interface Book extends BookData, BorrowRecordData {}
 
 interface BookCard
   extends Pick<
-    Book,
-    | "id"
-    | "author"
-    | "title"
-    | "genre"
-    | "coverColor"
-    | "coverUrl"
-    | "status"
-    | "borrowDate"
-    | "dueDate"
-    | "returnDate"
-    | "receiptUrl"
-  > {}
+      BookData,
+      "id" | "author" | "title" | "genre" | "coverColor" | "coverUrl"
+    >,
+    BorrowRecordData {}
 
 interface User {
   status: "PENDING" | "APPROVED" | "REJECTED";

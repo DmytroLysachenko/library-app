@@ -9,6 +9,7 @@ import { db } from "@/db/drizzle";
 import { books } from "@/db/schema";
 import { getBooksSortingOrder } from "@/lib/utils";
 import ListPagination from "@/components/ListPagination";
+import { PER_PAGE_LIMITS } from "@/constants";
 
 const Page = async ({
   searchParams,
@@ -20,7 +21,7 @@ const Page = async ({
   }>;
 }) => {
   const { query, page = 1, sort } = await searchParams;
-  const perPage = 12;
+  const perPage = PER_PAGE_LIMITS.searchPage;
   const filteredBooks = (await db
     .select({
       id: books.id,

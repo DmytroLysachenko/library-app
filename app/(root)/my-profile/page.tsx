@@ -32,6 +32,7 @@ const page = async () => {
           returnDate: borrowRecords.returnDate,
           status: borrowRecords.status,
           receiptUrl: borrowRecords.receiptUrl,
+          receiptCreatedAt: borrowRecords.receiptCreatedAt,
         })
         .from(borrowRecords)
         .where(
@@ -56,6 +57,7 @@ const page = async () => {
           returnDate: borrowRecords.returnDate,
           status: borrowRecords.status,
           receiptUrl: borrowRecords.receiptUrl,
+          receiptCreatedAt: borrowRecords.receiptCreatedAt,
         })
         .from(borrowRecords)
         .where(
@@ -80,6 +82,7 @@ const page = async () => {
           returnDate: borrowRecords.returnDate,
           status: borrowRecords.status,
           receiptUrl: borrowRecords.receiptUrl,
+          receiptCreatedAt: borrowRecords.receiptCreatedAt,
         })
         .from(borrowRecords)
         .where(

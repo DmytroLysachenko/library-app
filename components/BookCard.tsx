@@ -5,6 +5,7 @@ import Image from "next/image";
 import dayjs from "dayjs";
 
 import BookCover from "./BookCover";
+import { RECEIPT_VALIDITY_DAYS } from "@/constants";
 
 const BookCard = ({
   id,
@@ -17,11 +18,16 @@ const BookCard = ({
   dueDate,
   returnDate,
   receiptUrl,
+  receiptCreatedAt,
   author,
 }: BookCard) => {
   const isReturnedBook = status === "RETURNED";
-  const isLoanedBook = Boolean(status);
   const isPendingBook = status === "PENDING";
+  const isLoanedBook = Boolean(status);
+
+  const isReceiptValid = receiptCreatedAt
+    ? dayjs().diff(dayjs(receiptCreatedAt), "day") < RECEIPT_VALIDITY_DAYS
+    : false;
 
   const remainingDays = dayjs(dueDate).diff(dayjs(), "days");
 
@@ -52,6 +58,7 @@ const BookCard = ({
           <p className="book-title">
             {title} - By {author}
           </p>
+
           <p className="book-genre">{genre}</p>
         </div>
 
@@ -107,7 +114,8 @@ const BookCard = ({
           </div>
         )}
       </Link>
-      {receiptUrl && (
+
+      {receiptUrl && isReceiptValid && (
         <Link
           href={receiptUrl}
           className="absolute right-2 bottom-0"

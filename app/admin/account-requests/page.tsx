@@ -5,7 +5,7 @@ import SortSelector from "@/components/SortSelector";
 import UsersTable from "@/components/admin/UsersTable";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
-import { dateSortOptions } from "@/constants";
+import { dateSortOptions, PER_PAGE_LIMITS } from "@/constants";
 import ListPagination from "@/components/ListPagination";
 import EmptyState from "@/components/admin/EmptyState";
 
@@ -15,7 +15,7 @@ const Page = async ({
   searchParams: Promise<{ page: string; sort: "asc" | "desc"; query: string }>;
 }) => {
   const { sort, query, page = 1 } = await searchParams;
-  const perPage = 8;
+  const perPage = PER_PAGE_LIMITS.adminUsers;
 
   const [allUsers, totalCountResults] = await Promise.all([
     db

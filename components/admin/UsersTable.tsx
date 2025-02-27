@@ -66,20 +66,26 @@ const UsersTable = ({
         <TableHeader className="bg-slate-100">
           <TableRow>
             <TableHead>Status</TableHead>
+
             <TableHead>Name</TableHead>
+
             <TableHead>Date Joined</TableHead>
+
             {isUsersTable && (
               <>
                 <TableHead>Role</TableHead>
                 <TableHead>Books Borrowed</TableHead>
               </>
             )}
+
             <TableHead>University ID No</TableHead>
+
             <TableHead>University ID Card</TableHead>
 
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {users.map((user) => (
             <UserRecord
@@ -118,6 +124,7 @@ const UserRecord = ({
           )}
         </Badge>
       </TableCell>
+
       <TableCell>
         <div className="flex items-center gap-3">
           <UserAvatar
@@ -131,6 +138,7 @@ const UserRecord = ({
           </div>
         </div>
       </TableCell>
+
       <TableCell>{dayjs(user.createdAt).format("DD/MM/YYYY")}</TableCell>
       {isUsersTable && (
         <>
@@ -184,7 +192,9 @@ const UserRecord = ({
           <TableCell>{user.borrowedBooks}</TableCell>
         </>
       )}
+
       <TableCell>{user.universityId}</TableCell>
+
       <TableCell>
         <Button
           variant="link"

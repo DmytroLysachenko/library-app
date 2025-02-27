@@ -5,7 +5,11 @@ import SortSelector from "@/components/SortSelector";
 import UsersTable from "@/components/admin/UsersTable";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
-import { alphabeticalSortOptions, userStatusSortOptions } from "@/constants";
+import {
+  alphabeticalSortOptions,
+  PER_PAGE_LIMITS,
+  userStatusSortOptions,
+} from "@/constants";
 import { User2 } from "lucide-react";
 import { getUsersFilterValue } from "@/lib/utils";
 import ListPagination from "@/components/ListPagination";
@@ -21,7 +25,7 @@ const Page = async ({
   }>;
 }) => {
   const { sort, query, status, page = 1 } = await searchParams;
-  const perPage = 8;
+  const perPage = PER_PAGE_LIMITS.adminUsers;
 
   const [allUsers, totalCountResults] = await Promise.all([
     db

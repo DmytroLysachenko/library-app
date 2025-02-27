@@ -5,7 +5,11 @@ import BorrowRecordsTable from "@/components/admin/BorrowRecordsTable";
 import SortSelector from "@/components/SortSelector";
 import { db } from "@/db/drizzle";
 import { books, borrowRecords, users } from "@/db/schema";
-import { dateSortOptions, requestStatusSortOptions } from "@/constants";
+import {
+  dateSortOptions,
+  PER_PAGE_LIMITS,
+  requestStatusSortOptions,
+} from "@/constants";
 import { LucideFileQuestion } from "lucide-react";
 import { getBorrowRequestsFilterValue } from "@/lib/utils";
 import ListPagination from "@/components/ListPagination";
@@ -22,7 +26,7 @@ const Page = async ({
   }>;
 }) => {
   const { sort, query, status, page = 1 } = await searchParams;
-  const perPage = 6;
+  const perPage = PER_PAGE_LIMITS.adminBorrowRecords;
 
   const [allRequests, totalCountResults] = await Promise.all([
     db

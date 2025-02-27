@@ -175,3 +175,12 @@ export const userStatusSortOptions = [
     title: "Pending",
   },
 ];
+
+export const RECEIPT_VALIDITY_DAYS = 1;
+
+export const PER_PAGE_LIMITS = {
+  searchPage: 12,
+  adminBooks: 6,
+  adminBorrowRecords: 6,
+  adminUsers: 8,
+};

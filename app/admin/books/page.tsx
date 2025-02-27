@@ -7,7 +7,7 @@ import SortSelector from "@/components/SortSelector";
 import { Button } from "@/components/ui/button";
 import { db } from "@/db/drizzle";
 import { books } from "@/db/schema";
-import { alphabeticalSortOptions } from "@/constants";
+import { alphabeticalSortOptions, PER_PAGE_LIMITS } from "@/constants";
 import ListPagination from "@/components/ListPagination";
 import EmptyState from "@/components/admin/EmptyState";
 
@@ -17,7 +17,7 @@ const Page = async ({
   searchParams: Promise<{ page: string; sort: string; query: string }>;
 }) => {
   const { sort, query, page = 1 } = await searchParams;
-  const perPage = 6;
+  const perPage = PER_PAGE_LIMITS.adminBooks;
   const [allBooks, totalCountResults] = await Promise.all([
     db
       .select()

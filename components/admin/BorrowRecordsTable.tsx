@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { FileText } from "lucide-react";
 import dayjs from "dayjs";
 
 import {
@@ -19,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Button } from "../ui/button";
 import BookCover from "../BookCover";
 import UserAvatar from "../UserAvatar";
 import { cn } from "@/lib/utils";
@@ -29,8 +27,8 @@ import {
   generateReceipt,
 } from "@/lib/admin/actions/records";
 import { toast } from "@/lib/actions/hooks/use-toast";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import ReceiptLink from "./ReceiptLink";
 
 const BorrowRecordsTable = ({
   records,
@@ -192,6 +190,7 @@ const BorrowRecord = ({
 
           <div className="flex flex-col">
             <span className="font-medium">{user.fullName}</span>
+
             <span className="text-sm text-muted-foreground">{user.email}</span>
           </div>
         </div>
@@ -273,32 +272,13 @@ const BorrowRecord = ({
       </TableCell>
 
       <TableCell>
-        {canGenerateReceipt ? (
-          <Button
-            variant="link"
-            className="px-0 text-blue-500"
-            onClick={onGenerateReceipt}
-          >
-            Generate
-            <FileText className="h-4 w-4 ml-1" />
-          </Button>
-        ) : record.receiptUrl && isReceiptValid ? (
-          <Button
-            variant="link"
-            className="px-0 text-blue-500"
-            asChild
-          >
-            <Link
-              target="_blank"
-              href={record.receiptUrl}
-            >
-              Open
-              <FileText className="h-4 w-4 ml-1" />
-            </Link>
-          </Button>
-        ) : (
-          <p>N/A</p>
-        )}
+        <ReceiptLink
+          isChangingStatus={isChangingStatus}
+          canGenerateReceipt={canGenerateReceipt}
+          receiptUrl={record.receiptUrl}
+          onGenerateReceipt={onGenerateReceipt}
+          isReceiptValid={isReceiptValid}
+        />
       </TableCell>
     </TableRow>
   );

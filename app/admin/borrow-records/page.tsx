@@ -5,7 +5,7 @@ import BorrowRequestsTable from "@/components/admin/BorrowRecordsTable";
 import SortSelector from "@/components/SortSelector";
 import { db } from "@/db/drizzle";
 import { books, borrowRecords, users } from "@/db/schema";
-import { dateSortOptions } from "@/constants";
+import { dateSortOptions, PER_PAGE_LIMITS } from "@/constants";
 import ListPagination from "@/components/ListPagination";
 import EmptyState from "@/components/admin/EmptyState";
 
@@ -19,7 +19,7 @@ const Page = async ({
   }>;
 }) => {
   const { sort, query, page = 1 } = await searchParams;
-  const perPage = 6;
+  const perPage = PER_PAGE_LIMITS.adminBorrowRecords;
 
   const [allRecords, totalCountResults] = await Promise.all([
     db
