@@ -9,6 +9,7 @@ import { dateSortOptions, requestStatusSortOptions } from "@/constants";
 import { LucideFileQuestion } from "lucide-react";
 import { getBorrowRequestsFilterValue } from "@/lib/utils";
 import ListPagination from "@/components/ListPagination";
+import EmptyState from "@/components/admin/EmptyState";
 
 const Page = async ({
   searchParams,
@@ -23,7 +24,7 @@ const Page = async ({
   const { sort, query, status, page = 1 } = await searchParams;
   const perPage = 6;
 
-  const [allRecords, totalCountResults] = await Promise.all([
+  const [allRequests, totalCountResults] = await Promise.all([
     db
       .select()
       .from(borrowRecords)
@@ -48,7 +49,7 @@ const Page = async ({
         )
       )
       .limit(perPage)
-      .offset(Number(page) - 1)
+      .offset((Number(page) - 1) * perPage)
       .then((res) => {
         return res.map((record) => ({
           ...record.borrow_records,
@@ -80,6 +81,7 @@ const Page = async ({
     <section className="admin-container">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xl font-semibold"> Borrow book requests</h2>
+
         <div className="flex flex-row items-center gap-4">
           <SortSelector
             options={requestStatusSortOptions}
@@ -88,6 +90,7 @@ const Page = async ({
             placeholder="Request status"
             placeholderIcon={<LucideFileQuestion className="mr-2 h-4 w-4" />}
           />
+
           <SortSelector
             options={dateSortOptions}
             param="sort"
@@ -95,15 +98,26 @@ const Page = async ({
           />
         </div>
       </div>
+
       <BorrowRecordsTable
-        records={allRecords}
+        records={allRequests}
         isRequest
       />
-      <ListPagination
-        currentPage={Number(page)}
-        lastPage={Math.ceil(totalCountResults / perPage)}
-        variant="admin"
-      />
+
+      {allRequests.length === 0 && (
+        <EmptyState
+          title="No Requests"
+          description="There are no borrow requests at the moment."
+        />
+      )}
+
+      {Number(page) <= Math.ceil(totalCountResults / perPage) && (
+        <ListPagination
+          currentPage={Number(page)}
+          lastPage={Math.ceil(totalCountResults / perPage)}
+          variant="admin"
+        />
+      )}
     </section>
   );
 };

@@ -210,6 +210,7 @@ export const generateReceipt = async (recordId: string) => {
       .update(borrowRecords)
       .set({
         receiptUrl: borrowReceiptPdf,
+        receiptCreatedAt: new Date(),
       })
       .where(eq(borrowRecords.id, recordId))
       .returning()

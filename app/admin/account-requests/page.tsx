@@ -7,6 +7,7 @@ import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
 import { dateSortOptions } from "@/constants";
 import ListPagination from "@/components/ListPagination";
+import EmptyState from "@/components/admin/EmptyState";
 
 const Page = async ({
   searchParams,
@@ -28,7 +29,7 @@ const Page = async ({
         )
       )
       .limit(perPage)
-      .offset(Number(page) - 1) as Promise<User[]>,
+      .offset((Number(page) - 1) * perPage) as Promise<User[]>,
     db
       .select({ count: count() })
       .from(users)
@@ -46,21 +47,33 @@ const Page = async ({
     <section className="admin-container">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xl font-semibold"> All pending account requests</h2>
+
         <SortSelector
           options={dateSortOptions}
           param="sort"
           variant="admin"
         />
       </div>
+
       <UsersTable
         users={allUsers}
         type="requests"
       />
-      <ListPagination
-        currentPage={Number(page)}
-        lastPage={Math.ceil(totalCountResults / perPage)}
-        variant="admin"
-      />
+
+      {allUsers.length === 0 && (
+        <EmptyState
+          title="No Pending Account Requests"
+          description="There are currently no account requests awaiting approval."
+        />
+      )}
+
+      {Number(page) <= Math.ceil(totalCountResults / perPage) && (
+        <ListPagination
+          currentPage={Number(page)}
+          lastPage={Math.ceil(totalCountResults / perPage)}
+          variant="admin"
+        />
+      )}
     </section>
   );
 };

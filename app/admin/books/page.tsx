@@ -9,6 +9,7 @@ import { db } from "@/db/drizzle";
 import { books } from "@/db/schema";
 import { alphabeticalSortOptions } from "@/constants";
 import ListPagination from "@/components/ListPagination";
+import EmptyState from "@/components/admin/EmptyState";
 
 const Page = async ({
   searchParams,
@@ -23,7 +24,7 @@ const Page = async ({
       .from(books)
       .where(query ? ilike(books.title, `%${query}%`) : undefined)
       .limit(perPage)
-      .offset(Number(page) - 1)
+      .offset((Number(page) - 1) * perPage)
       .orderBy(
         sort === "asc" ? asc(books.title) : desc(books.title)
       ) as Promise<Book[]>,
@@ -60,11 +61,20 @@ const Page = async ({
       </section>
       <BooksTable books={allBooks} />
 
-      <ListPagination
-        currentPage={Number(page)}
-        lastPage={Math.ceil(totalCountResults / perPage)}
-        variant="admin"
-      />
+      {allBooks.length === 0 && (
+        <EmptyState
+          title="No Books"
+          description="There are currently no any books in library collection."
+        />
+      )}
+
+      {Number(page) <= Math.ceil(totalCountResults / perPage) && (
+        <ListPagination
+          currentPage={Number(page)}
+          lastPage={Math.ceil(totalCountResults / perPage)}
+          variant="admin"
+        />
+      )}
     </div>
   );
 };

@@ -35,7 +35,7 @@ const Page = async ({
       )
       .orderBy(sort === "asc" ? asc(users.fullName) : desc(users.fullName))
       .limit(perPage)
-      .offset(Number(page) - 1) as Promise<User[]>,
+      .offset((Number(page) - 1) * perPage) as Promise<User[]>,
     db
       .select({ count: count() })
       .from(users)
@@ -53,6 +53,7 @@ const Page = async ({
     <section className="admin-container">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xl font-semibold"> All Users</h2>
+
         <div className="flex flex-row items-center gap-4">
           <SortSelector
             options={userStatusSortOptions}
@@ -61,6 +62,7 @@ const Page = async ({
             placeholder="User status"
             placeholderIcon={<User2 className="mr-2 h-4 w-4" />}
           />
+
           <SortSelector
             options={alphabeticalSortOptions}
             param="sort"
@@ -74,11 +76,13 @@ const Page = async ({
         type="users"
       />
 
-      <ListPagination
-        currentPage={Number(page)}
-        lastPage={Math.ceil(totalCountResults / perPage)}
-        variant="admin"
-      />
+      {Number(page) <= Math.ceil(totalCountResults / perPage) && (
+        <ListPagination
+          currentPage={Number(page)}
+          lastPage={Math.ceil(totalCountResults / perPage)}
+          variant="admin"
+        />
+      )}
     </section>
   );
 };

@@ -45,11 +45,17 @@ const BorrowRecordsTable = ({
         <TableHeader>
           <TableRow>
             <TableHead>Book</TableHead>
+
             <TableHead>User {isRequest ? "Requested" : "Borrowed"}</TableHead>
+
             <TableHead>Status</TableHead>
+
             <TableHead>{isRequest ? "Request" : "Borrowed"} date</TableHead>
+
             {!isRequest && <TableHead>Return date</TableHead>}
+
             <TableHead>Due Date</TableHead>
+
             <TableHead>Receipt</TableHead>
           </TableRow>
         </TableHeader>
@@ -83,8 +89,14 @@ const BorrowRecord = ({
   const [isChangingStatus, setIsChangingStatus] = React.useState(false);
   const [status, setStatus] = React.useState(record.status);
   const [dueDate, setDueDate] = React.useState<Date | null>(record.dueDate);
+
+  const isReceiptValid = record.receiptCreatedAt
+    ? dayjs().diff(dayjs(record.receiptCreatedAt), "day") < 1
+    : false;
+
   const [canGenerateReceipt, setCanGenerateReceipt] = React.useState(
-    !Boolean(record.receiptUrl) && record.status !== "PENDING"
+    (!Boolean(record.receiptUrl) && record.status !== "PENDING") ||
+      (Boolean(record.receiptUrl) && !isReceiptValid)
   );
 
   const router = useRouter();
@@ -169,6 +181,7 @@ const BorrowRecord = ({
           <span className="font-medium">{book.title}</span>
         </div>
       </TableCell>
+
       <TableCell>
         <div className="flex items-center gap-3">
           <UserAvatar
@@ -183,6 +196,7 @@ const BorrowRecord = ({
           </div>
         </div>
       </TableCell>
+
       {isRequest ? (
         <TableCell>
           {nextStatus ? (
@@ -237,7 +251,9 @@ const BorrowRecord = ({
               : "Late Return"}
         </TableCell>
       )}
+
       <TableCell>{dayjs(record.createdAt).format("YYYY-MM-DD")}</TableCell>
+
       {!isRequest && (
         <TableCell>
           {record.returnDate
@@ -247,6 +263,7 @@ const BorrowRecord = ({
               : "N/A"}
         </TableCell>
       )}
+
       <TableCell>
         {dueDate
           ? dayjs(dueDate).format("YYYY-MM-DD")
@@ -254,6 +271,7 @@ const BorrowRecord = ({
             ? dayjs().format("YYYY-MM-DD")
             : "N/A"}
       </TableCell>
+
       <TableCell>
         {canGenerateReceipt ? (
           <Button
@@ -264,7 +282,7 @@ const BorrowRecord = ({
             Generate
             <FileText className="h-4 w-4 ml-1" />
           </Button>
-        ) : record.receiptUrl ? (
+        ) : record.receiptUrl && isReceiptValid ? (
           <Button
             variant="link"
             className="px-0 text-blue-500"

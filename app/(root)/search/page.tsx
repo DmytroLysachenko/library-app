@@ -20,7 +20,7 @@ const Page = async ({
   }>;
 }) => {
   const { query, page = 1, sort } = await searchParams;
-
+  const perPage = 12;
   const filteredBooks = (await db
     .select({
       id: books.id,
@@ -41,8 +41,8 @@ const Page = async ({
         : undefined
     )
     .orderBy(getBooksSortingOrder(sort))
-    .limit(12)
-    .offset(12 * (Number(page) - 1))) as Book[];
+    .limit(perPage)
+    .offset((Number(page) - 1) * perPage)) as Book[];
 
   const totalCountResults = await db
     .select({ count: count() })
@@ -73,7 +73,7 @@ const Page = async ({
 
           <ListPagination
             currentPage={Number(page)}
-            lastPage={Math.ceil(totalCountResults / 12)}
+            lastPage={Math.ceil(totalCountResults / perPage)}
           />
         </>
       ) : (

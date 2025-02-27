@@ -7,6 +7,7 @@ import { db } from "@/db/drizzle";
 import { books, borrowRecords, users } from "@/db/schema";
 import { dateSortOptions } from "@/constants";
 import ListPagination from "@/components/ListPagination";
+import EmptyState from "@/components/admin/EmptyState";
 
 const Page = async ({
   searchParams,
@@ -43,7 +44,7 @@ const Page = async ({
         )
       )
       .limit(perPage)
-      .offset(Number(page) - 1)
+      .offset((Number(page) - 1) * perPage)
       .then((res) => {
         return res.map((record) => ({
           ...record.borrow_records,
@@ -83,10 +84,20 @@ const Page = async ({
 
       <BorrowRequestsTable records={allRecords} />
 
-      <ListPagination
-        currentPage={Number(page)}
-        lastPage={Math.ceil(totalCountResults / perPage)}
-      />
+      {allRecords.length === 0 && (
+        <EmptyState
+          title="No Record"
+          description="There are currently no any borrow records exists."
+        />
+      )}
+
+      {Number(page) <= Math.ceil(totalCountResults / perPage) && (
+        <ListPagination
+          currentPage={Number(page)}
+          lastPage={Math.ceil(totalCountResults / perPage)}
+          variant="admin"
+        />
+      )}
     </section>
   );
 };

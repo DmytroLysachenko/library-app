@@ -85,6 +85,7 @@ interface BorrowRecord {
   returnDate: Date | null;
   status: "BORROWED" | "RETURNED" | "PENDING";
   receiptUrl: string | null;
+  receiptCreatedAt: Date | null;
   user: User;
   book: Book;
 }

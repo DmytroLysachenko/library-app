@@ -50,9 +50,11 @@ const ListPagination = ({
             </button>
           )}
         </PaginationItem>
-        <PaginationItem className="pagination-btn_light  flex items-center justify-center">
+
+        <PaginationItem className="pagination-btn_light flex items-center justify-center relative after:content-[''] after:bg-primary-admin after:w-full after:h-1 after:absolute after:bottom-0">
           {currentPage}
         </PaginationItem>
+
         {lastPage - currentPage > 1 && (
           <PaginationItem>
             <PaginationEllipsis
@@ -64,6 +66,7 @@ const ListPagination = ({
             />
           </PaginationItem>
         )}
+
         {!isLastPage && (
           <PaginationItem>
             <button
@@ -78,6 +81,7 @@ const ListPagination = ({
             </button>
           </PaginationItem>
         )}
+
         {!isLastPage && (
           <PaginationItem>
             <button
