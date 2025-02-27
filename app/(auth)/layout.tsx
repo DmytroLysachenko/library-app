@@ -11,6 +11,15 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 
   return (
     <main className="auth-container">
+      <div className="absolute top-4 left-4 bg-dark-400 p-2 rounded-lg text-sm">
+        <p>Test user with partial admin accesses</p>
+        <p>
+          Email: <strong>kawos77360@hartaria.com</strong>
+        </p>
+        <p>
+          Password: <strong>kawos77360@hartaria.com</strong>
+        </p>
+      </div>
       <section className="auth-form">
         <div className="auth-box">
           <div className="flex flex-row gap-3">

@@ -18,7 +18,13 @@ import { deleteBook } from "@/lib/admin/actions/books";
 import BookCover from "../BookCover";
 import { useRouter } from "next/navigation";
 
-const BooksTable = ({ books }: { books: Book[] }) => {
+const BooksTable = ({
+  books,
+  isTestAccount,
+}: {
+  books: Book[];
+  isTestAccount: boolean;
+}) => {
   const router = useRouter();
 
   return (
@@ -27,12 +33,17 @@ const BooksTable = ({ books }: { books: Book[] }) => {
         <TableHeader className="bg-slate-100">
           <TableRow>
             <TableHead>Book Title</TableHead>
+
             <TableHead>Author</TableHead>
+
             <TableHead>Genre</TableHead>
+
             <TableHead>Date Created</TableHead>
+
             <TableHead className="text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {books.map((book) => (
             <TableRow key={book.id}>
@@ -47,11 +58,15 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                   <span className="font-medium">{book.title}</span>
                 </div>
               </TableCell>
+
               <TableCell>{book.author}</TableCell>
+
               <TableCell>{book.genre}</TableCell>
+
               <TableCell>
                 {dayjs(book.createdAt).format("DD/MM/YYYY")}
               </TableCell>
+
               <TableCell className="text-right">
                 <div className="flex items-center justify-end gap-2">
                   <Button
@@ -73,6 +88,10 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                     size="icon"
                     className="h-8 w-8"
                     onClick={async () => {
+                      if (isTestAccount) {
+                        alert("You can't delete a book from a test account.");
+                        return;
+                      }
                       await deleteBook(book.id!);
                       router.refresh();
                     }}

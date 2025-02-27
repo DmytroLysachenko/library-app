@@ -85,6 +85,13 @@
       "when": 1740651217001,
       "tag": "0011_real_dragon_lord",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1740655386023,
+      "tag": "0012_aberrant_ozymandias",
+      "breakpoints": true
     }
   ]
 }

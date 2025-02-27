@@ -26,7 +26,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
     .limit(1)
     .then((res) => res[0])) as Partial<User>;
 
-  if (user.role !== "ADMIN") redirect("/");
+  if (user.role !== "ADMIN" && user.role !== "TEST") redirect("/");
 
   return (
     <main className="flex min-h-screen w-full flex-row">

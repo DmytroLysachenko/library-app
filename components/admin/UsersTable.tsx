@@ -51,9 +51,11 @@ const getStatusBadgeColor = (status: string) => {
 const UsersTable = ({
   users,
   type,
+  isTestAccount,
 }: {
   users: User[];
   type: "users" | "requests";
+  isTestAccount?: boolean;
 }) => {
   const isUsersTable = type === "users";
   const { data } = useSession();
@@ -93,6 +95,7 @@ const UsersTable = ({
               isCurrentUser={user.id === data?.user?.id}
               user={user}
               isUsersTable={isUsersTable}
+              isTestAccount={isTestAccount}
             />
           ))}
         </TableBody>
@@ -105,10 +108,12 @@ const UserRecord = ({
   user,
   isUsersTable,
   isCurrentUser,
+  isTestAccount,
 }: {
   user: User;
   isUsersTable: boolean;
   isCurrentUser?: boolean;
+  isTestAccount?: boolean;
 }) => {
   const router = useRouter();
   const [isChangingStatus, setIsChangingStatus] = React.useState(false);
@@ -145,7 +150,7 @@ const UserRecord = ({
           <TableCell>
             <Select
               value={userRole}
-              disabled={isChangingStatus}
+              disabled={isChangingStatus || isTestAccount}
               onValueChange={async (value: "USER" | "ADMIN") => {
                 try {
                   setIsChangingStatus(true);
@@ -230,6 +235,11 @@ const UserRecord = ({
           className="h-10 w-10 text-right"
           disabled={isCurrentUser}
           onClick={async () => {
+            if (isTestAccount) {
+              alert("You cannot delete from a test account.");
+              return;
+            }
+
             if (isUsersTable) {
               await deleteUser(user.id!);
             } else {

@@ -36,7 +36,7 @@ interface BookCard
 
 interface User {
   status: "PENDING" | "APPROVED" | "REJECTED";
-  role: "USER" | "ADMIN";
+  role: "USER" | "ADMIN" | "TEST";
   id: string;
   fullName: string;
   email: string;

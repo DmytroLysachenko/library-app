@@ -13,6 +13,7 @@ import {
 import { User2 } from "lucide-react";
 import { getUsersFilterValue } from "@/lib/utils";
 import ListPagination from "@/components/ListPagination";
+import { auth } from "@/auth";
 
 const Page = async ({
   searchParams,
@@ -27,7 +28,9 @@ const Page = async ({
   const { sort, query, status, page = 1 } = await searchParams;
   const perPage = PER_PAGE_LIMITS.adminUsers;
 
-  const [allUsers, totalCountResults] = await Promise.all([
+  const session = await auth();
+
+  const [allUsers, totalCountResults, userRole] = await Promise.all([
     db
       .select()
       .from(users)
@@ -51,7 +54,15 @@ const Page = async ({
       )
       .limit(1)
       .then((res) => res[0].count),
+    db
+      .select({ role: users.role })
+      .from(users)
+      .where(eq(users.id, session?.user?.id as string))
+      .limit(1)
+      .then((res) => res[0].role),
   ]);
+
+  const isTestAccount = userRole === "TEST";
 
   return (
     <section className="admin-container">
@@ -78,6 +89,7 @@ const Page = async ({
       <UsersTable
         users={allUsers}
         type="users"
+        isTestAccount={isTestAccount}
       />
 
       {Number(page) <= Math.ceil(totalCountResults / perPage) && (

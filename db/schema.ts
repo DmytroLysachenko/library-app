@@ -16,7 +16,7 @@ export const STATUS_ENUM = pgEnum("status", [
   "REJECTED",
 ]);
 
-export const ROLE_ENUM = pgEnum("role", ["USER", "ADMIN"]);
+export const ROLE_ENUM = pgEnum("role", ["USER", "ADMIN", "TEST"]);
 
 export const BORROW_STATUS = pgEnum("borrow_status", [
   "BORROWED",

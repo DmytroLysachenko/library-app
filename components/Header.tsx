@@ -45,19 +45,20 @@ const Header = ({ user }: { user: Partial<User> }) => {
             Search
           </Link>
         </li>
-        {user.role === "ADMIN" && (
-          <li>
-            <Link
-              className={cn(
-                "text-xl hover:text-amber-200",
-                pathname === "/admin" ? "text-amber-100" : "text-white"
-              )}
-              href="/admin"
-            >
-              Admin Console
-            </Link>
-          </li>
-        )}
+        {user.role === "ADMIN" ||
+          (user.role === "TEST" && (
+            <li>
+              <Link
+                className={cn(
+                  "text-xl hover:text-amber-200",
+                  pathname === "/admin" ? "text-amber-100" : "text-white"
+                )}
+                href="/admin"
+              >
+                Admin Console
+              </Link>
+            </li>
+          ))}
         <li>
           <Link
             className="flex items-center gap-2"

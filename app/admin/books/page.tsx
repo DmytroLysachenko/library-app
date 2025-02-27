@@ -1,12 +1,13 @@
 import React from "react";
 import Link from "next/link";
-import { asc, count, desc, ilike } from "drizzle-orm";
+import { asc, count, desc, eq, ilike } from "drizzle-orm";
+import { auth } from "@/auth";
 
 import BooksTable from "@/components/admin/BooksTable";
 import SortSelector from "@/components/SortSelector";
 import { Button } from "@/components/ui/button";
 import { db } from "@/db/drizzle";
-import { books } from "@/db/schema";
+import { books, users } from "@/db/schema";
 import { alphabeticalSortOptions, PER_PAGE_LIMITS } from "@/constants";
 import ListPagination from "@/components/ListPagination";
 import EmptyState from "@/components/admin/EmptyState";
@@ -18,7 +19,10 @@ const Page = async ({
 }) => {
   const { sort, query, page = 1 } = await searchParams;
   const perPage = PER_PAGE_LIMITS.adminBooks;
-  const [allBooks, totalCountResults] = await Promise.all([
+
+  const session = await auth();
+
+  const [allBooks, totalCountResults, userRole] = await Promise.all([
     db
       .select()
       .from(books)
@@ -34,7 +38,15 @@ const Page = async ({
       .where(query ? ilike(books.title, `%${query}%`) : undefined)
       .limit(1)
       .then((res) => res[0].count),
+    db
+      .select({ role: users.role })
+      .from(users)
+      .where(eq(users.id, session?.user?.id as string))
+      .limit(1)
+      .then((res) => res[0].role),
   ]);
+
+  const isTestAccount = userRole === "TEST";
 
   return (
     <div className="admin-container">
@@ -52,14 +64,17 @@ const Page = async ({
           >
             <Link
               href={"/admin/books/new"}
-              className="text-white"
+              className="text-white hover:bg-primary-admin/80"
             >
               + Create new book
             </Link>
           </Button>
         </div>
       </section>
-      <BooksTable books={allBooks} />
+      <BooksTable
+        books={allBooks}
+        isTestAccount={isTestAccount}
+      />
 
       {allBooks.length === 0 && (
         <EmptyState
