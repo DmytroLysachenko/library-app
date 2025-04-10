@@ -23,7 +23,7 @@ const ReceiptLink = ({
   ) : canGenerateReceipt ? (
     <Button
       variant="link"
-      className="px-0 text-blue-500"
+      className="px-0 text-blue-500 text-xs"
       onClick={onGenerateReceipt}
     >
       Generate

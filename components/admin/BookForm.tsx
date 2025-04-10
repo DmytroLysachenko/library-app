@@ -94,6 +94,7 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name={"author"}
@@ -114,6 +115,7 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name={"genre"}
@@ -134,6 +136,7 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name={"rating"}
@@ -156,6 +159,7 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name={"totalCopies"}
@@ -206,6 +210,7 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name={"coverColor"}
@@ -224,6 +229,7 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name={"description"}
@@ -243,6 +249,7 @@ const BookForm = ({ type, ...book }: BookFormProps) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name={"videoUrl"}

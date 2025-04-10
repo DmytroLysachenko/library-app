@@ -55,15 +55,16 @@ const Page = async ({
         />
       </div>
 
-      <UsersTable
-        users={allUsers}
-        type="requests"
-      />
-
-      {allUsers.length === 0 && (
+      {allUsers.length ? (
+        <UsersTable
+          users={allUsers}
+          type="requests"
+        />
+      ) : (
         <EmptyState
           title="No Pending Account Requests"
           description="There are currently no account requests awaiting approval."
+          containerStyle="mt-20"
         />
       )}
 

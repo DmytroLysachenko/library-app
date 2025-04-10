@@ -71,15 +71,17 @@ const Page = async ({
           </Button>
         </div>
       </section>
-      <BooksTable
-        books={allBooks}
-        isTestAccount={isTestAccount}
-      />
 
-      {allBooks.length === 0 && (
+      {allBooks.length ? (
+        <BooksTable
+          books={allBooks}
+          isTestAccount={isTestAccount}
+        />
+      ) : (
         <EmptyState
           title="No Books"
           description="There are currently no any books in library collection."
+          containerStyle="mt-20"
         />
       )}
 

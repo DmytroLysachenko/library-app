@@ -2,7 +2,7 @@ import { books, borrowRecords, users } from "@/db/schema";
 import { desc, eq, ne } from "drizzle-orm";
 import { db } from "@/db/drizzle";
 
-import BarrowRequestsSection from "@/components/admin/BorrowRequestsSection";
+import BorrowRequestsSection from "@/components/admin/BorrowRequestsSection";
 import RecentlyAddedBooksSection from "@/components/admin/RecentlyAddedBooksSection";
 import AccountRequestsSection from "@/components/admin/AccountRequestsSection";
 import StatisticsBoard from "@/components/admin/StatisticsBoard";
@@ -43,7 +43,7 @@ const Page = async () => {
       <StatisticsBoard />
 
       <div className="grid grid-cols-2 grid-rows-2 gap-12">
-        <BarrowRequestsSection requests={recentBorrowRequests} />
+        <BorrowRequestsSection requests={recentBorrowRequests} />
 
         <RecentlyAddedBooksSection recentBooks={recentBooks} />
 

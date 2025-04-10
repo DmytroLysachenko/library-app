@@ -103,15 +103,16 @@ const Page = async ({
         </div>
       </div>
 
-      <BorrowRecordsTable
-        records={allRequests}
-        isRequest
-      />
-
-      {allRequests.length === 0 && (
+      {allRequests.length ? (
+        <BorrowRecordsTable
+          records={allRequests}
+          isRequest
+        />
+      ) : (
         <EmptyState
           title="No Requests"
           description="There are no borrow requests at the moment."
+          containerStyle="mt-20"
         />
       )}
 

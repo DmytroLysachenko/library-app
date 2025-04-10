@@ -24,9 +24,9 @@ const AccountRequestsSection = ({
         </Button>
       </div>
 
-      <div className="space-y-3 grid grid-cols-3">
-        {recentAccountRequests.length > 0 ? (
-          recentAccountRequests.map((request) => (
+      {recentAccountRequests.length > 0 ? (
+        <div className="space-y-3 grid grid-cols-3">
+          {recentAccountRequests.map((request) => (
             <div
               key={request.id}
               className="user-card"
@@ -38,14 +38,14 @@ const AccountRequestsSection = ({
               <p className="name">{request.fullName}</p>
               <p className="email">{request.email}</p>
             </div>
-          ))
-        ) : (
-          <EmptyState
-            title="No Pending Account Requests"
-            description="There are currently no account requests awaiting approval."
-          />
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          title="No Pending Account Requests"
+          description="There are currently no account requests awaiting approval."
+        />
+      )}
     </section>
   );
 };

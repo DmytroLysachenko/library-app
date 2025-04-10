@@ -1,7 +1,7 @@
 import React from "react";
 import { and, asc, count, desc, eq, ilike, or } from "drizzle-orm";
 
-import BorrowRequestsTable from "@/components/admin/BorrowRecordsTable";
+import BorrowRecordsTable from "@/components/admin/BorrowRecordsTable";
 import SortSelector from "@/components/SortSelector";
 import { db } from "@/db/drizzle";
 import { books, borrowRecords, users } from "@/db/schema";
@@ -82,12 +82,13 @@ const Page = async ({
         />
       </div>
 
-      <BorrowRequestsTable records={allRecords} />
-
-      {allRecords.length === 0 && (
+      {allRecords.length ? (
+        <BorrowRecordsTable records={allRecords} />
+      ) : (
         <EmptyState
           title="No Record"
           description="There are currently no any borrow records exists."
+          containerStyle="mt-20"
         />
       )}
 

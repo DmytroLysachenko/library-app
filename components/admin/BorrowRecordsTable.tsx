@@ -20,7 +20,7 @@ import {
 } from "../ui/select";
 import BookCover from "../BookCover";
 import UserAvatar from "../UserAvatar";
-import { cn } from "@/lib/utils";
+import { cn, getNextStatus } from "@/lib/utils";
 import {
   confirmBookBorrowStatus,
   confirmBookReturnStatus,
@@ -57,6 +57,7 @@ const BorrowRecordsTable = ({
             <TableHead>Receipt</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {records.map(({ book, user, ...record }) => (
             <BorrowRecord
@@ -102,17 +103,6 @@ const BorrowRecord = ({
   const inTimeReturn =
     (record.dueDate ? new Date(record.dueDate) : new Date()) >=
     (record.returnDate ? new Date(record.returnDate) : new Date());
-
-  const getNextStatus = (currentStatus: string) => {
-    switch (currentStatus) {
-      case "PENDING":
-        return "BORROWED";
-      case "BORROWED":
-        return "RETURNED";
-      default:
-        return null;
-    }
-  };
 
   const nextStatus = getNextStatus(status);
 
@@ -176,7 +166,7 @@ const BorrowRecord = ({
             variant="small"
             coverColor={book.coverColor}
           />
-          <span className="font-medium">{book.title}</span>
+          <span className="font-medium text-xs">{book.title}</span>
         </div>
       </TableCell>
 
@@ -185,13 +175,13 @@ const BorrowRecord = ({
           <UserAvatar
             avatarUrl={user.avatar}
             fullName={user.fullName}
-            className="w-12 h-12"
+            className="w-10 h-10"
           />
 
-          <div className="flex flex-col">
-            <span className="font-medium">{user.fullName}</span>
+          <div className="flex flex-col  text-xs ">
+            <span className="font-medium ">{user.fullName}</span>
 
-            <span className="text-sm text-muted-foreground">{user.email}</span>
+            <span className=" text-muted-foreground">{user.email}</span>
           </div>
         </div>
       </TableCell>
@@ -206,14 +196,14 @@ const BorrowRecord = ({
             >
               <SelectTrigger
                 className={cn(
-                  "w-36 text-xs",
+                  "max-w-30 text-xs",
                   inTimeReturn ? "bg-purple-100" : "bg-red-300"
                 )}
               >
                 <SelectValue>{status}</SelectValue>
               </SelectTrigger>
 
-              <SelectContent className="w-36 text-xs">
+              <SelectContent>
                 <SelectItem value={nextStatus}>
                   <span
                     className={cn(
@@ -239,7 +229,7 @@ const BorrowRecord = ({
       ) : (
         <TableCell
           className={cn(
-            "text-md",
+            "text-xs",
             inTimeReturn ? "text-purple-500" : "text-red-500"
           )}
         >
@@ -251,10 +241,12 @@ const BorrowRecord = ({
         </TableCell>
       )}
 
-      <TableCell>{dayjs(record.createdAt).format("YYYY-MM-DD")}</TableCell>
+      <TableCell className="text-xs">
+        {dayjs(record.createdAt).format("YYYY-MM-DD")}
+      </TableCell>
 
       {!isRequest && (
-        <TableCell>
+        <TableCell className="text-xs">
           {record.returnDate
             ? dayjs(record.returnDate).format("YYYY-MM-DD")
             : status === "RETURNED"
@@ -263,7 +255,7 @@ const BorrowRecord = ({
         </TableCell>
       )}
 
-      <TableCell>
+      <TableCell className="text-xs">
         {dueDate
           ? dayjs(dueDate).format("YYYY-MM-DD")
           : status === "RETURNED"
@@ -271,7 +263,7 @@ const BorrowRecord = ({
             : "N/A"}
       </TableCell>
 
-      <TableCell>
+      <TableCell className="text-xs">
         <ReceiptLink
           isChangingStatus={isChangingStatus}
           canGenerateReceipt={canGenerateReceipt}

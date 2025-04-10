@@ -14,7 +14,10 @@ const Sidebar = ({ user }: { user: Partial<User> }) => {
   return (
     <div className="admin-sidebar">
       <div>
-        <div className="logo">
+        <Link
+          href="/"
+          className="logo"
+        >
           <Image
             src="/icons/admin/logo.svg"
             alt="logo"
@@ -22,7 +25,7 @@ const Sidebar = ({ user }: { user: Partial<User> }) => {
             height={37}
           />
           <h1>LibraryView</h1>
-        </div>
+        </Link>
         <div className="mt-10 flex flex-col gap-5">
           {adminSideBarLinks.map((link) => {
             const isSelected =

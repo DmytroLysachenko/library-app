@@ -78,3 +78,14 @@ export const getUserStatusLabel = (
       return "Status Pending";
   }
 };
+
+export const getNextStatus = (currentStatus: string) => {
+  switch (currentStatus) {
+    case "PENDING":
+      return "BORROWED";
+    case "BORROWED":
+      return "RETURNED";
+    default:
+      return null;
+  }
+};

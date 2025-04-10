@@ -5,7 +5,7 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import { CircleX, ExternalLink, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import {
   Table,
@@ -59,8 +59,9 @@ const UsersTable = ({
 }) => {
   const isUsersTable = type === "users";
   const { data } = useSession();
+  const router = useRouter();
 
-  if (!data) redirect("/sign-in");
+  if (!data) router.push("/");
 
   return (
     <div className="rounded-md border mt-7">
