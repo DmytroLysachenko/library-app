@@ -53,7 +53,8 @@ LibraryView is a full-featured library management application built with modern 
 
 ### Backend
 
-- **Neon.tech** (Serverless PostgreSQL Database)
+- **TypeScript**
+- **Neon** (Serverless PostgreSQL Database)
 - **Drizzle ORM** for database management
 - **Upstash Workflows & Redis Ratelimit** for caching and rate limiting
 - **Auth.js** for authentication
