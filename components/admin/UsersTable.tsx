@@ -57,7 +57,7 @@ const UsersTable = ({
   users: User[];
   type: "users" | "requests";
   isTestAccount?: boolean;
-  session: Session | null;
+  session?: Session | null;
 }) => {
   const isUsersTable = type === "users";
 
