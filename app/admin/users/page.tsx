@@ -90,6 +90,7 @@ const Page = async ({
         users={allUsers}
         type="users"
         isTestAccount={isTestAccount}
+        session={session}
       />
 
       {Number(page) <= Math.ceil(totalCountResults / perPage) && (

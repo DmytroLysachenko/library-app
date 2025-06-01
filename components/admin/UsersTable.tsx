@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { CircleX, ExternalLink, Trash2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -34,6 +33,7 @@ import { toast } from "@/lib/actions/hooks/use-toast";
 import UserAvatar from "../UserAvatar";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
+import { Session } from "next-auth";
 
 const getStatusBadgeColor = (status: string) => {
   switch (status) {
@@ -52,16 +52,14 @@ const UsersTable = ({
   users,
   type,
   isTestAccount,
+  session,
 }: {
   users: User[];
   type: "users" | "requests";
   isTestAccount?: boolean;
+  session: Session | null;
 }) => {
   const isUsersTable = type === "users";
-  const { data } = useSession();
-  const router = useRouter();
-
-  if (!data) router.push("/");
 
   return (
     <div className="rounded-md border mt-7">
@@ -93,7 +91,7 @@ const UsersTable = ({
           {users.map((user) => (
             <UserRecord
               key={user.id}
-              isCurrentUser={user.id === data?.user?.id}
+              isCurrentUser={user.id === session?.user?.id}
               user={user}
               isUsersTable={isUsersTable}
               isTestAccount={isTestAccount}
