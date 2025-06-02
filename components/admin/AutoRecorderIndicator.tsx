@@ -1,17 +1,11 @@
 "use client";
 
-// import { Power } from "lucide-react";
-// import { useState } from "react";
-
-// import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-// import { setStatsRecorderStatus } from "@/lib/admin/actions/statsRecords";
-// import { toast } from "@/lib/actions/hooks/use-toast";
 
 interface AutoRecorderIndicatorProps {
   status: boolean;
@@ -20,29 +14,6 @@ interface AutoRecorderIndicatorProps {
 export const AutoRecorderIndicator = ({
   status,
 }: AutoRecorderIndicatorProps) => {
-  // const [isEnabled, setIsEnabled] = useState(status);
-  // const [isLoading, setIsLoading] = useState(false);
-
-  // const handleToggle = async () => {
-  //   const newState = !isEnabled;
-  //   setIsLoading(true);
-
-  //   const response = await setStatsRecorderStatus(newState);
-  //   if (response.success) {
-  //     setIsEnabled(newState);
-  //   } else {
-  //     toast({
-  //       title: "Error",
-  //       description: response.error,
-  //       variant: "destructive",
-  //     });
-  //   }
-  //   setIsLoading(false);
-  // };
-
-  // TODO: Update workflow toggle logic
-  // Button with workflow toggle functionality requires changes to be made, so commented for now to avoid many same workflows running simultaneously
-
   return (
     <TooltipProvider>
       <Tooltip>
@@ -56,23 +27,6 @@ export const AutoRecorderIndicator = ({
                 Auto Statistics Recorder : {status ? "On" : "Off"}
               </span>
             </div>
-
-            {/* <Button
-              size="icon"
-              variant="ghost"
-              disabled={isLoading}
-              className={`shrink-0 ${
-                isEnabled
-                  ? "text-green-500 hover:text-green-600"
-                  : "text-red-500 hover:text-red-600"
-              }`}
-              onClick={handleToggle}
-            >
-              <Power className="size-4" />
-              <span className="sr-only">
-                {isEnabled ? "Turn off" : "Turn on"} auto recorder
-              </span>
-            </Button> */}
           </div>
         </TooltipTrigger>
 
