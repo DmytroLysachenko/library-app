@@ -7,11 +7,11 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 
 const NotFoundSection = ({ query }: { query: string }) => {
-  const handleClearSearch = () => {
-    const params = new URLSearchParams(window.location.search);
-    params.delete("query");
-    return `/search?${params.toString()}`;
-  };
+  const params = new URLSearchParams(window.location.search);
+
+  params.delete("query");
+
+  const clearSearchLink = `/search?${params.toString()}`;
 
   return (
     <section className="pb-20">
@@ -34,7 +34,7 @@ const NotFoundSection = ({ query }: { query: string }) => {
           className="not-found-btn"
           asChild
         >
-          <Link href={`${handleClearSearch()}`}>Clear Search</Link>
+          <Link href={clearSearchLink}>Clear Search</Link>
         </Button>
       </div>
     </section>
