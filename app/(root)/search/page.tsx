@@ -22,7 +22,7 @@ const Page = async ({
 }) => {
   const { query, page = 1, sort } = await searchParams;
   const perPage = PER_PAGE_LIMITS.searchPage;
-  const filteredBooks = (await db
+  const filteredBooksPromise = db
     .select({
       id: books.id,
       title: books.title,
@@ -43,7 +43,8 @@ const Page = async ({
     )
     .orderBy(getBooksSortingOrder(sort))
     .limit(perPage)
-    .offset((Number(page) - 1) * perPage)) as Book[];
+    .offset((Number(page) - 1) * perPage)
+    .then((res) => res) as Promise<Book[]>;
 
   const totalCountResults = await db
     .select({ count: count() })
@@ -63,20 +64,19 @@ const Page = async ({
   return (
     <>
       <SearchSection />
-      {filteredBooks.length > 0 ? (
-        <>
-          <BookList
-            books={filteredBooks}
-            title={"Search Results"}
-            containerClassName="pb-20"
-            isSearch={true}
-          />
 
-          <ListPagination
-            currentPage={Number(page)}
-            lastPage={Math.ceil(totalCountResults / perPage)}
-          />
-        </>
+      <BookList
+        booksPromise={filteredBooksPromise}
+        title={"Search Results"}
+        containerClassName="pb-20"
+        isSearch={true}
+      />
+
+      {totalCountResults > 0 ? (
+        <ListPagination
+          currentPage={Number(page)}
+          lastPage={Math.ceil(totalCountResults / perPage)}
+        />
       ) : (
         <NotFoundSection query={query} />
       )}

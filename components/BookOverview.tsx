@@ -7,30 +7,39 @@ import BorrowBook from "./BorrowBook";
 import { users } from "@/db/schema";
 import { db } from "@/db/drizzle";
 
-interface BookOverviewProps extends Book {
+interface BookOverviewProps {
   userId: string;
+  latestBookPromise: Promise<Book>;
 }
 
 const BookOverview = async ({
-  title,
-  author,
-  genre,
-  rating,
-  totalCopies,
-  availableCopies,
-  description,
-  coverColor,
-  coverUrl,
-  id,
+  latestBookPromise,
   userId,
 }: BookOverviewProps) => {
-  const [user] = await db
-    .select()
-    .from(users)
-    .where(eq(users.id, userId))
-    .limit(1);
+  const [user, latestBook] = await Promise.all([
+    db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1)
+      .then((res) => res[0]),
+    latestBookPromise,
+  ]);
 
   if (!user) return null;
+
+  const {
+    title,
+    author,
+    genre,
+    rating,
+    totalCopies,
+    availableCopies,
+    description,
+    coverColor,
+    coverUrl,
+    id,
+  } = latestBook;
 
   const borrowingEligibility = {
     isEligible: availableCopies > 0 && user.status === "APPROVED",

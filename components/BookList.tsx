@@ -1,12 +1,13 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import BookCard from "./BookCard";
 import SortSelector from "./SortSelector";
 import { userSideBookSorts } from "@/constants";
+import BookCardsListLoadingSkeleton from "./BookCardsListLoadingSkeleton";
 
 interface BookListProps {
   title: string;
-  books: BookCard[];
+  booksPromise: Promise<BookCard[]>;
   containerClassName?: string;
   isSearch?: boolean;
   emptyState?: React.ReactNode;
@@ -14,10 +15,9 @@ interface BookListProps {
 
 const BookList = ({
   title,
-  books,
+  booksPromise,
   containerClassName,
   isSearch,
-  emptyState,
 }: BookListProps) => {
   return (
     <section className={containerClassName}>
@@ -33,19 +33,31 @@ const BookList = ({
         )}
       </div>
 
-      {books.length ? (
-        <ul className="book-list">
-          {books.map((book, index) => (
-            <BookCard
-              key={book.title + index}
-              {...book}
-            />
-          ))}
-        </ul>
-      ) : (
-        (emptyState ?? null)
-      )}
+      <Suspense fallback={<BookCardsListLoadingSkeleton />}>
+        <BookListEntries booksPromise={booksPromise} />
+      </Suspense>
     </section>
+  );
+};
+
+const BookListEntries = async ({
+  booksPromise,
+}: {
+  booksPromise: Promise<BookCard[]>;
+}) => {
+  const books = await booksPromise;
+
+  return (
+    books.length && (
+      <ul className="book-list">
+        {books.map((book, index) => (
+          <BookCard
+            key={book.title + index}
+            {...book}
+          />
+        ))}
+      </ul>
+    )
   );
 };
 
