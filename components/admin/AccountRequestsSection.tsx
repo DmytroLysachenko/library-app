@@ -1,14 +1,15 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 
 import EmptyState from "./EmptyState";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "../UserAvatar";
+import EntryLoadingSkeleton from "./EntryLoadingSkeleton";
 
-const AccountRequestsSection = ({
-  recentAccountRequests,
+const AccountRequestsSection = async ({
+  accountRequestsPromise,
 }: {
-  recentAccountRequests: User[];
+  accountRequestsPromise: Promise<User[]>;
 }) => {
   return (
     <section>
@@ -23,7 +24,24 @@ const AccountRequestsSection = ({
           <Link href={"/admin/account-requests"}>View all</Link>
         </Button>
       </div>
+      <Suspense fallback={<EntryLoadingSkeleton />}>
+        <AccountRequestsEntries
+          accountRequestsPromise={accountRequestsPromise}
+        />
+      </Suspense>
+    </section>
+  );
+};
 
+const AccountRequestsEntries = async ({
+  accountRequestsPromise,
+}: {
+  accountRequestsPromise: Promise<User[]>;
+}) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const recentAccountRequests = await accountRequestsPromise;
+  return (
+    <>
       {recentAccountRequests.length > 0 ? (
         <div className="space-y-3 grid grid-cols-3">
           {recentAccountRequests.map((request) => (
@@ -46,7 +64,7 @@ const AccountRequestsSection = ({
           description="There are currently no account requests awaiting approval."
         />
       )}
-    </section>
+    </>
   );
 };
 

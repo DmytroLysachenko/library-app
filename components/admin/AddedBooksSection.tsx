@@ -1,14 +1,15 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 
 import { Button } from "../ui/button";
 import BookStripe from "./BookStripe";
+import EntryLoadingSkeleton from "./EntryLoadingSkeleton";
 
-const RecentlyAddedBooksSection = ({
-  recentBooks,
+const AddedBooksSection = async ({
+  booksPromise,
 }: {
-  recentBooks: Book[];
+  booksPromise: Promise<Book[]>;
 }) => {
   return (
     <section className="row-span-2">
@@ -35,16 +36,33 @@ const RecentlyAddedBooksSection = ({
           </div>
           <p>Add New Book</p>
         </Link>
-
-        {recentBooks.map((book) => (
-          <BookStripe
-            key={book.id}
-            book={book}
-          />
-        ))}
+        <Suspense fallback={<EntryLoadingSkeleton />}>
+          <RecentBooksEntries booksPromise={booksPromise} />
+        </Suspense>
       </div>
     </section>
   );
 };
 
-export default RecentlyAddedBooksSection;
+const RecentBooksEntries = async ({
+  booksPromise,
+}: {
+  booksPromise: Promise<Book[]>;
+}) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  const recentBooks = await booksPromise;
+
+  return (
+    <>
+      {recentBooks.map((book) => (
+        <BookStripe
+          key={book.id}
+          book={book}
+        />
+      ))}
+    </>
+  );
+};
+
+export default AddedBooksSection;
