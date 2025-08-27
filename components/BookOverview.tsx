@@ -9,7 +9,7 @@ import { db } from "@/db/drizzle";
 
 interface BookOverviewProps {
   userId: string;
-  latestBookPromise: Promise<Book>;
+  latestBookPromise: Promise<Book | null>;
 }
 
 const BookOverview = async ({
@@ -26,7 +26,7 @@ const BookOverview = async ({
     latestBookPromise,
   ]);
 
-  if (!user) return null;
+  if (!user || !latestBook) return null;
 
   const {
     title,

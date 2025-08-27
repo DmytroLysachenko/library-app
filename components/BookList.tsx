@@ -47,18 +47,16 @@ const BookListEntries = async ({
 }) => {
   const books = await booksPromise;
 
-  return (
-    books.length && (
-      <ul className="book-list">
-        {books.map((book, index) => (
-          <BookCard
-            key={book.title + index}
-            {...book}
-          />
-        ))}
-      </ul>
-    )
-  );
+  return books.length ? (
+    <ul className="book-list">
+      {books.map((book, index) => (
+        <BookCard
+          key={book.title + index}
+          {...book}
+        />
+      ))}
+    </ul>
+  ) : null;
 };
 
 export default BookList;

@@ -22,7 +22,7 @@ const Home = async () => {
     .from(books)
     .limit(1)
     .orderBy(desc(books.createdAt))
-    .then((res) => res[0]) as Promise<Book>;
+    .then((res) => res[0]) as Promise<Book | null>;
 
   return (
     <>

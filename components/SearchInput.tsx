@@ -2,7 +2,7 @@
 
 import { Search, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -24,29 +24,50 @@ const SearchInput = ({
 }: SearchInputProps) => {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const params = new URLSearchParams(
     typeof window !== "undefined" ? window.location.search : ""
   );
   const pathname = usePathname();
 
-  const handleReset = () => {
-    if (input.current && input.current.value) {
-      params.delete(searchParam);
-      input.current.value = "";
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
-      onReset?.();
-    }
+  const pushWithValue = (value: string) => {
+    const next = new URLSearchParams(window.location.search);
+    if (value) next.set(searchParam, value);
+    else next.delete(searchParam);
+    router.push(`${pathname}?${next.toString()}`, { scroll: false });
   };
 
+  // Debounced change handler: runs 500ms after typing stops
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const params = new URLSearchParams(window.location.search);
-    if (event.target.value) {
-      params.set(searchParam, event.target.value);
-    } else {
-      params.delete(searchParam);
-    }
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    const value = event.target.value;
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      pushWithValue(value);
+      debounceTimer.current = null;
+    }, 700);
   };
+
+  // Clear button — also cancel any pending debounce
+  const handleReset = () => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+      debounceTimer.current = null;
+    }
+    if (input.current) {
+      input.current.value = "";
+      params.delete(searchParam);
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    }
+    onReset?.();
+  };
+
+  // On unmount, cancel any pending debounce
+  useEffect(() => {
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    };
+  }, []);
 
   return (
     <div
@@ -92,7 +113,6 @@ const SearchInput = ({
               variant === "admin" && "text-light-500"
             )}
           />
-
           <span className="sr-only">Clear search</span>
         </button>
       )}
