@@ -9,13 +9,10 @@ import { db } from "@/db/drizzle";
 
 interface BookOverviewProps {
   userId: string;
-  latestBookPromise: Promise<Book | null>;
+  bookPromise: Promise<Book | null>;
 }
 
-const BookOverview = async ({
-  latestBookPromise,
-  userId,
-}: BookOverviewProps) => {
+const BookOverview = async ({ bookPromise, userId }: BookOverviewProps) => {
   const [user, latestBook] = await Promise.all([
     db
       .select()
@@ -23,7 +20,7 @@ const BookOverview = async ({
       .where(eq(users.id, userId))
       .limit(1)
       .then((res) => res[0]),
-    latestBookPromise,
+    bookPromise,
   ]);
 
   if (!user || !latestBook) return null;

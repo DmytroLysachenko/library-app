@@ -1,59 +1,56 @@
-import React from "react";
-import { redirect } from "next/navigation";
+import React, { Suspense } from "react";
 import { desc, eq, not } from "drizzle-orm";
+import { Loader2 } from "lucide-react";
 
 import { auth } from "@/auth";
 import BookList from "@/components/BookList";
 import BookOverview from "@/components/BookOverview";
-import BookVideo from "@/components/BookVideo";
 import { db } from "@/db/drizzle";
 import { books } from "@/db/schema";
+import BookDetails from "@/components/BookDetails";
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const id = (await params).id;
-  const session = await auth();
+  const [{ id }, session] = await Promise.all([params, auth()]);
 
-  const [bookDetails] = await db
+  const bookDetailsPromise = db
+    .select({
+      summary: books.summary,
+      videoUrl: books.videoUrl,
+    })
+    .from(books)
+    .where(eq(books.id, id))
+    .then((res) => res[0]);
+
+  const bookPromise = db
     .select()
     .from(books)
     .where(eq(books.id, id))
-    .limit(1);
+    .limit(1)
+    .then((res) => res[0]) as Promise<Book>;
 
-  if (!bookDetails) redirect("/404");
-
-  const latestBooks = (await db
+  const latestBooksPromise = db
     .select()
     .from(books)
     .limit(6)
     .where(not(eq(books.id, id)))
-    .orderBy(desc(books.createdAt))) as Book[];
+    .orderBy(desc(books.createdAt))
+    .then((res) => res) as Promise<Book[]>;
 
   return (
     <>
       <BookOverview
-        {...bookDetails}
+        bookPromise={bookPromise}
         userId={session?.user?.id as string}
       />
       <div className="book-details">
         <div className="flex-[1.5]">
-          <section className="flex flex-col gap-7">
-            <h3>Video</h3>
-            <BookVideo videoUrl={bookDetails.videoUrl} />
-          </section>
-
-          <section className="mt-10 flex flex-col gap-7">
-            <h3>Summary</h3>
-
-            <div className="space-y-5 text-xl text-light-100">
-              {bookDetails.summary.split("\n").map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
-            </div>
-          </section>
+          <Suspense fallback={<Loader2 className="animate-spin" />}>
+            <BookDetails bookDetailsPromise={bookDetailsPromise} />
+          </Suspense>
 
           <BookList
             title="Latest Books"
-            books={latestBooks}
+            booksPromise={latestBooksPromise}
             containerClassName="mt-20"
           />
         </div>

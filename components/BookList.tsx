@@ -18,6 +18,7 @@ const BookList = ({
   booksPromise,
   containerClassName,
   isSearch,
+  emptyState,
 }: BookListProps) => {
   return (
     <section className={containerClassName}>
@@ -34,7 +35,10 @@ const BookList = ({
       </div>
 
       <Suspense fallback={<BookCardsListLoadingSkeleton />}>
-        <BookListEntries booksPromise={booksPromise} />
+        <BookListEntries
+          booksPromise={booksPromise}
+          emptyState={emptyState}
+        />
       </Suspense>
     </section>
   );
@@ -42,8 +46,10 @@ const BookList = ({
 
 const BookListEntries = async ({
   booksPromise,
+  emptyState,
 }: {
   booksPromise: Promise<BookCard[]>;
+  emptyState?: React.ReactNode;
 }) => {
   const books = await booksPromise;
 
@@ -56,6 +62,8 @@ const BookListEntries = async ({
         />
       ))}
     </ul>
+  ) : emptyState ? (
+    emptyState
   ) : null;
 };
 

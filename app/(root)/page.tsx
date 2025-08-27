@@ -27,7 +27,7 @@ const Home = async () => {
   return (
     <>
       <BookOverview
-        latestBookPromise={latestBookPromise}
+        bookPromise={latestBookPromise}
         userId={session?.user?.id as string}
       />
 
