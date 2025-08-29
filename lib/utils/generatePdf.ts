@@ -6,19 +6,21 @@ import chromium from "@sparticuz/chromium";
 import { uploadToS3 } from "./awsS3";
 import { emailTemplates } from "../emailTemplates";
 
-export const generatePdf = async (data: {
+type PdfData = {
   receiptId: string;
-  studentName: string;
-  bookTitle: string;
-  bookAuthor: string;
-  bookGenre: string;
+  studentName: string | null;
+  bookTitle: string | null;
+  bookAuthor: string | null;
+  bookGenre: string | null;
   borrowDate: string;
   dueDate: string;
   duration: string | number;
   issueDate: string;
   websiteUrl: string;
   supportEmail: string;
-}) => {
+};
+
+export const generatePdf = async (data: PdfData) => {
   const browser = await puppeteer.launch({
     args: chromium.args,
     executablePath: await chromium.executablePath(),

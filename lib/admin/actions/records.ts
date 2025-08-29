@@ -1,5 +1,8 @@
 "use server";
 
+import dayjs from "dayjs";
+import { eq } from "drizzle-orm";
+
 import { EmailTemplate } from "@/constants";
 import { db } from "@/db/drizzle";
 import { books, borrowRecords, users } from "@/db/schema";
@@ -7,8 +10,6 @@ import config from "@/lib/config";
 import { sendEmail } from "@/lib/email";
 import { generatePdf } from "@/lib/utils";
 import { workflowClient } from "@/lib/workflow";
-import dayjs from "dayjs";
-import { eq } from "drizzle-orm";
 
 export const confirmBookReturnStatus = async (recordId: string) => {
   try {
@@ -75,7 +76,7 @@ export const confirmBookBorrowStatus = async (recordId: string) => {
   const dueDate = dayjs().add(7, "day").format("YYYY-MM-DD");
 
   try {
-    const data = (await db
+    const data = await db
       .select({
         bookId: borrowRecords.bookId,
         userId: borrowRecords.userId,
@@ -93,18 +94,7 @@ export const confirmBookBorrowStatus = async (recordId: string) => {
       .leftJoin(books, eq(borrowRecords.bookId, books.id))
       .leftJoin(users, eq(borrowRecords.userId, users.id))
       .limit(1)
-      .then((res) => res[0])) as {
-      bookId: string;
-      userId: string;
-      bookTitle: string;
-      bookAuthor: string;
-      bookGenre: string;
-      availableCopies: number;
-      email: string;
-      studentName: string;
-      userBorrowedBooks: number;
-      borrowDate: Date;
-    };
+      .then((res) => res[0]);
 
     const newRecord = await db
       .update(borrowRecords)
@@ -119,13 +109,13 @@ export const confirmBookBorrowStatus = async (recordId: string) => {
     await Promise.all([
       db
         .update(books)
-        .set({ availableCopies: data.availableCopies - 1 })
+        .set({ availableCopies: (data.availableCopies || 0) - 1 })
         .where(eq(books.id, data.bookId)),
       db
         .update(users)
         .set({
           lastActivityDate: new Date().toISOString().slice(0, 10),
-          borrowedBooks: data.userBorrowedBooks + 1,
+          borrowedBooks: data.userBorrowedBooks! + 1,
         })
         .where(eq(users.id, data.userId)),
     ]);
@@ -159,7 +149,7 @@ export const confirmBookBorrowStatus = async (recordId: string) => {
 
 export const generateReceipt = async (recordId: string) => {
   try {
-    const data = (await db
+    const data = await db
       .select({
         bookId: borrowRecords.bookId,
         userId: borrowRecords.userId,
@@ -178,19 +168,7 @@ export const generateReceipt = async (recordId: string) => {
       .leftJoin(books, eq(borrowRecords.bookId, books.id))
       .leftJoin(users, eq(borrowRecords.userId, users.id))
       .limit(1)
-      .then((res) => res[0])) as {
-      bookId: string;
-      userId: string;
-      bookTitle: string;
-      bookAuthor: string;
-      bookGenre: string;
-      availableCopies: number;
-      email: string;
-      studentName: string;
-      userBorrowedBooks: number;
-      borrowDate: Date;
-      dueDate: string;
-    };
+      .then((res) => res[0]);
 
     const borrowReceiptPdf = await generatePdf({
       receiptId: recordId,
@@ -217,7 +195,7 @@ export const generateReceipt = async (recordId: string) => {
       .then((res) => res[0]);
 
     await sendEmail({
-      to: data.email,
+      to: data.email!,
       subject: "Book receipt",
       template: EmailTemplate.RECEIPT_GENERATED,
       data: {

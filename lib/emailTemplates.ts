@@ -1,10 +1,6 @@
 import { EmailTemplate } from "@/constants";
 import { baseStyles, receiptStyles } from "@/styles/emailStyles";
-
-type TemplateData = {
-  studentName: string;
-  [key: string]: string | number | null | undefined;
-};
+import { TemplateData } from "./email";
 
 /* ---------- Reusable HTML helpers ---------- */
 
@@ -75,7 +71,7 @@ export const emailTemplates = {
     Page(
       "Welcome to LibraryView, Your Reading Companion!",
       [
-        Greeting(data.studentName),
+        Greeting(data.studentName || "User"),
         P(
           `Welcome to LibraryView! We're excited to have you join our community of book enthusiasts. 
            Explore a wide range of books, borrow with ease, and manage your reading journey seamlessly.`
@@ -90,7 +86,7 @@ export const emailTemplates = {
     Page(
       "Your LibraryView Account Has Been Approved!",
       [
-        Greeting(data.studentName),
+        Greeting(data.studentName || "User"),
         P(
           `Congratulations! Your LibraryView account has been approved. You can now browse our library, 
            borrow books, and enjoy all the features of your new account.`
@@ -105,7 +101,7 @@ export const emailTemplates = {
     Page(
       "Account Application Rejected",
       [
-        Greeting(data.studentName),
+        Greeting(data.studentName || "User"),
         P(
           `We regret to inform you that your LibraryView account application has been rejected. 
            If you believe this is a mistake or need further clarification, please contact our 
@@ -126,7 +122,7 @@ export const emailTemplates = {
     Page(
       "You've Borrowed a Book!",
       [
-        Greeting(data.studentName),
+        Greeting(data.studentName || "User"),
         P(
           `You've successfully borrowed ${data.bookTitle}. Here are the details:`
         ),
@@ -144,7 +140,7 @@ export const emailTemplates = {
     Page(
       `Reminder: ${data.bookTitle} is Due Soon!`,
       [
-        Greeting(data.studentName),
+        Greeting(data.studentName || "User"),
         P(
           `Just a reminder that ${data.bookTitle} is due for return on ${data.dueDate}.
            Kindly return it on time to avoid late fees.`
@@ -165,7 +161,7 @@ export const emailTemplates = {
     Page(
       `Thank You for Returning ${data.bookTitle}!`,
       [
-        Greeting(data.studentName),
+        Greeting(data.studentName || "User"),
         P(
           `We've successfully received your return of ${data.bookTitle}. Thank you for returning it on time.`
         ),
@@ -181,7 +177,7 @@ export const emailTemplates = {
     Page(
       "We Miss You at LibraryView!",
       [
-        Greeting(data.studentName),
+        Greeting(data.studentName || "User"),
         P(
           `It's been a while since we last saw you—over three days, to be exact! 
            New books are waiting for you, and your next great read might just be a click away.`
@@ -196,7 +192,7 @@ export const emailTemplates = {
     Page(
       "Don't Forget to Check In at LibraryView",
       [
-        Greeting(data.studentName),
+        Greeting(data.studentName || "User"),
         P(
           `We noticed you haven't checked in recently. Stay active and keep track of your 
            borrowed books, due dates, and new arrivals.`
@@ -211,7 +207,7 @@ export const emailTemplates = {
     Page(
       "Congratulations on Reaching a New Milestone!",
       [
-        Greeting(data.studentName),
+        Greeting(data.studentName || "User"),
         P(
           `Great news! You've reached a new milestone in your reading journey with LibraryView. ⭐ 
            Whether it's finishing a challenging book, staying consistent with your reading goals, 
@@ -230,7 +226,7 @@ export const emailTemplates = {
     Page(
       `Your Receipt for ${data.bookTitle} is Ready!`,
       [
-        Greeting(data.studentName),
+        Greeting(data.studentName || "User"),
         P(
           `Your receipt for borrowing ${data.bookTitle} has been generated. Here are the details:`
         ),

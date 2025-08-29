@@ -11,9 +11,9 @@ type EmailOptions = {
   data: TemplateData;
 };
 
-type TemplateData = {
-  studentName: string;
-  [key: string]: string | number | undefined;
+export type TemplateData = {
+  studentName: string | null;
+  [key: string]: string | number | null;
 };
 
 const transporter = nodemailer.createTransport({
