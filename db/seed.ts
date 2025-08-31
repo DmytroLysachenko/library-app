@@ -1,10 +1,10 @@
 import ImageKit from "imagekit";
-import dummyBooks from "../dummyBooks.json";
-import { books } from "./schema";
-
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import { config } from "dotenv";
+
+import dummyBooks from "../dummyBooks.json";
+import { books } from "./schema";
 
 config({ path: ".env.local" });
 

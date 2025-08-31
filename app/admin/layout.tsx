@@ -1,13 +1,14 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
+
 import "@/styles/admin.css";
 
 import { auth } from "@/auth";
-import Sidebar from "@/components/admin/Sidebar";
-import Header from "@/components/admin/Header";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
+import Sidebar from "@/components/admin/Sidebar";
+import Header from "@/components/admin/Header";
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   const session = await auth();

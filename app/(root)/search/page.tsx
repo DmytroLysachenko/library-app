@@ -3,7 +3,6 @@ import { count, ilike, or } from "drizzle-orm";
 
 import BookList from "@/components/BookList";
 import SearchSection from "@/components/SearchSection";
-
 import NotFoundSection from "@/components/NotFoundSection";
 import { db } from "@/db/drizzle";
 import { books } from "@/db/schema";

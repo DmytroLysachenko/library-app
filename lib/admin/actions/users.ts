@@ -1,11 +1,12 @@
 "use server";
 
+import { eq } from "drizzle-orm";
+
 import { EmailTemplate } from "@/constants";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
 import config from "@/lib/config";
 import { sendEmail } from "@/lib/email";
-import { eq } from "drizzle-orm";
 
 export const changeUserRole = async (
   userId: string,

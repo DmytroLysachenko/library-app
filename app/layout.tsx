@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import { SessionProvider } from "next-auth/react";
 import localFont from "next/font/local";
+
+import "./globals.css";
+
 import { Toaster } from "@/components/ui/toaster";
 import { auth } from "@/auth";
-import { SessionProvider } from "next-auth/react";
 
 const ibmPlexSans = localFont({
   src: [

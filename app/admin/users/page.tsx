@@ -1,19 +1,19 @@
 import React from "react";
 import { and, asc, count, desc, eq, ilike } from "drizzle-orm";
+import { User2 } from "lucide-react";
 
-import SortSelector from "@/components/SortSelector";
-import UsersTable from "@/components/admin/UsersTable";
-import { db } from "@/db/drizzle";
-import { users } from "@/db/schema";
+import { auth } from "@/auth";
 import {
   alphabeticalSortOptions,
   PER_PAGE_LIMITS,
   userStatusSortOptions,
 } from "@/constants";
-import { User2 } from "lucide-react";
-import { getUsersFilterValue } from "@/lib/utils";
+import { db } from "@/db/drizzle";
+import { users } from "@/db/schema";
 import ListPagination from "@/components/ListPagination";
-import { auth } from "@/auth";
+import SortSelector from "@/components/SortSelector";
+import UsersTable from "@/components/admin/UsersTable";
+import { getUsersFilterValue } from "@/lib/utils";
 
 const Page = async ({
   searchParams,
