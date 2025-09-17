@@ -205,6 +205,10 @@ const config: Config = {
   // Indicates whether each individual test should be reported during the run
   // verbose: undefined,
 
+  testMatch: ["<rootDir>/__tests__/**/*.(spec|test).[jt]s?(x)"],
+  testPathIgnorePatterns: ["<rootDir>/__tests__/mocks/", "/node_modules/"],
+
+
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
   // watchPathIgnorePatterns: [],
 
