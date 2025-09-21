@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 jest.mock("next/navigation", () => {
@@ -17,16 +17,28 @@ const {
 
 import ListPagination from "@/components/ListPagination";
 
-type PushMock = jest.MockedFunction<any>;
+type NavigationOptions = {
+  scroll?: boolean;
+};
 
-const expectPushCall = (push: PushMock, index: number, expected: Record<string, string>) => {
+type PushHandler = (href: string, options?: NavigationOptions) => void;
+type PushMock = jest.MockedFunction<PushHandler>;
+
+const createPushMock = (): PushMock =>
+  jest.fn<ReturnType<PushHandler>, Parameters<PushHandler>>();
+
+const expectPushCall = (
+  push: PushMock,
+  index: number,
+  expected: Record<string, string>
+) => {
   const call = push.mock.calls[index];
   expect(call).toBeTruthy();
 
   const [path, options] = call;
   expect(options).toEqual({ scroll: false });
 
-  const params = new URLSearchParams((path as string).startsWith("?") ? (path as string).slice(1) : (path as string));
+  const params = new URLSearchParams(path.startsWith("?") ? path.slice(1) : path);
 
   for (const [key, value] of Object.entries(expected)) {
     expect(params.get(key)).toBe(value);
@@ -42,7 +54,7 @@ describe("ListPagination", () => {
   it("renders user controls for middle pages and navigates via router", () => {
     window.history.replaceState({}, "", "/books?page=3&sort=asc");
 
-    const push = jest.fn();
+    const push = createPushMock();
     setRouterMock(createRouterMock({ push }));
 
     render(
@@ -74,7 +86,7 @@ describe("ListPagination", () => {
   it("omits unnecessary controls on the final admin page", () => {
     window.history.replaceState({}, "", "/books?page=5&category=fiction");
 
-    const push = jest.fn();
+    const push = createPushMock();
     setRouterMock(createRouterMock({ push }));
 
     render(
@@ -96,7 +108,7 @@ describe("ListPagination", () => {
   it("hides the previous control on the first page and preserves params", () => {
     window.history.replaceState({}, "", "/books?sort=popular");
 
-    const push = jest.fn();
+    const push = createPushMock();
     setRouterMock(createRouterMock({ push }));
 
     render(

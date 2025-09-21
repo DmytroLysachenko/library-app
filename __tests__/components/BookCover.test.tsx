@@ -1,7 +1,17 @@
-﻿import React from "react";
+import React from "react";
 import { render, screen } from "@testing-library/react";
 
-function renderIkImage(props: any) {
+type MockIkImageProps = {
+  path: string;
+  urlEndpoint: string;
+  alt: string;
+  className?: string;
+  fill?: boolean;
+  loading?: "lazy" | "eager";
+  lqip?: { active?: boolean };
+};
+
+function renderIkImage(props: MockIkImageProps) {
   const { path, urlEndpoint, alt, className, fill, loading, lqip } = props;
 
   return (

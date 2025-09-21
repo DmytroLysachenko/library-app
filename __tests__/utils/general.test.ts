@@ -24,6 +24,8 @@ import {
   getNextStatus,
 } from "@/lib/utils/general";
 
+type UserStatus = Parameters<typeof getUserStatusIcon>[0];
+
 describe("cn", () => {
   it("merges class names using tailwind-merge", () => {
     expect(cn("px-2", "px-4", { hidden: false, block: true })).toBe(
@@ -125,24 +127,28 @@ describe("getUsersFilterValue", () => {
 });
 
 describe("getUserStatusIcon", () => {
-  it.each([
+  const iconCases = [
     ["APPROVED", "/icons/verified.svg"],
     ["REJECTED", "/icons/warning.svg"],
     ["PENDING", "/icons/clock.svg"],
     [null, "/icons/clock.svg"],
-  ])("%s => %s", (status, expected) => {
-    expect(getUserStatusIcon(status as any)).toBe(expected);
+  ] as const satisfies ReadonlyArray<[UserStatus, string]>;
+
+  it.each(iconCases)("%s => %s", (status, expected) => {
+    expect(getUserStatusIcon(status)).toBe(expected);
   });
 });
 
 describe("getUserStatusLabel", () => {
-  it.each([
+  const labelCases = [
     ["APPROVED", "Verified Student"],
     ["REJECTED", "Account rejected, contact admin"],
     ["PENDING", "Status Pending"],
     [null, "Status Pending"],
-  ])("%s => %s", (status, expected) => {
-    expect(getUserStatusLabel(status as any)).toBe(expected);
+  ] as const satisfies ReadonlyArray<[UserStatus, string]>;
+
+  it.each(labelCases)("%s => %s", (status, expected) => {
+    expect(getUserStatusLabel(status)).toBe(expected);
   });
 });
 

@@ -2,11 +2,11 @@ import type appConfig from "@/lib/config";
 
 type AppConfig = typeof appConfig;
 
-type DeepPartial<T> = {
-  [K in keyof T]?: T[K] extends Record<string, unknown>
-    ? DeepPartial<T[K]>
-    : T[K];
-};
+type DeepPartial<T> = T extends Array<infer U>
+  ? DeepPartial<U>[]
+  : T extends Record<string, unknown>
+    ? { [K in keyof T]?: DeepPartial<T[K]> }
+    : T;
 
 const baseConfig: AppConfig = {
   env: {
@@ -42,22 +42,53 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === "object" && !Array.isArray(value);
 
 const deepMerge = <T>(target: T, source: DeepPartial<T>): T => {
-  const draft: any = Array.isArray(target)
-    ? [...(target as unknown[])]
-    : { ...(target as Record<PropertyKey, unknown>) };
+  if (Array.isArray(target)) {
+    const draft = [...target] as unknown[];
+    const sourceValues = Array.isArray(source) ? source : [];
 
-  for (const key of Object.keys(source) as Array<keyof T>) {
+    sourceValues.forEach((value, index) => {
+      if (value === undefined) return;
+
+      const current = draft[index];
+
+      if (isObject(value) && isObject(current)) {
+        draft[index] = deepMerge(
+          current,
+          value as DeepPartial<typeof current>
+        );
+      } else {
+        draft[index] = value as unknown;
+      }
+    });
+
+    return draft as T;
+  }
+
+  if (!isObject(target) || !isObject(source)) {
+    return (source ?? target) as T;
+  }
+
+  const draft: Record<PropertyKey, unknown> = {
+    ...(target as Record<PropertyKey, unknown>),
+  };
+
+  for (const key of Object.keys(source) as Array<keyof typeof source>) {
     const value = source[key];
     if (value === undefined) continue;
 
-    if (isObject(value) && isObject(draft[key])) {
-      draft[key] = deepMerge(draft[key], value);
+    const current = draft[key as PropertyKey];
+
+    if (isObject(value) && isObject(current)) {
+      draft[key as PropertyKey] = deepMerge(
+        current,
+        value as DeepPartial<typeof current>
+      );
     } else {
-      draft[key] = value as unknown;
+      draft[key as PropertyKey] = value as unknown;
     }
   }
 
-  return draft;
+  return draft as T;
 };
 
 export const createConfigMock = (overrides?: DeepPartial<AppConfig>): AppConfig => {
