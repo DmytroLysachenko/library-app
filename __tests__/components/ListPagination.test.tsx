@@ -22,7 +22,7 @@ type NavigationOptions = {
 };
 
 type PushHandler = (href: string, options?: NavigationOptions) => void;
-type PushMock = jest.MockedFunction<PushHandler>;
+type PushMock = jest.Mock<ReturnType<PushHandler>, Parameters<PushHandler>>;
 
 const createPushMock = (): PushMock =>
   jest.fn<ReturnType<PushHandler>, Parameters<PushHandler>>();
@@ -131,3 +131,4 @@ describe("ListPagination", () => {
     expect(screen.queryByText("More pages")).not.toBeInTheDocument();
   });
 });
+
