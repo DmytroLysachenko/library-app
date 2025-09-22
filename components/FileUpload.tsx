@@ -2,15 +2,15 @@
 
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-
-import { IKImage, ImageKitProvider, IKUpload, IKVideo } from "imagekitio-next";
-import config from "@/lib/config";
-import { toast } from "@/lib/actions/hooks/use-toast";
-import { cn } from "@/lib/utils";
 import {
   IKUploadResponse,
   UploadError,
 } from "imagekitio-next/dist/types/components/IKUpload/props";
+import { IKImage, ImageKitProvider, IKUpload, IKVideo } from "imagekitio-next";
+
+import config from "@/lib/config";
+import { toast } from "@/lib/actions/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface FileUploadProps {
   type: "image" | "video";

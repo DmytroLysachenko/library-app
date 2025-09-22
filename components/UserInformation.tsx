@@ -6,6 +6,7 @@ import { IKImage } from "imagekitio-next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 import { cn, getUserStatusIcon, getUserStatusLabel } from "@/lib/utils";
 import { Card, CardContent } from "./ui/card";
@@ -17,7 +18,6 @@ import { Button } from "./ui/button";
 import { uploadAvatar } from "@/lib/actions/auth";
 import { toast } from "@/lib/actions/hooks/use-toast";
 import UserAvatar from "./UserAvatar";
-import { useRouter } from "next/navigation";
 
 const UserInformation = ({ user }: { user: User }) => {
   const form = useForm<z.infer<typeof userUpdateSchema>>({

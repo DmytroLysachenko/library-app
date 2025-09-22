@@ -1,7 +1,8 @@
 import React from "react";
-import { Button } from "../ui/button";
 import { FileText, LoaderCircle } from "lucide-react";
 import Link from "next/link";
+
+import { Button } from "../ui/button";
 
 interface ReceiptLinkProps {
   isChangingStatus: boolean;

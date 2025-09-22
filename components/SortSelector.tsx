@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowUpDown, X } from "lucide-react";
+import { useState } from "react";
 
 import {
   Select,
@@ -11,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
 const SortSelector = ({
   options,

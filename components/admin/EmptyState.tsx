@@ -1,7 +1,7 @@
 import React from "react";
+import { BookCopyIcon } from "lucide-react";
 
 import { Card } from "../ui/card";
-import { BookCopyIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const EmptyState = ({
