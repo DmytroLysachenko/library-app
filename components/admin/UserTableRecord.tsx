@@ -42,13 +42,19 @@ const UserTableRecord = ({
   return (
     <TableRow key={user.id}>
       <TableCell>
-        <Badge className={`${getStatusBadgeColor(user.status)}`}>
-          {user.status === "APPROVED" ? (
-            user.status
-          ) : (
-            <Link href="/admin/account-requests">{user.status}</Link>
-          )}
-        </Badge>
+        {user.status === "APPROVED" ? (
+          <Badge
+            className={`${getStatusBadgeColor(user.status)} cursor-default`}
+          >
+            {user.status}
+          </Badge>
+        ) : (
+          <Link href="/admin/account-requests">
+            <Badge className={`${getStatusBadgeColor(user.status)}`}>
+              {user.status}
+            </Badge>
+          </Link>
+        )}
       </TableCell>
 
       <TableCell>
