@@ -39,20 +39,18 @@ const UserTableRecord = ({
   const router = useRouter();
   const [isChangingStatus, setIsChangingStatus] = React.useState(false);
   const [userRole, setUserRole] = React.useState(user.role);
+  const badgeStyle = getStatusBadgeColor(user.status);
+
   return (
     <TableRow key={user.id}>
       <TableCell>
         {user.status === "APPROVED" ? (
-          <Badge
-            className={`${getStatusBadgeColor(user.status)} cursor-default`}
-          >
+          <Badge className={`${badgeStyle} cursor-default`}>
             {user.status}
           </Badge>
         ) : (
           <Link href="/admin/account-requests">
-            <Badge className={`${getStatusBadgeColor(user.status)}`}>
-              {user.status}
-            </Badge>
+            <Badge className={`${badgeStyle} `}>{user.status}</Badge>
           </Link>
         )}
       </TableCell>

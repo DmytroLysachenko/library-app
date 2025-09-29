@@ -100,6 +100,6 @@ export const getStatusBadgeColor = (status: string) => {
     case "REJECTED":
       return "bg-red-500 text-white";
     default:
-      return "bg-gray-500 text-white";
+      return "bg-yellow-500 text-white";
   }
 };
