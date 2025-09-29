@@ -90,16 +90,3 @@ export const getNextStatus = (currentStatus: string) => {
       return null;
   }
 };
-
-export const getStatusBadgeColor = (status: string) => {
-  switch (status) {
-    case "PENDING":
-      return "bg-yellow-500 text-white";
-    case "APPROVED":
-      return "bg-green-500 text-white";
-    case "REJECTED":
-      return "bg-red-500 text-white";
-    default:
-      return "bg-yellow-500 text-white";
-  }
-};

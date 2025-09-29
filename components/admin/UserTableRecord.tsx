@@ -22,7 +22,7 @@ import {
 import { toast } from "@/lib/actions/hooks/use-toast";
 import UserAvatar from "../UserAvatar";
 import { Badge } from "../ui/badge";
-import { cn, getStatusBadgeColor } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { TableCell, TableRow } from "../ui/table";
 
 const UserTableRecord = ({
@@ -39,18 +39,19 @@ const UserTableRecord = ({
   const router = useRouter();
   const [isChangingStatus, setIsChangingStatus] = React.useState(false);
   const [userRole, setUserRole] = React.useState(user.role);
-  const badgeStyle = getStatusBadgeColor(user.status);
 
   return (
     <TableRow key={user.id}>
       <TableCell>
         {user.status === "APPROVED" ? (
-          <Badge className={`${badgeStyle} cursor-default`}>
+          <Badge className="bg-green-500 text-white cursor-default">
             {user.status}
           </Badge>
+        ) : user.status === "REJECTED" ? (
+          <Badge className="bg-red-500 text-white">{user.status}</Badge>
         ) : (
           <Link href="/admin/account-requests">
-            <Badge className={`${badgeStyle} `}>{user.status}</Badge>
+            <Badge className="bg-yellow-500 text-white">{user.status}</Badge>
           </Link>
         )}
       </TableCell>
