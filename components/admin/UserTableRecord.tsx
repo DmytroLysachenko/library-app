@@ -43,12 +43,17 @@ const UserTableRecord = ({
   return (
     <TableRow key={user.id}>
       <TableCell>
-        {user.status === "APPROVED" ? (
-          <Badge className="bg-green-500 text-white cursor-default">
+        {user.status === "APPROVED" || user.status === "REJECTED" ? (
+          <Badge
+            className={cn(
+              user.status === "APPROVED"
+                ? "bg-green-500 cursor-default"
+                : "bg-red-500",
+              "text-white"
+            )}
+          >
             {user.status}
           </Badge>
-        ) : user.status === "REJECTED" ? (
-          <Badge className="bg-red-500 text-white">{user.status}</Badge>
         ) : (
           <Link href="/admin/account-requests">
             <Badge className="bg-yellow-500 text-white">{user.status}</Badge>
