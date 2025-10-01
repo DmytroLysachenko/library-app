@@ -56,13 +56,10 @@ const BorrowRecord = ({
   const onChangeBorrowStatus = async (value: "BORROWED" | "RETURNED") => {
     setIsChangingStatus(true);
 
-    let response;
-
-    if (value === "BORROWED") {
-      response = await confirmBookBorrowStatus(record.id);
-    } else if (value === "RETURNED") {
-      response = await confirmBookReturnStatus(record.id);
-    }
+    const response =
+      value === "BORROWED"
+        ? await confirmBookBorrowStatus(record.id)
+        : await confirmBookReturnStatus(record.id);
 
     if (response?.success) {
       if (value === "BORROWED") setCanGenerateReceipt(true);
