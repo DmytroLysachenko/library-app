@@ -83,14 +83,20 @@ const UserTableRecord = ({
               value={userRole}
               disabled={isChangingStatus || isTestAccount}
               onValueChange={async (value: "USER" | "ADMIN") => {
+                if (value === userRole) {
+                  return;
+                }
+
+                const previousRole = userRole;
+
                 try {
                   setIsChangingStatus(true);
+                  setUserRole(value);
                   await changeUserRole(user.id, value);
                   toast({
                     title: "Success",
                     description: "User role changed successfully",
                   });
-                  setUserRole(value);
                 } catch (error) {
                   console.log(error);
                   toast({
@@ -98,7 +104,7 @@ const UserTableRecord = ({
                     description: "An error occurred. Please try again.",
                     variant: "destructive",
                   });
-                  setUserRole(user.role);
+                  setUserRole(previousRole);
                 } finally {
                   setIsChangingStatus(false);
                 }

@@ -11,19 +11,12 @@ import UserAvatar from "./UserAvatar";
 
 const Header = ({ user }: { user: Partial<User> }) => {
   const pathname = usePathname();
+  const canSeeAdminConsole = user.role === "ADMIN" || user.role === "TEST";
 
   return (
     <header className="my-10 flex justify-between gap-5">
-      <Link
-        href="/"
-        className="flex gap-2 items-center"
-      >
-        <Image
-          src={"/icons/logo.svg"}
-          width={40}
-          height={40}
-          alt={"logo"}
-        />
+      <Link href="/" className="flex gap-2 items-center">
+        <Image src="/icons/logo.svg" width={40} height={40} alt="logo" />
         <span className="text-xl text-white font-semibold hidden xs:block">
           LibraryView
         </span>
@@ -32,10 +25,7 @@ const Header = ({ user }: { user: Partial<User> }) => {
       <ul className="flex flex-row items-center gap-4 sm:gap-6 md:gap-8 lg:gap-10 text-base md:text-lg lg:text-xl">
         <li>
           <Link
-            className={cn(
-              " hover:text-amber-200",
-              pathname === "/" ? "text-amber-100" : "text-white"
-            )}
+            className={cn(" hover:text-amber-200", pathname === "/" ? "text-amber-100" : "text-white")}
             href="/"
           >
             Home
@@ -44,35 +34,25 @@ const Header = ({ user }: { user: Partial<User> }) => {
 
         <li>
           <Link
-            className={cn(
-              " hover:text-amber-200",
-              pathname === "/search" ? "text-amber-100" : "text-white"
-            )}
+            className={cn(" hover:text-amber-200", pathname === "/search" ? "text-amber-100" : "text-white")}
             href="/search"
           >
             Search
           </Link>
         </li>
 
-        {user.role === "ADMIN" ||
-          (user.role === "TEST" && (
-            <li>
-              <Link
-                className={cn(
-                  " hover:text-amber-200 hidden md:block",
-                  pathname === "/admin" ? "text-amber-100" : "text-white"
-                )}
-                href="/admin"
-              >
-                Admin Console
-              </Link>
-            </li>
-          ))}
+        {canSeeAdminConsole && (
+          <li>
+            <Link
+              className={cn(" hover:text-amber-200", pathname === "/admin" ? "text-amber-100" : "text-white")}
+              href="/admin"
+            >
+              Admin Console
+            </Link>
+          </li>
+        )}
         <li className="lg:ml-4">
-          <Link
-            className="flex items-center gap-2"
-            href={"/my-profile"}
-          >
+          <Link className="flex items-center gap-2" href="/my-profile">
             <UserAvatar
               avatarUrl={user.avatar}
               fullName={user.fullName}
