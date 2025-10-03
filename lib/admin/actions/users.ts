@@ -80,7 +80,7 @@ export const approveUser = async (userId: string) => {
 
     return {
       success: true,
-      newUser: JSON.parse(JSON.stringify(newUser)),
+      data: JSON.parse(JSON.stringify(newUser)),
     };
   } catch (error) {
     console.log(error);
@@ -117,9 +117,10 @@ export const rejectUser = async (userId: string) => {
         studentName: userInfo.fullName,
       },
     });
+
     return {
       success: true,
-      newUser: JSON.parse(JSON.stringify(newUser)),
+      data: JSON.parse(JSON.stringify(newUser)),
     };
   } catch (error) {
     console.log(error);

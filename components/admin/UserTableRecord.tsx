@@ -159,7 +159,21 @@ const UserTableRecord = ({
             size="icon"
             className="h-8 w-8 text-right text-green-700"
             onClick={async () => {
-              await approveUser(user.id!);
+              const result = await approveUser(user.id!);
+
+              if (result.success) {
+                toast({
+                  title: "Success",
+                  description: "User approved successfully!",
+                });
+              } else {
+                toast({
+                  title: "Error",
+                  description: result.message,
+                  variant: "destructive",
+                });
+              }
+
               router.refresh();
             }}
           >
@@ -177,10 +191,25 @@ const UserTableRecord = ({
               return;
             }
 
+            let result;
+
             if (isUsersTable) {
-              await deleteUser(user.id!);
+              result = await deleteUser(user.id!);
             } else {
-              await rejectUser(user.id!);
+              result = await rejectUser(user.id!);
+            }
+
+            if (result.success) {
+              toast({
+                title: "Success",
+                description: "Action successfully completed!",
+              });
+            } else {
+              toast({
+                title: "Error",
+                variant: "destructive",
+                description: result.message,
+              });
             }
 
             router.refresh();
