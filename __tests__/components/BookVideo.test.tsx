@@ -5,10 +5,14 @@ const providerSpy = jest.fn();
 const videoSpy = jest.fn();
 
 jest.mock("imagekitio-next", () => {
-  const React = require("react");
   return {
     __esModule: true,
-    ImageKitProvider: ({ children, ...props }: { children: React.ReactNode }) => {
+    ImageKitProvider: ({
+      children,
+      ...props
+    }: {
+      children: React.ReactNode;
+    }) => {
       providerSpy(props);
       return React.createElement(
         "div",
