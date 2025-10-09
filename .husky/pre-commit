@@ -1,2 +1,10 @@
-npm test
-npm run build
+set -e
+
+echo "⏱️  Running lint checks..."
+npm run lint
+
+echo "🧪 Running unit tests..."
+npm run test
+
+echo "🌐 Running Playwright smoke tests..."
+npm run test:e2e -- --reporter=line
