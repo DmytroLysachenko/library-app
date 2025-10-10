@@ -47,10 +47,10 @@ const BookOverview = async ({ bookPromise, userId }: BookOverviewProps) => {
   };
 
   return (
-    <section className="book-overview">
-      <div className="flex flex-1 flex-col gap-5">
-        <h1>{title}</h1>
-        <div className="book-info">
+    <section className="book-overview" data-testid="book-overview">
+      <div className="flex flex-1 flex-col gap-5" data-testid="book-overview-content">
+        <h1 data-testid="book-overview-title">{title}</h1>
+        <div className="book-info" data-testid="book-overview-info">
           <p>
             By <span className="font-semibold text-light-200">{author}</span>
           </p>
@@ -68,7 +68,7 @@ const BookOverview = async ({ bookPromise, userId }: BookOverviewProps) => {
             <p>{rating}</p>
           </div>
         </div>
-        <div className="book-copies">
+        <div className="book-copies" data-testid="book-overview-copies">
           <p>
             Total Books:
             <span>{totalCopies}</span>

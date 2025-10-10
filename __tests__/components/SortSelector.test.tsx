@@ -84,11 +84,11 @@ describe("SortSelector", () => {
       />
     );
 
-    const trigger = screen.getByTestId("select-trigger");
+    const trigger = screen.getByTestId("sort-selector-user-sort");
     expect(trigger).toHaveClass("select-trigger");
     expect(screen.getByTestId("select-value")).toHaveTextContent("Sort by");
 
-    fireEvent.click(screen.getByTestId("select-item-popular"));
+    fireEvent.click(screen.getByTestId("sort-selector-user-sort-option-popular"));
 
     expect(screen.getByTestId("select-value")).toHaveTextContent("popular");
     const params = expectPushCall(push, 0, {
@@ -116,11 +116,10 @@ describe("SortSelector", () => {
       />
     );
 
-    expect(screen.getByTestId("select-trigger")).not.toHaveClass("select-trigger");
+    expect(screen.getByTestId("sort-selector-admin-sort")).not.toHaveClass("select-trigger");
     expect(screen.getByTestId("select-value")).toHaveTextContent("recent");
 
-    const buttons = screen.getAllByRole("button");
-    const cancelButton = buttons[buttons.length - 1];
+    const cancelButton = screen.getByTestId("sort-selector-admin-sort-reset");
     fireEvent.click(cancelButton);
 
     await waitFor(() =>
@@ -150,8 +149,8 @@ describe("SortSelector", () => {
 
     expect(screen.getByTestId("select-value")).toHaveTextContent("Sort by");
     expect(screen.getAllByRole("button")).toHaveLength(2);
-    expect(screen.queryAllByTestId(/select-item/)).toHaveLength(1);
-    expect(screen.queryByTestId("cancel-button")).toBeNull();
+    expect(screen.queryAllByTestId(/sort-selector-user-sort-option/)).toHaveLength(1);
+    expect(screen.queryByTestId("sort-selector-user-sort-reset")).toBeNull();
     expect(push).not.toHaveBeenCalled();
   });
 });

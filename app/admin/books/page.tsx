@@ -51,7 +51,9 @@ const Page = async ({
   return (
     <div className="admin-container">
       <section className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-xl font-semibold"> All Books</h2>
+        <h2 className="text-xl font-semibold" data-testid="admin-books-heading">
+          All Books
+        </h2>
         <div className="flex flex-row items-center gap-10">
           <SortSelector
             options={alphabeticalSortOptions}
@@ -65,6 +67,7 @@ const Page = async ({
             <Link
               href={"/admin/books/new"}
               className="text-white hover:bg-primary-admin/80"
+              data-testid="admin-books-create"
             >
               + Create new book
             </Link>

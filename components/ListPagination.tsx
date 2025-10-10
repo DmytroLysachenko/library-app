@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
@@ -21,7 +20,6 @@ const ListPagination = ({
   lastPage: number;
   variant?: "user" | "admin";
 }) => {
-  const isLastPage = currentPage === lastPage;
   const isUser = variant === "user";
   const router = useRouter();
   const toPage = (page: number) => {
@@ -29,73 +27,75 @@ const ListPagination = ({
     params.set("page", page.toString());
     return `?${params.toString()}`;
   };
+  const pages = Array.from({ length: lastPage }, (_, index) => index + 1);
+  const goToPage = (pageNumber: number) => {
+    router.push(toPage(pageNumber), { scroll: false });
+  };
 
   return (
     <Pagination
       id="pagination"
       className="mt-8"
+      data-testid={`pagination-${variant}`}
     >
-      <PaginationContent>
+      <PaginationContent data-testid="pagination-content">
         <PaginationItem>
-          {currentPage !== 1 && (
-            <button
-              className={cn(
-                isUser ? "pagination-btn_dark" : "pagination-btn_light"
-              )}
-              onClick={() => {
-                router.push(toPage(currentPage - 1), { scroll: false });
-              }}
-            >
-              <ArrowLeftIcon className="size-4" />
-            </button>
-          )}
+          <button
+            type="button"
+            className={cn(
+              isUser ? "pagination-btn_dark" : "pagination-btn_light"
+            )}
+            onClick={() => goToPage(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+            aria-label="Previous page"
+            data-testid="pagination-prev"
+          >
+            <ArrowLeftIcon className="size-4" />
+          </button>
         </PaginationItem>
 
-        <PaginationItem className="pagination-btn_light flex items-center justify-center relative after:content-[''] after:bg-primary-admin after:w-full after:h-1 after:absolute after:bottom-0">
-          {currentPage}
+        {pages.map((pageNumber) => (
+          <PaginationItem key={pageNumber}>
+            {pageNumber === currentPage ? (
+              <span
+                className={cn(
+                  "pagination-btn_light flex items-center justify-center relative after:content-[''] after:bg-primary-admin after:w-full after:h-1 after:absolute after:bottom-0",
+                  !isUser && "after:bg-primary-admin"
+                )}
+                data-testid={`pagination-page-${pageNumber}`}
+                aria-current="page"
+              >
+                {pageNumber}
+              </span>
+            ) : (
+              <button
+                type="button"
+                className={cn(
+                  isUser ? "pagination-btn_dark" : "pagination-btn_light"
+                )}
+                onClick={() => goToPage(pageNumber)}
+                data-testid={`pagination-page-${pageNumber}`}
+              >
+                {pageNumber}
+              </button>
+            )}
+          </PaginationItem>
+        ))}
+
+        <PaginationItem>
+          <button
+            type="button"
+            className={cn(
+              isUser ? "pagination-btn_dark" : "pagination-btn_light"
+            )}
+            onClick={() => goToPage(Math.min(lastPage, currentPage + 1))}
+            disabled={currentPage === lastPage}
+            aria-label="Next page"
+            data-testid="pagination-next"
+          >
+            <ArrowRightIcon className="size-4" />
+          </button>
         </PaginationItem>
-
-        {lastPage - currentPage > 1 && (
-          <PaginationItem>
-            <PaginationEllipsis
-              className={cn(
-                isUser
-                  ? "text-white rounded-md bg-dark-300 "
-                  : " rounded-md text-dark-300 "
-              )}
-            />
-          </PaginationItem>
-        )}
-
-        {!isLastPage && (
-          <PaginationItem>
-            <button
-              className={cn(
-                isUser ? "pagination-btn_dark" : "pagination-btn_light"
-              )}
-              onClick={() => {
-                router.push(toPage(lastPage), { scroll: false });
-              }}
-            >
-              {lastPage}
-            </button>
-          </PaginationItem>
-        )}
-
-        {!isLastPage && (
-          <PaginationItem>
-            <button
-              className={cn(
-                isUser ? "pagination-btn_dark" : "pagination-btn_light"
-              )}
-              onClick={() => {
-                router.push(toPage(currentPage + 1), { scroll: false });
-              }}
-            >
-              <ArrowRightIcon className="size-4" />
-            </button>
-          </PaginationItem>
-        )}
       </PaginationContent>
     </Pagination>
   );

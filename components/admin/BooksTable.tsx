@@ -29,46 +29,48 @@ const BooksTable = ({
 
   return (
     <div className="mt-7 w-full overflow-hidden rounded-md border">
-      <Table>
+      <Table data-testid="admin-books-table">
         <TableHeader className="bg-slate-100">
-          <TableRow>
-            <TableHead>Book Title</TableHead>
+          <TableRow data-testid="admin-books-header-row">
+            <TableHead data-testid="admin-books-header-title">Book Title</TableHead>
 
-            <TableHead>Author</TableHead>
+            <TableHead data-testid="admin-books-header-author">Author</TableHead>
 
-            <TableHead>Genre</TableHead>
+            <TableHead data-testid="admin-books-header-genre">Genre</TableHead>
 
-            <TableHead>Date Created</TableHead>
+            <TableHead data-testid="admin-books-header-date">Date Created</TableHead>
 
-            <TableHead className="text-center">Action</TableHead>
+            <TableHead className="text-center" data-testid="admin-books-header-action">Action</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {books.map((book) => (
-            <TableRow key={book.id}>
-              <TableCell>
-                <div className="flex items-center gap-3">
+            <TableRow key={book.id} data-testid="admin-books-row">
+              <TableCell data-testid="admin-books-cell-title">
+                <div className="flex items-center gap-3" data-testid="admin-books-cell-title-content">
                   <BookCover
                     coverUrl={book.coverUrl}
                     variant="small"
                     coverColor={book.coverColor}
                   />
 
-                  <span className="font-medium">{book.title}</span>
+                  <span className="font-medium" data-testid="admin-books-title">
+                    {book.title}
+                  </span>
                 </div>
               </TableCell>
 
-              <TableCell>{book.author}</TableCell>
+              <TableCell data-testid="admin-books-cell-author">{book.author}</TableCell>
 
-              <TableCell>{book.genre}</TableCell>
+              <TableCell data-testid="admin-books-cell-genre">{book.genre}</TableCell>
 
-              <TableCell>
+              <TableCell data-testid="admin-books-cell-date">
                 {dayjs(book.createdAt).format("DD/MM/YYYY")}
               </TableCell>
 
-              <TableCell className="text-right">
-                <div className="flex items-center justify-end gap-2">
+              <TableCell className="text-right" data-testid="admin-books-cell-actions">
+                <div className="flex items-center justify-end gap-2" data-testid="admin-books-action-buttons">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -78,6 +80,7 @@ const BooksTable = ({
                     <Link
                       href={`/admin/books/edit/${book.id}`}
                       className="text-white"
+                      data-testid="admin-books-edit"
                     >
                       <Pencil className="h-4 w-4 text-blue-500" />
                     </Link>
@@ -95,6 +98,7 @@ const BooksTable = ({
                       await deleteBook(book.id!);
                       router.refresh();
                     }}
+                    data-testid="admin-books-delete"
                   >
                     <Trash2 className="h-4 w-4 text-red-500" />
                   </Button>

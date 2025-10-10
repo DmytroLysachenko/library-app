@@ -68,13 +68,13 @@ const AuthForm = <T extends FieldValues>({
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold text-white">
+    <div className="flex flex-col gap-4" data-testid="auth-form">
+      <h1 className="text-2xl font-semibold text-white" data-testid="auth-form-title">
         {isSignIn
           ? "Welcome back to LibraryView!"
           : "Create Your library account!"}
       </h1>
-      <p className="text-light-100">
+      <p className="text-light-100" data-testid="auth-form-description">
         {isSignIn
           ? "Access the vast collection of resources, and stay updated."
           : "Please complete all fields and upload a valid university ID to gain access to the library."}
@@ -125,6 +125,7 @@ const AuthForm = <T extends FieldValues>({
           <Button
             type="submit"
             className="form-btn"
+            data-testid="auth-form-submit"
           >
             {isSignIn ? "Sign in" : "Sign up"}
           </Button>
@@ -135,6 +136,7 @@ const AuthForm = <T extends FieldValues>({
         <Link
           href={isSignIn ? "/sign-up" : "/sign-in"}
           className="font-bold text-primary"
+          data-testid="auth-form-toggle-link"
         >
           {isSignIn ? "Create an account" : "Sign in"}
         </Link>

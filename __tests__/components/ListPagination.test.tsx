@@ -61,26 +61,23 @@ describe("ListPagination", () => {
       <ListPagination currentPage={3} lastPage={5} variant="user" />
     );
 
-    const buttons = screen.getAllByRole("button");
-    expect(buttons).toHaveLength(3);
-
-    const previousButton = buttons[0];
+    const previousButton = screen.getByTestId("pagination-prev");
     expect(previousButton).toHaveClass("pagination-btn_dark");
     fireEvent.click(previousButton);
     expectPushCall(push, 0, { page: "2", sort: "asc" });
 
-    const lastPageButton = screen.getByRole("button", { name: "5" });
+    const lastPageButton = screen.getByTestId("pagination-page-5");
     expect(lastPageButton).toHaveClass("pagination-btn_dark");
     fireEvent.click(lastPageButton);
     expectPushCall(push, 1, { page: "5", sort: "asc" });
 
-    const nextButton = buttons[buttons.length - 1];
+    const nextButton = screen.getByTestId("pagination-next");
     expect(nextButton).toHaveClass("pagination-btn_dark");
     fireEvent.click(nextButton);
     expectPushCall(push, 2, { page: "4", sort: "asc" });
 
-    expect(screen.getByText("More pages")).toBeInTheDocument();
-    expect(screen.getByText("3")).toBeInTheDocument();
+    const currentPage = screen.getByTestId("pagination-page-3");
+    expect(currentPage).toHaveAttribute("aria-current", "page");
   });
 
   it("omits unnecessary controls on the final admin page", () => {
@@ -93,16 +90,16 @@ describe("ListPagination", () => {
       <ListPagination currentPage={5} lastPage={5} variant="admin" />
     );
 
-    const buttons = screen.getAllByRole("button");
-    expect(buttons).toHaveLength(1);
-
-    const previousButton = buttons[0];
+    const previousButton = screen.getByTestId("pagination-prev");
     expect(previousButton).toHaveClass("pagination-btn_light");
     fireEvent.click(previousButton);
     expectPushCall(push, 0, { page: "4", category: "fiction" });
 
-    expect(screen.queryByRole("button", { name: "5" })).not.toBeInTheDocument();
-    expect(screen.queryByText("More pages")).not.toBeInTheDocument();
+    expect(screen.getByTestId("pagination-next")).toBeDisabled();
+    expect(screen.getByTestId("pagination-page-5")).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
   });
 
   it("hides the previous control on the first page and preserves params", () => {
@@ -115,20 +112,19 @@ describe("ListPagination", () => {
       <ListPagination currentPage={1} lastPage={2} variant="user" />
     );
 
-    const buttons = screen.getAllByRole("button");
-    expect(buttons).toHaveLength(2);
+    const previousButton = screen.getByTestId("pagination-prev");
+    expect(previousButton).toBeDisabled();
+    expect(previousButton).toHaveClass("pagination-btn_dark");
 
-    expect(buttons[0]).toHaveTextContent("2");
-
-    const lastPageButton = screen.getByRole("button", { name: "2" });
+    const lastPageButton = screen.getByTestId("pagination-page-2");
     fireEvent.click(lastPageButton);
     expectPushCall(push, 0, { page: "2", sort: "popular" });
 
-    const nextButton = buttons[buttons.length - 1];
+    const nextButton = screen.getByTestId("pagination-next");
     fireEvent.click(nextButton);
     expectPushCall(push, 1, { page: "2", sort: "popular" });
 
-    expect(screen.queryByText("More pages")).not.toBeInTheDocument();
+    expect(nextButton).not.toBeDisabled();
   });
 });
 

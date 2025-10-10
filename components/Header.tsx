@@ -14,8 +14,8 @@ const Header = ({ user }: { user: Partial<User> }) => {
   const canSeeAdminConsole = user.role === "ADMIN" || user.role === "TEST";
 
   return (
-    <header className="my-10 flex justify-between gap-5">
-      <Link href="/" className="flex gap-2 items-center">
+    <header className="my-10 flex justify-between gap-5" data-testid="app-header">
+      <Link href="/" className="flex gap-2 items-center" data-testid="header-logo-link">
         <Image src="/icons/logo.svg" width={40} height={40} alt="logo" />
         <span className="text-xl text-white font-semibold hidden xs:block">
           LibraryView
@@ -27,6 +27,7 @@ const Header = ({ user }: { user: Partial<User> }) => {
           <Link
             className={cn(" hover:text-amber-200", pathname === "/" ? "text-amber-100" : "text-white")}
             href="/"
+            data-testid="nav-link-home"
           >
             Home
           </Link>
@@ -36,6 +37,7 @@ const Header = ({ user }: { user: Partial<User> }) => {
           <Link
             className={cn(" hover:text-amber-200", pathname === "/search" ? "text-amber-100" : "text-white")}
             href="/search"
+            data-testid="nav-link-search"
           >
             Search
           </Link>
@@ -46,6 +48,7 @@ const Header = ({ user }: { user: Partial<User> }) => {
             <Link
               className={cn(" hover:text-amber-200", pathname === "/admin" ? "text-amber-100" : "text-white")}
               href="/admin"
+              data-testid="nav-link-admin"
             >
               Admin Console
             </Link>

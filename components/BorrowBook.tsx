@@ -74,12 +74,14 @@ const BorrowBook = ({
             !borrowingEligibility.isEligible && "cursor-not-allowed"
           )}
           asChild
+          data-testid="borrow-book"
         >
           <div>
             <Button
               className={"book-overview_btn"}
               onClick={handleBorrow}
               disabled={borrowing || !borrowingEligibility.isEligible}
+              data-testid="borrow-book-button"
             >
               <BookOpen size={20} />
 

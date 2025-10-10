@@ -20,6 +20,7 @@ const SortSelector = ({
   placeholder = "Sort by",
   placeholderIcon = <ArrowUpDown className="mr-2 h-4 w-4" />,
   cancelButton = true,
+  dataTestId,
 }: {
   options: { value: string; title: string }[];
   param: string;
@@ -27,10 +28,12 @@ const SortSelector = ({
   placeholder?: string;
   placeholderIcon?: React.ReactNode;
   cancelButton?: boolean;
+  dataTestId?: string;
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [value, setValue] = useState(searchParams.get(param) || "");
+  const testId = dataTestId ?? `sort-selector-${variant}-${param}`;
 
   const handleSort = (value: string) => {
     setValue(value);
@@ -53,7 +56,10 @@ const SortSelector = ({
         value={value}
         onValueChange={handleSort}
       >
-        <SelectTrigger className={cn(isUser ? "select-trigger" : "w-fit")}>
+        <SelectTrigger
+          className={cn(isUser ? "select-trigger" : "w-fit")}
+          data-testid={testId}
+        >
           {!isUser && placeholderIcon}
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
@@ -64,6 +70,7 @@ const SortSelector = ({
               key={option.value}
               value={option.value}
               className={cn(isUser && "select-item")}
+              data-testid={`${testId}-option-${option.value}`}
             >
               {option.title}
             </SelectItem>
@@ -74,6 +81,7 @@ const SortSelector = ({
         <button
           type="button"
           onClick={handleReset}
+          data-testid={`${testId}-reset`}
         >
           <X className=" size-4 text-red-400" />
         </button>

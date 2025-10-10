@@ -48,6 +48,17 @@ const SearchInput = ({
     }, 700);
   };
 
+  const flushPendingQuery = () => {
+    const value = input.current?.value ?? "";
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+      debounceTimer.current = null;
+      pushWithValue(value);
+    } else {
+      pushWithValue(value);
+    }
+  };
+
   // Clear button — also cancel any pending debounce
   const handleReset = () => {
     if (debounceTimer.current) {
@@ -77,6 +88,7 @@ const SearchInput = ({
         variant === "admin" && "admin-search",
         className
       )}
+      data-testid={variant === "user" ? "search-input" : "admin-search-input"}
     >
       <Search
         className={cn(
@@ -96,15 +108,26 @@ const SearchInput = ({
           variant === "user" && "search-input",
           variant === "admin" && "admin-search_input"
         )}
+        data-testid={
+          variant === "user"
+            ? "search-input-field"
+            : "admin-search-input-field"
+        }
       />
 
       {input.current?.value && (
         <button
           onClick={handleReset}
+          onBlur={() => {
+            if (variant === "user") {
+              flushPendingQuery();
+            }
+          }}
           className={cn(
             "p-1 hover:opacity-70 transition-opacity",
             variant === "admin" && "mr-2"
           )}
+          data-testid="search-input-clear"
         >
           <X
             className={cn(

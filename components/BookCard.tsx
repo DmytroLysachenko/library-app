@@ -32,7 +32,10 @@ const BookCard = ({
   const remainingDays = dayjs(dueDate).diff(dayjs(), "days");
 
   return (
-    <li className={cn(isLoanedBook && "xs:w-52 w-full relative")}>
+    <li
+      className={cn(isLoanedBook && "xs:w-52 w-full relative")}
+      data-testid="book-card"
+    >
       <Link
         href={`/books/${id}`}
         className={cn(
@@ -54,12 +57,17 @@ const BookCard = ({
           coverUrl={coverUrl}
         />
 
-        <div className={cn("mt-4", !isLoanedBook && "xs:max-w-40 max-w-28")}>
-          <p className="book-title">
+        <div
+          className={cn("mt-4", !isLoanedBook && "xs:max-w-40 max-w-28")}
+          data-testid="book-card-body"
+        >
+          <p className="book-title" data-testid="book-card-title">
             {title} - By {author}
           </p>
 
-          <p className="book-genre">{genre}</p>
+          <p className="book-genre" data-testid="book-card-genre">
+            {genre}
+          </p>
         </div>
 
         {isLoanedBook && !isPendingBook && (
