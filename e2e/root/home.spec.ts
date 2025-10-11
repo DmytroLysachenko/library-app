@@ -10,12 +10,17 @@ test.describe("Root > Home page", () => {
 
   test("shows overview and navigation links", async ({ page }) => {
     await expect(page.getByTestId("nav-link-home")).toHaveAttribute("href", "/");
+    await expect(page.getByTestId("nav-link-home")).toHaveText("Home");
     await expect(page.getByTestId("nav-link-search")).toHaveAttribute("href", "/search");
     await expect(page.getByTestId("nav-link-admin")).toHaveAttribute("href", "/admin");
 
     await expect(page.getByTestId("book-overview")).toBeVisible();
     await expect(page.getByTestId("book-overview-title")).toBeVisible();
     await expect(page.getByTestId("borrow-book-button")).toBeVisible();
+
+    const copiesText = await page.getByTestId("book-overview-copies").innerText();
+    expect(copiesText).toMatch(/Total Books:/);
+    expect(copiesText).toMatch(/Available Books:/);
   });
 
   test("opens book details from latest list", async ({ page }) => {
