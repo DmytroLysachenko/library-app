@@ -32,4 +32,25 @@ test.describe("Root > Home page", () => {
 
     await expect(page.getByTestId("book-overview")).toBeVisible();
   });
+
+  test("lists latest books with titles and genres", async ({ page }) => {
+    const latestBooks = page.getByTestId("book-list-items-latest-books").getByTestId("book-card");
+    await expect(latestBooks.first()).toBeVisible();
+
+    const firstCard = latestBooks.first();
+    await expect(firstCard.getByTestId("book-card-title")).toContainText(" - By ");
+    await expect(firstCard.getByTestId("book-card-genre")).toContainText(/\S/);
+
+    if ((await latestBooks.count()) > 1) {
+      const secondCard = latestBooks.nth(1);
+      await expect(secondCard.getByTestId("book-card-title")).toContainText(" - By ");
+      await expect(secondCard.getByTestId("book-card-genre")).toContainText(/\S/);
+    }
+  });
+
+  test("navigates to search page from header", async ({ page }) => {
+    await page.getByTestId("nav-link-search").click();
+    await page.waitForURL("/search");
+    await expect(page.getByTestId("search-section")).toBeVisible();
+  });
 });
