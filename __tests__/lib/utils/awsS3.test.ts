@@ -72,4 +72,68 @@ describe("uploadToS3", () => {
     await uploadToS3(buffer, "covers/book.png", "image/png");
     expect(S3ClientMock).toHaveBeenCalledTimes(1);
   });
+
+  it("propagates errors from the S3 client", async () => {
+    jest.doMock("@/lib/config", () =>
+      jest.requireActual("../../mocks/config")
+    );
+
+    sendMock.mockRejectedValueOnce(new Error("S3 is down"));
+
+    const { uploadToS3 } = await import("@/lib/utils/awsS3");
+
+    await expect(
+      uploadToS3(Buffer.from("file"), "covers/book.png", "image/png")
+    ).rejects.toThrow("S3 is down");
+
+    expect(S3ClientMock).toHaveBeenCalledTimes(1);
+    expect(sendMock).toHaveBeenCalledWith(
+      PutObjectCommandMock.mock.results[0]?.value
+    );
+  });
+
+  it("uses the amazon configuration to build the upload URL", async () => {
+    const { createConfigMock } = jest.requireActual("../../mocks/config");
+    jest.doMock("@/lib/config", () => ({
+      __esModule: true,
+      default: createConfigMock({
+        env: {
+          amazon: {
+            accessKeyId: "new-access",
+            secretAccessKey: "new-secret",
+            region: "eu-west-1",
+            bucketName: "custom-bucket",
+          },
+        },
+      }),
+    }));
+
+    const { uploadToS3 } = await import("@/lib/utils/awsS3");
+
+    const buffer = Buffer.from("preview");
+    const url = await uploadToS3(
+      buffer,
+      "assets/cover.jpg",
+      "image/jpeg"
+    );
+
+    expect(S3ClientMock).toHaveBeenCalledWith({
+      region: "eu-west-1",
+      credentials: {
+        accessKeyId: "new-access",
+        secretAccessKey: "new-secret",
+      },
+    });
+
+    expect(PutObjectCommandMock).toHaveBeenCalledWith({
+      Bucket: "custom-bucket",
+      Key: "assets/cover.jpg",
+      Body: buffer,
+      ContentType: "image/jpeg",
+    });
+
+    expect(url).toBe(
+      "https://custom-bucket.s3.eu-west-1.amazonaws.com/assets/cover.jpg"
+    );
+  });
 });
