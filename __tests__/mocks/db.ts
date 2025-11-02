@@ -3,6 +3,7 @@ export type MockQueryBuilder<T> = Promise<T> & {
   where: jest.Mock<MockQueryBuilder<T>, [unknown?]>;
   limit: jest.Mock<MockQueryBuilder<T>, [unknown?]>;
   orderBy: jest.Mock<MockQueryBuilder<T>, [unknown?]>;
+  leftJoin: jest.Mock<MockQueryBuilder<T>, [unknown?, unknown?]>;
   values: jest.Mock<MockQueryBuilder<T>, [unknown?]>;
   set: jest.Mock<MockQueryBuilder<T>, [unknown?]>;
   returning: jest.Mock<MockQueryBuilder<T>, [unknown?]>;
@@ -26,6 +27,7 @@ export const createQueryBuilder = <T>({
   promise.where = jest.fn(() => promise);
   promise.limit = jest.fn(() => promise);
   promise.orderBy = jest.fn(() => promise);
+  promise.leftJoin = jest.fn(() => promise);
   promise.values = jest.fn(() => promise);
   promise.set = jest.fn(() => promise);
   promise.onConflictDoNothing = jest.fn(() => promise);
