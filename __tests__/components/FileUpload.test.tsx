@@ -1,9 +1,18 @@
-import React, { forwardRef, useImperativeHandle, type FC, type ReactNode } from "react";
-import { act, render, screen } from "@testing-library/react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  type FC,
+  type ReactNode,
+} from "react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import FileUpload from "@/components/FileUpload";
+import config from "@/lib/config";
 import { toast } from "@/lib/actions/hooks/use-toast";
-import type { IKUploadResponse, UploadError } from "imagekitio-next/dist/types/components/IKUpload/props";
+import type {
+  IKUploadResponse,
+  UploadError,
+} from "imagekitio-next/dist/types/components/IKUpload/props";
 
 type UploadProgress = {
   loaded: number;
@@ -26,26 +35,47 @@ type UploadHandle = {
 };
 
 let latestUploadProps: MockIKUploadProps | null = null;
+type AuthenticatorResult = {
+  token: string;
+  expire: number;
+  signature: string;
+};
+type Authenticator = () => Promise<AuthenticatorResult>;
+let latestAuthenticator: Authenticator | null = null;
 const uploadClickMock = jest.fn();
 
 jest.mock("imagekitio-next", () => {
-  const MockImageKitProvider: FC<{ children: ReactNode }> = ({ children }) => <>{children}</>;
+  interface MockImageKitProviderProps {
+    children: ReactNode;
+    authenticator?: Authenticator;
+    publicKey?: string;
+    urlEndpoint?: string;
+  }
 
-  const MockIKUpload = forwardRef<UploadHandle, MockIKUploadProps>((props, ref) => {
-    latestUploadProps = props;
-    useImperativeHandle(ref, () => ({
-      click: uploadClickMock,
-    }));
-    return (
-      <div
-        data-testid="ik-upload"
-        data-folder={props.folder}
-        data-accept={props.accept}
-      />
-    );
-  });
+  const MockImageKitProvider: FC<MockImageKitProviderProps> = ({
+    children,
+    authenticator,
+  }) => {
+    latestAuthenticator = authenticator ?? null;
+    return <>{children}</>;
+  };
+
+  const MockIKUpload = forwardRef<UploadHandle, MockIKUploadProps>(
+    (props, ref) => {
+      latestUploadProps = props;
+      useImperativeHandle(ref, () => ({
+        click: uploadClickMock,
+      }));
+      return (
+        <div
+          data-testid="ik-upload"
+          data-folder={props.folder}
+          data-accept={props.accept}
+        />
+      );
+    }
+  );
   MockIKUpload.displayName = "MockIKUpload";
-
 
   const MockIKImage: FC<{ path?: string; alt?: string }> = ({ path, alt }) => (
     <img
@@ -73,7 +103,9 @@ jest.mock("imagekitio-next", () => {
 
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <img {...props} />,
+  default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+    <img {...props} />
+  ),
 }));
 
 jest.mock("@/lib/actions/hooks/use-toast", () => ({
@@ -90,7 +122,16 @@ const ensureUploadProps = (): MockIKUploadProps => {
   return latestUploadProps;
 };
 
-const buildUploadResponse = (overrides: Partial<IKUploadResponse> = {}): IKUploadResponse => ({
+const ensureAuthenticator = (): Authenticator => {
+  if (!latestAuthenticator) {
+    throw new Error("Authenticator has not been initialised");
+  }
+  return latestAuthenticator;
+};
+
+const buildUploadResponse = (
+  overrides: Partial<IKUploadResponse> = {}
+): IKUploadResponse => ({
   fileId: "file_1",
   name: "upload.bin",
   url: "https://cdn.example/upload.bin",
@@ -108,13 +149,19 @@ const buildUploadResponse = (overrides: Partial<IKUploadResponse> = {}): IKUploa
 
 describe("FileUpload", () => {
   beforeAll(() => {
-    process.env.NEXT_PUBLIC_BASE_URL ??= "http://localhost";
-    process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY ??= "public_test_key";
-    process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT ??= "https://cdn.example";
+    process.env.NEXT_PUBLIC_BASE_URL = "http://localhost";
+    process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY = "public_test_key";
+    process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT = "https://cdn.example";
+    config.env.baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    config.env.imagekit.publicKey =
+      process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!;
+    config.env.imagekit.urlEndpoint =
+      process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!;
   });
 
   beforeEach(() => {
     latestUploadProps = null;
+    latestAuthenticator = null;
     uploadClickMock.mockClear();
     toastMock.mockClear();
   });
@@ -138,12 +185,20 @@ describe("FileUpload", () => {
       throw new Error("validateFile should be provided");
     }
 
-    const oversizedImage = new File([new ArrayBuffer(21 * 1024 * 1024)], "large.png", {
-      type: "image/png",
-    });
-    const validImage = new File([new ArrayBuffer(5 * 1024 * 1024)], "small.png", {
-      type: "image/png",
-    });
+    const oversizedImage = new File(
+      [new ArrayBuffer(21 * 1024 * 1024)],
+      "large.png",
+      {
+        type: "image/png",
+      }
+    );
+    const validImage = new File(
+      [new ArrayBuffer(5 * 1024 * 1024)],
+      "small.png",
+      {
+        type: "image/png",
+      }
+    );
 
     expect(validateFile(oversizedImage)).toBe(false);
     expect(toastMock).toHaveBeenCalledWith({
@@ -154,6 +209,43 @@ describe("FileUpload", () => {
 
     toastMock.mockClear();
     expect(validateFile(validImage)).toBe(true);
+    expect(toastMock).not.toHaveBeenCalled();
+  });
+
+  it("enforces the 50MB limit for video uploads", () => {
+    render(
+      <FileUpload
+        type="video"
+        accept="video/*"
+        placeholder="Upload a video"
+        folder="library/videos"
+        variant="light"
+        onFileChange={jest.fn()}
+      />
+    );
+
+    const uploadProps = ensureUploadProps();
+    const validateFile = uploadProps.validateFile;
+    expect(validateFile).toBeDefined();
+    if (!validateFile) {
+      throw new Error("validateFile should be provided");
+    }
+
+    const oversizedVideo = {
+      size: 51 * 1024 * 1024,
+      type: "video/mp4",
+    } as File;
+    const validVideo = { size: 10 * 1024 * 1024, type: "video/mp4" } as File;
+
+    expect(validateFile(oversizedVideo)).toBe(false);
+    expect(toastMock).toHaveBeenCalledWith({
+      title: "File size is too large",
+      description: "Please upload a file up to 50MB in size.",
+      variant: "destructive",
+    });
+
+    toastMock.mockClear();
+    expect(validateFile(validVideo)).toBe(true);
     expect(toastMock).not.toHaveBeenCalled();
   });
 
@@ -195,7 +287,45 @@ describe("FileUpload", () => {
       title: "image uploaded successfully",
       description: "/uploads/avatar.png uploaded",
     });
-    expect(screen.getByTestId("ik-image")).toHaveAttribute("data-path", "/uploads/avatar.png");
+    expect(screen.getByTestId("ik-image")).toHaveAttribute(
+      "data-path",
+      "/uploads/avatar.png"
+    );
+  });
+
+  it("resets progress when a new upload starts and triggers the hidden input on click", () => {
+    render(
+      <FileUpload
+        type="image"
+        accept="image/*"
+        placeholder="Upload an image"
+        folder="library/images"
+        variant="light"
+        onFileChange={jest.fn()}
+      />
+    );
+
+    const uploadProps = ensureUploadProps();
+    const handleStart = uploadProps.onUploadStart;
+    const handleProgress = uploadProps.onUploadProgress;
+    expect(handleStart).toBeDefined();
+    expect(handleProgress).toBeDefined();
+    if (!handleStart || !handleProgress) {
+      throw new Error("Upload callbacks should be defined");
+    }
+
+    act(() => {
+      handleProgress({ loaded: 25, total: 100 });
+    });
+    expect(screen.getByText("25%")).toBeInTheDocument();
+
+    act(() => {
+      handleStart();
+    });
+    expect(screen.queryByText("25%")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button"));
+    expect(uploadClickMock).toHaveBeenCalled();
   });
 
   it("renders a video preview and success toast for video uploads", () => {
@@ -233,7 +363,10 @@ describe("FileUpload", () => {
       title: "video uploaded successfully",
       description: "/uploads/video.mp4 uploaded",
     });
-    expect(screen.getByTestId("ik-video")).toHaveAttribute("data-path", "/uploads/video.mp4");
+    expect(screen.getByTestId("ik-video")).toHaveAttribute(
+      "data-path",
+      "/uploads/video.mp4"
+    );
   });
 
   it("notifies the user when an upload error occurs", () => {
@@ -267,6 +400,69 @@ describe("FileUpload", () => {
       variant: "destructive",
     });
   });
+
+  it("authenticates uploads through the API endpoint", async () => {
+    const originalFetch = globalThis.fetch;
+    const fetchMock = jest.fn();
+    const payload: AuthenticatorResult = {
+      token: "token",
+      expire: 1700,
+      signature: "signature",
+    };
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => payload,
+    } as Response);
+    globalThis.fetch = fetchMock;
+
+    try {
+      render(
+        <FileUpload
+          type="image"
+          accept="image/*"
+          placeholder="Upload"
+          folder="library/images"
+          variant="dark"
+          onFileChange={jest.fn()}
+        />
+      );
+
+      const authenticator = ensureAuthenticator();
+      await expect(authenticator()).resolves.toEqual(payload);
+      expect(fetchMock).toHaveBeenCalledWith("http://localhost/api/imagekit");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("surfaces detailed errors when authentication fails", async () => {
+    const originalFetch = globalThis.fetch;
+    const fetchMock = jest.fn();
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      text: async () => "boom",
+    } as Response);
+    globalThis.fetch = fetchMock;
+
+    try {
+      render(
+        <FileUpload
+          type="image"
+          accept="image/*"
+          placeholder="Upload"
+          folder="library/images"
+          variant="dark"
+          onFileChange={jest.fn()}
+        />
+      );
+
+      const authenticator = ensureAuthenticator();
+      await expect(authenticator()).rejects.toThrow(
+        "Authentication request failed: Error: Request failed with status 500: boom"
+      );
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
 });
-
-
