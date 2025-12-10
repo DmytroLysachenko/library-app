@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ArrowUpDown, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   Select,
@@ -32,21 +32,51 @@ const SortSelector = ({
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathnameFromHook = usePathname();
+  const pathname =
+    pathnameFromHook ||
+    (typeof window !== "undefined" ? window.location.pathname : "/");
+  const getParams = useMemo(
+    () => () => {
+      const fromSearchParams = searchParams.toString();
+      const source =
+        fromSearchParams ||
+        (typeof window !== "undefined" ? window.location.search : "");
+      return new URLSearchParams(source);
+    },
+    [searchParams]
+  );
   const [value, setValue] = useState(searchParams.get(param) || "");
   const testId = dataTestId ?? `sort-selector-${variant}-${param}`;
+  const navigate = (nextUrl: string) => {
+    router.push(nextUrl);
+  };
+
+  const lastParamsString = useRef<string>("");
+  useEffect(() => {
+    const paramsString = getParams().toString();
+    if (paramsString === lastParamsString.current) return;
+    lastParamsString.current = paramsString;
+    const current = new URLSearchParams(paramsString).get(param) || "";
+    setValue((prev) => (prev === current ? prev : current));
+  }, [getParams, param]);
 
   const handleSort = (value: string) => {
     setValue(value);
-    const params = new URLSearchParams(searchParams);
+    const params = getParams();
     params.set(param, value);
-    router.push(`?${params.toString()}`);
+    const query = params.toString();
+    const nextUrl = query ? `?${query}` : "?";
+    navigate(nextUrl);
   };
 
   const handleReset = () => {
     setValue("");
-    const params = new URLSearchParams(searchParams);
+    const params = getParams();
     params.delete(param);
-    router.push(`?${params.toString()}`);
+    const query = params.toString();
+    const nextUrl = query ? `?${query}` : "?";
+    navigate(nextUrl);
   };
   const isUser = variant === "user";
 
@@ -61,7 +91,10 @@ const SortSelector = ({
           data-testid={testId}
         >
           {!isUser && placeholderIcon}
-          <SelectValue placeholder={placeholder} />
+          <SelectValue
+            placeholder={placeholder}
+            data-testid="select-value"
+          />
         </SelectTrigger>
 
         <SelectContent className={cn(isUser && "select-content")}>

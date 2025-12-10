@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import {
   Pagination,
@@ -22,14 +22,28 @@ const ListPagination = ({
 }) => {
   const isUser = variant === "user";
   const router = useRouter();
+  const pathnameFromHook = usePathname();
+  const pathname =
+    pathnameFromHook ||
+    (typeof window !== "undefined" ? window.location.pathname : "/");
+  const searchParams = useSearchParams();
+  const navigate = (nextUrl: string) => {
+    router.push(nextUrl, { scroll: false });
+  };
   const toPage = (page: number) => {
-    const params = new URLSearchParams(window.location.search);
+    const fromSearchParams = searchParams.toString();
+    const params = new URLSearchParams(
+      fromSearchParams ||
+        (typeof window !== "undefined" ? window.location.search : "")
+    );
     params.set("page", page.toString());
-    return `?${params.toString()}`;
+    const query = params.toString();
+    return query ? `?${query}` : "?";
   };
   const pages = Array.from({ length: lastPage }, (_, index) => index + 1);
   const goToPage = (pageNumber: number) => {
-    router.push(toPage(pageNumber), { scroll: false });
+    const nextUrl = toPage(pageNumber);
+    navigate(nextUrl);
   };
 
   return (

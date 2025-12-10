@@ -1,17 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 import { Button } from "./ui/button";
 
 const NotFoundSection = ({ query }: { query: string }) => {
-  const params = new URLSearchParams(window.location.search);
+  const pathnameFromHook = usePathname();
+  const searchParams = useSearchParams();
+  const basePath =
+    pathnameFromHook ||
+    (typeof window !== "undefined" ? window.location.pathname : "/search");
+  const clearUrl = useMemo(() => {
+    const params = new URLSearchParams(
+      typeof window !== "undefined"
+        ? window.location.search
+        : searchParams.toString()
+    );
+    params.delete("query");
+    const queryString = params.toString();
+    return queryString ? `${basePath}?${queryString}` : `${basePath}?`;
+  }, [basePath, searchParams]);
 
-  params.delete("query");
-
-  const clearSearchLink = `/search?${params.toString()}`;
+  const handleClear = useCallback(() => {
+    if (typeof window !== "undefined") {
+      window.location.href = clearUrl;
+    }
+  }, [clearUrl]);
 
   return (
     <section
@@ -47,11 +64,12 @@ const NotFoundSection = ({ query }: { query: string }) => {
         </p>
         <Button
           className="not-found-btn"
+          data-testid="search-not-found-clear"
           asChild
         >
           <Link
-            href={clearSearchLink}
-            data-testid="search-not-found-clear"
+            href={clearUrl}
+            onClick={handleClear}
           >
             Clear Search
           </Link>
