@@ -34,7 +34,7 @@
     "@sparticuz/chromium": "^132.0.0",
     "@upstash/ratelimit": "^2.0.7",
     "@upstash/redis": "^1.35.8",
-    "@upstash/workflow": "^0.2.23",
+    "@upstash/workflow": "^1.0.0",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
